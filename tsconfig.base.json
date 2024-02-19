@@ -1,0 +1,50 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@psu/api-controllers": ["libs/api/controllers/src/index.ts"],
+      "@psu/api-modules": ["libs/api/modules/src/index.ts"],
+      "@psu/api-services": ["libs/api/services/src/index.ts"],
+      "@psu/entities": ["libs/entities/src/index.ts"],
+      "@psu/trpc": ["libs/trpc/src/index.ts"],
+      "@psu/web-auth": ["libs/web/auth/src/index.ts"],
+      "@psu/web-auth/server": ["libs/web/auth/src/server.ts"],
+      "@psu/web-component-atoms": ["libs/web/components/atoms/src/index.ts"],
+      "@psu/web-component-atoms/server": [
+        "libs/web/components/atoms/src/server.ts"
+      ],
+      "@psu/web-component-molecules": [
+        "libs/web/components/molecules/src/index.ts"
+      ],
+      "@psu/web-component-molecules/server": [
+        "libs/web/components/molecules/src/server.ts"
+      ],
+      "@psu/web-component-organisms": [
+        "libs/web/components/organisms/src/index.ts"
+      ],
+      "@psu/web-component-organisms/server": [
+        "libs/web/components/organisms/src/server.ts"
+      ],
+      "@psu/web-component-templates": [
+        "libs/web/components/templates/src/index.ts"
+      ],
+      "@psu/web-component-templates/server": [
+        "libs/web/components/templates/src/server.ts"
+      ]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}
