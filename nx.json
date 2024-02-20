@@ -17,6 +17,9 @@
     ],
     "sharedGlobals": []
   },
+  "affected": {
+    "defaultBase": "develop"
+  },
   "plugins": [
     {
       "plugin": "@nx/next/plugin",
