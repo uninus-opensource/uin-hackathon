@@ -15,9 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@psu/api-controllers": ["libs/api/controllers/src/index.ts"],
-      "@psu/api-modules": ["libs/api/modules/src/index.ts"],
-      "@psu/api-services": ["libs/api/services/src/index.ts"],
+      "@psu/api": ["libs/api/src/index.ts"],
       "@psu/entities": ["libs/entities/src/index.ts"],
       "@psu/trpc": ["libs/trpc/src/index.ts"],
       "@psu/web-auth": ["libs/web/auth/src/index.ts"],
