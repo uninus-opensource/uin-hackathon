@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npx nx affected -t lint test  build e2e-ci
+npx nx affected --base=develop -t lint test build e2e-ci
