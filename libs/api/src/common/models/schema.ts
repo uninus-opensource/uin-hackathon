@@ -175,7 +175,7 @@ export const verificationTokens = pgTable(
   })
 );
 
-export const usersRelations = relations(users, ({ one, many }) => ({
+export const usersRelations = relations(users, ({ one }) => ({
   userAffiliations: one(userAffiliations),
   roles: one(roles, {
     fields: [users.roleId],
