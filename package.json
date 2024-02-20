@@ -34,7 +34,8 @@
     "api:cms:lint": "nx lint api-cms",
     "api:cms:test": "nx test api-cms",
     "api:cms:container": "nx container api-cms",
-    "api:cms:e2e": "nx e2e api-cms-e2e"
+    "api:cms:e2e": "nx e2e api-cms-e2e",
+    "prepare": "husky install"
   },
   "private": true,
   "dependencies": {
