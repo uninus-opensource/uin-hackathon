@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 
-import { ProposalService } from '..';
+import { ProposalService } from '../services';
 
 @Controller()
 export class ProposalController {

@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 
 import {
-  TrpcModule,
   ActivityModule,
   AuthModule,
   ProposalModule,
+  TrpcModule,
   UserModule,
 } from '@psu/api';
 
 @Module({
-  imports: [TrpcModule, ActivityModule, AuthModule, ProposalModule, UserModule],
+  imports: [ActivityModule, AuthModule, ProposalModule, TrpcModule, UserModule],
   controllers: [],
   providers: [],
 })
