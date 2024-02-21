@@ -13,6 +13,7 @@ import {
   TLoginResponse,
   TRegisterRequest,
   TRegisterResponse,
+  TGoogleRequest,
 } from '@psu/entities';
 import {
   comparePassword,
@@ -42,10 +43,6 @@ export class AuthService {
         })
         .from(schema.users)
         .leftJoin(schema.roles, eq(schema.roles.id, schema.users.roleId))
-        .leftJoin(
-          schema.userAffiliations,
-          eq(schema.userAffiliations.userId, schema.users.id)
-        )
         .where(eq(schema.users.email, email))
         .then((res) => res.at(0));
 
@@ -93,7 +90,7 @@ export class AuthService {
           fullname: res.fullname as string,
           email: res.email,
           role: {
-            id: res.role?.id as number,
+            id: res.role?.id as string,
             name: res.role?.name || '',
             permissions: res.role?.permissions || [],
           },
@@ -129,16 +126,94 @@ export class AuthService {
       throw new BadRequestException(error);
     }
   }
-  async googleLogin() {
+  async googleLogin(payload: TGoogleRequest) {
     try {
-      return;
+      const { email } = payload;
+      const res = await this.drizzle
+        .select({
+          id: schema.users.id,
+          fullname: schema.users.fullname,
+          email: schema.users.email,
+          role: {
+            id: schema.roles.id,
+            name: schema.roles.name,
+            permissions: schema.roles.permissions,
+          },
+        })
+        .from(schema.users)
+        .leftJoin(schema.roles, eq(schema.roles.id, schema.users.roleId))
+        .where(eq(schema.users.email, email as string))
+        .then((res) => res.at(0));
+
+      if (!res) {
+        throw new UnauthorizedException('Akun tidak ditemukan');
+      }
+
+      const [accessToken, refreshToken, expired] = await Promise.all([
+        generateAccessToken({
+          sub: res.id,
+          email: res.email,
+          role: {
+            name: res.role?.name || '',
+            permissions: res.role?.permissions || [],
+          },
+        }),
+
+        generateRefreshToken({
+          sub: res.id,
+          email: res.email,
+          role: {
+            name: res.role?.name || '',
+            permissions: res.role?.permissions || [],
+          },
+        }),
+        (() => {
+          const expiresIn = 15 * 60 * 1000;
+          const now = Date.now();
+          return now + expiresIn;
+        })(),
+      ]);
+
+      return {
+        id: res.id,
+        token: {
+          expired,
+          refreshToken,
+          accessToken,
+        },
+        user: {
+          id: res.id,
+          fullname: res.fullname as string,
+          email: res.email,
+          role: {
+            id: res.role?.id as string,
+            name: res.role?.name || '',
+            permissions: res.role?.permissions || [],
+          },
+        },
+      };
     } catch (error) {
       throw new BadRequestException(error);
     }
   }
-  async googleRegister() {
+  async googleRegister(payload: TGoogleRequest) {
     try {
-      return;
+      const { email, avatar, fullname } = payload;
+      const isEmailExist = await this.drizzle
+        .select({
+          id: schema.users.id,
+        })
+        .from(schema.users)
+        .where(eq(schema.users.email, email as string))
+        .then((res) => res.at(0));
+      if (isEmailExist) {
+        throw new ConflictException('Email telah digunakan');
+      }
+      await this.drizzle.insert(schema.users).values({
+        email,
+        avatar,
+        fullname,
+      });
     } catch (error) {
       throw new BadRequestException(error);
     }

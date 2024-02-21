@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-
+import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from '../services';
-import { TLoginRequest, TRegisterRequest } from '@psu/entities';
+import { TLoginRequest, TRegisterRequest, THeaderRequest } from '@psu/entities';
+import { GoogleGuard } from '../../common/guards/google.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -15,5 +15,17 @@ export class AuthController {
   @Post('/register')
   async register(@Body() request: TRegisterRequest) {
     return await this.authService.register(request);
+  }
+
+  @Post('/google/login')
+  @UseGuards(GoogleGuard)
+  async googleLogin(@Request() request: THeaderRequest) {
+    return await this.authService.googleLogin(request.user);
+  }
+
+  @Post('/google/register')
+  @UseGuards(GoogleGuard)
+  async googleRegister(@Request() request: THeaderRequest) {
+    return await this.authService.googleRegister(request.user);
   }
 }

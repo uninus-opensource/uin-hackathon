@@ -21,7 +21,7 @@ export class ProposalService {
         })
         .from(schema.proposals)
 
-        .where(eq(schema.proposals.id, 0))
+        .where(eq(schema.proposals.id, ''))
         .then((res) => res.at(0));
 
       if (!res) {
@@ -52,7 +52,7 @@ export class ProposalService {
     try {
       const res = await this.drizzle
         .delete(schema.proposals)
-        .where(eq(schema.proposals.id, 0))
+        .where(eq(schema.proposals.id, ''))
         .returning({
           id: schema.proposals.id,
         })
@@ -73,7 +73,7 @@ export class ProposalService {
         .set({
           title: '',
         })
-        .where(eq(schema.proposals.id, 0))
+        .where(eq(schema.proposals.id, ''))
         .returning({
           id: schema.proposals.id,
         })

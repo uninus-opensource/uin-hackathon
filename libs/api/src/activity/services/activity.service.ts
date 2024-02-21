@@ -24,7 +24,7 @@ export class ActivityService {
         })
         .from(schema.activities)
 
-        .where(eq(schema.activities.id, 0))
+        .where(eq(schema.activities.id, ''))
         .then((res) => res.at(0));
 
       if (!res) {
@@ -55,7 +55,7 @@ export class ActivityService {
     try {
       const res = await this.drizzle
         .delete(schema.activities)
-        .where(eq(schema.activities.id, 0))
+        .where(eq(schema.activities.id, ''))
         .returning({
           id: schema.activities.id,
         })
@@ -76,7 +76,7 @@ export class ActivityService {
         .set({
           name: '',
         })
-        .where(eq(schema.activities.id, 0))
+        .where(eq(schema.activities.id, ''))
         .returning({
           id: schema.activities.id,
         })
@@ -95,7 +95,7 @@ export class ActivityService {
       const res = await this.drizzle
         .insert(schema.activities)
         .values({
-          name: '',
+          name: 'test',
         })
         .returning({
           id: schema.activities.id,

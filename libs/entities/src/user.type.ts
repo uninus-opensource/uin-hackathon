@@ -1,10 +1,10 @@
 export type TUser = {
-  id: number;
+  id: string;
   fullname: string;
   image?: string;
   email: string;
   role: {
-    id: number;
+    id: string;
     name: string;
     permissions: Array<string>;
   };

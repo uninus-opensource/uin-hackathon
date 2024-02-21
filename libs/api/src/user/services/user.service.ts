@@ -64,7 +64,7 @@ export class UserService {
           schema.userAffiliations,
           eq(schema.userAffiliations.userId, schema.users.id)
         )
-        .where(eq(schema.users.id, 0))
+        .where(eq(schema.users.id, ''))
         .then((res) => res.at(0));
 
       if (!res) {
@@ -108,7 +108,7 @@ export class UserService {
     try {
       const res = await this.drizzle
         .delete(schema.users)
-        .where(eq(schema.users.id, 0))
+        .where(eq(schema.users.id, ''))
         .returning({
           id: schema.users.id,
         })
@@ -129,7 +129,7 @@ export class UserService {
         .set({
           email: '',
         })
-        .where(eq(schema.users.id, 0))
+        .where(eq(schema.users.id, ''))
         .returning({
           id: schema.users.id,
         })
@@ -148,7 +148,8 @@ export class UserService {
       const res = await this.drizzle
         .insert(schema.users)
         .values({
-          email: '',
+          email: '3432432',
+          roleId: '',
         })
         .returning({
           id: schema.users.id,

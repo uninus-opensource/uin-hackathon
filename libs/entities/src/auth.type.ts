@@ -6,7 +6,7 @@ export type TLoginRequest = {
 };
 
 export type TLoginResponse = {
-  id: number;
+  id: string;
   user: TUser;
   token: {
     expired: number;
@@ -16,7 +16,7 @@ export type TLoginResponse = {
 };
 
 export type TJwtRequest = {
-  sub: number;
+  sub: string;
   email: string;
   role: {
     name: string;
@@ -31,4 +31,23 @@ export type TRegisterRequest = Pick<TLoginRequest, 'email'> & {
 
 export type TRegisterResponse = {
   message: string;
+};
+
+export type TGoogleProfile = {
+  displayName: string;
+  emails: { value: string }[];
+  photos: { value: string }[];
+};
+
+export type TGoogleRequest = {
+  fullname?: string;
+  avatar?: string;
+  email: string;
+};
+
+export type THeaderRequest = {
+  user: TJwtRequest & {
+    fullname?: string;
+    avatar?: string;
+  };
 };
