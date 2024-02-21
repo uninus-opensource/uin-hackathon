@@ -8,6 +8,6 @@ export class AuthController {
 
   @Get()
   getData() {
-    return this.authService.getData();
+    return;
   }
 }

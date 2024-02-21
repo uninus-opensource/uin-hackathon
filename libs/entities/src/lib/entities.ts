@@ -24,3 +24,8 @@ export type TVariant =
 export type TVariantType = 'solid' | 'outline';
 
 export type TState = 'default' | 'loading';
+
+export type TJwtRequest = {
+  sub: string;
+  email: string;
+};

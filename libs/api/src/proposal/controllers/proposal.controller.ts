@@ -8,6 +8,6 @@ export class ProposalController {
 
   @Get()
   getData() {
-    return this.proposalService.getData();
+    return;
   }
 }
