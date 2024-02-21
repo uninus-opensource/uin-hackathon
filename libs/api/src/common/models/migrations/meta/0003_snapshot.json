@@ -78,12 +78,8 @@
           "name": "activities_applicant_id_users_id_fk",
           "tableFrom": "activities",
           "tableTo": "users",
-          "columnsFrom": [
-            "applicant_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["applicant_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -135,12 +131,8 @@
           "name": "department_faculty_id_faculty_id_fk",
           "tableFrom": "department",
           "tableTo": "faculty",
-          "columnsFrom": [
-            "faculty_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["faculty_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -278,12 +270,8 @@
           "name": "organizations_faculty_id_faculty_id_fk",
           "tableFrom": "organizations",
           "tableTo": "faculty",
-          "columnsFrom": [
-            "faculty_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["faculty_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -291,12 +279,8 @@
           "name": "organizations_department_id_department_id_fk",
           "tableFrom": "organizations",
           "tableTo": "department",
-          "columnsFrom": [
-            "department_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["department_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -304,12 +288,8 @@
           "name": "organizations_organization_level_id_organization_level_id_fk",
           "tableFrom": "organizations",
           "tableTo": "organization_level",
-          "columnsFrom": [
-            "organization_level_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_level_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -410,12 +390,8 @@
           "name": "proposals_proposal_staus_id_proposal_status_id_fk",
           "tableFrom": "proposals",
           "tableTo": "proposal_status",
-          "columnsFrom": [
-            "proposal_staus_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["proposal_staus_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -423,12 +399,8 @@
           "name": "proposals_activity_id_activities_id_fk",
           "tableFrom": "proposals",
           "tableTo": "activities",
-          "columnsFrom": [
-            "activity_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["activity_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -492,12 +464,8 @@
           "name": "reviews_reviewer_id_users_id_fk",
           "tableFrom": "reviews",
           "tableTo": "users",
-          "columnsFrom": [
-            "reviewer_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["reviewer_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -505,12 +473,8 @@
           "name": "reviews_proposal_id_proposals_id_fk",
           "tableFrom": "reviews",
           "tableTo": "proposals",
-          "columnsFrom": [
-            "proposal_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["proposal_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -610,12 +574,8 @@
           "name": "user_affiliations_userId_users_id_fk",
           "tableFrom": "user_affiliations",
           "tableTo": "users",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -623,12 +583,8 @@
           "name": "user_affiliations_organization_id_organizations_id_fk",
           "tableFrom": "user_affiliations",
           "tableTo": "organizations",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -636,12 +592,8 @@
           "name": "user_affiliations_faculty_id_faculty_id_fk",
           "tableFrom": "user_affiliations",
           "tableTo": "faculty",
-          "columnsFrom": [
-            "faculty_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["faculty_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -649,12 +601,8 @@
           "name": "user_affiliations_department_id_department_id_fk",
           "tableFrom": "user_affiliations",
           "tableTo": "department",
-          "columnsFrom": [
-            "department_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["department_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -662,10 +610,7 @@
       "compositePrimaryKeys": {
         "user_affiliations_userId_organization_id_pk": {
           "name": "user_affiliations_userId_organization_id_pk",
-          "columns": [
-            "userId",
-            "organization_id"
-          ]
+          "columns": ["userId", "organization_id"]
         }
       },
       "uniqueConstraints": {}
@@ -732,12 +677,8 @@
           "name": "users_role_id_roles_id_fk",
           "tableFrom": "users",
           "tableTo": "roles",
-          "columnsFrom": [
-            "role_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["role_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
