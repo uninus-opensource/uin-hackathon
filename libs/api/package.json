@@ -14,7 +14,9 @@
     "express": "4.18.2",
     "@nestjs/config": "^3.2.0",
     "pg": "^8.11.3",
-    "@psu/entities": "0.0.1"
+    "@psu/entities": "0.0.1",
+    "@nestjs/jwt": "^10.2.0",
+    "argon2": "^0.31.2"
   },
   "type": "commonjs",
   "main": "./src/index.js",

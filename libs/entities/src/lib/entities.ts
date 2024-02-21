@@ -1,15 +1,3 @@
-export type TUser = {
-  id: string;
-  fullname: string;
-  image?: string;
-  email: string;
-  role: {
-    id: string;
-    name: string;
-    permissions: Array<string>;
-  };
-};
-
 export type TSize = 'sm' | 'md' | 'lg';
 
 export type TVariant =
@@ -24,8 +12,3 @@ export type TVariant =
 export type TVariantType = 'solid' | 'outline';
 
 export type TState = 'default' | 'loading';
-
-export type TJwtRequest = {
-  sub: string;
-  email: string;
-};
