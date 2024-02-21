@@ -4,7 +4,6 @@ import {
   ActivityModule,
   AuthModule,
   ProposalModule,
-  TrpcModule,
   UserModule,
   DrizzleModule,
   AccessStrategy,
@@ -16,7 +15,6 @@ import {
     ActivityModule,
     AuthModule,
     ProposalModule,
-    TrpcModule,
     UserModule,
     DrizzleModule,
     PassportModule.register({
