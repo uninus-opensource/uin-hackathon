@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import * as schema from '../../common/models';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 @Injectable()
@@ -7,18 +7,38 @@ export class AuthService {
     @Inject('drizzle') private drizzle: NodePgDatabase<typeof schema>
   ) {}
   async findOne() {
-    return;
+    try {
+      return;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
   async findMany() {
-    return;
+    try {
+      return;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
   async delete() {
-    return;
+    try {
+      return;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
   async update() {
-    return;
+    try {
+      return;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
   async create() {
-    return;
+    try {
+      return;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }
