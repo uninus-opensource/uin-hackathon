@@ -6,6 +6,7 @@ import {
   ProposalModule,
   TrpcModule,
   UserModule,
+  DrizzleModule,
   AccessStrategy,
   RefreshStrategy,
 } from '@psu/api';
@@ -17,6 +18,7 @@ import {
     ProposalModule,
     TrpcModule,
     UserModule,
+    DrizzleModule,
     PassportModule.register({
       defaultStrategy: 'access',
     }),

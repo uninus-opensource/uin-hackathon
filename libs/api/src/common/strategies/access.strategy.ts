@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-
+import { TJwtRequest } from '@psu/entities';
 @Injectable()
 export class AccessStrategy extends PassportStrategy(Strategy, 'access') {
   constructor() {
@@ -16,8 +16,3 @@ export class AccessStrategy extends PassportStrategy(Strategy, 'access') {
     return { sub: payload.sub, email: payload.email };
   }
 }
-
-type TJwtRequest = {
-  sub: string;
-  email: string;
-};

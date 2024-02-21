@@ -2,6 +2,7 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { TJwtRequest } from '@psu/entities';
 
 @Injectable()
 export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
@@ -21,7 +22,3 @@ export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
     return { sub: payload.sub, email: payload.email };
   }
 }
-type TJwtRequest = {
-  sub: string;
-  email: string;
-};
