@@ -13,34 +13,7 @@ export class UserService {
     @Inject('drizzle') private drizzle: NodePgDatabase<typeof schema>
   ) {}
 
-  async findByEmail() {
-    const res = await this.drizzle
-      .select({
-        id: schema.users.id,
-        fullname: schema.users.fullname,
-        email: schema.users.email,
-        createdAt: schema.users.createdAt,
-        updatedAt: schema.users.updatedAt,
-        role: {
-          name: schema.roles.name,
-          permissions: schema.roles.permissions,
-        },
-      })
-      .from(schema.users)
-      .leftJoin(schema.roles, eq(schema.roles.id, schema.users.roleId))
-      .leftJoin(
-        schema.userAffiliations,
-        eq(schema.userAffiliations.userId, schema.users.id)
-      )
-      .where(eq(schema.users.email, ''))
-      .then((res) => res.at(0));
-
-    if (!res) {
-      throw new NotFoundException('User tidak ditemukan');
-    }
-    return res;
-  }
-  async findById() {
+  async findOne() {
     const res = await this.drizzle
       .select({
         id: schema.users.id,

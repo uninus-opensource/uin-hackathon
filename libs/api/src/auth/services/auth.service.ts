@@ -14,6 +14,7 @@ import {
   TRegisterRequest,
   TRegisterResponse,
   TGoogleRequest,
+  TJwtRequest,
 } from '@psu/entities';
 import {
   comparePassword,
@@ -139,6 +140,20 @@ export class AuthService {
       message: 'Akun berhasil dibuat, silahkan login!',
     };
   }
+
+  async refresh(payload: TJwtRequest) {
+    const expiresIn = 15 * 60 * 1000;
+    const accessToken = await generateAccessToken(payload);
+
+    const now = Date.now();
+    const expirationTime = now + expiresIn;
+
+    return {
+      accessToken,
+      exp: expirationTime,
+    };
+  }
+
   async google(payload: TGoogleRequest) {
     const { email, avatar, fullname } = payload;
 

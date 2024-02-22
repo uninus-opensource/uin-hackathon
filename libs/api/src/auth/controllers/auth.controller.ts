@@ -7,8 +7,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from '../services';
-import { TLoginRequest, TRegisterRequest, THeaderRequest } from '@psu/entities';
-import { GoogleGuard } from '../../common/guards';
+import {
+  TLoginRequest,
+  TRegisterRequest,
+  THeaderRequest,
+  TJwtRequest,
+} from '@psu/entities';
+import { GoogleGuard, RefreshGuard } from '../../common/guards';
 
 @Controller('auth')
 export class AuthController {
@@ -22,6 +27,12 @@ export class AuthController {
   @Post('/register')
   async register(@Body() request: TRegisterRequest) {
     return await this.authService.register(request);
+  }
+
+  @Post('/refresh')
+  @UseGuards(RefreshGuard)
+  async refresh(@Body() request: TJwtRequest) {
+    return await this.authService.refresh(request);
   }
 
   @Get('/google')
