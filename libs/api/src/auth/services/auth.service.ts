@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import * as schema from '../../common/models';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { eq } from 'drizzle-orm';
+import { eq, ilike } from 'drizzle-orm';
 import {
   TLoginRequest,
   TLoginResponse,
@@ -103,13 +103,24 @@ export class AuthService {
   async register(payload: TRegisterRequest): Promise<TRegisterResponse> {
     try {
       const { email, password, fullname } = payload;
-      const isEmailExist = await this.drizzle
-        .select({
-          id: schema.users.id,
-        })
-        .from(schema.users)
-        .where(eq(schema.users.email, email))
-        .then((res) => res.at(0));
+
+      const [isEmailExist, findRole] = await Promise.all([
+        this.drizzle
+          .select({
+            id: schema.users.id,
+          })
+          .from(schema.users)
+          .where(eq(schema.users.email, email))
+          .then((res) => res.at(0)),
+        this.drizzle
+          .select({
+            id: schema.roles.id,
+          })
+          .from(schema.roles)
+          .where(ilike(schema.roles.name, 'Ormawa'))
+          .then((res) => res.at(0)),
+      ]);
+
       if (isEmailExist) {
         throw new ConflictException('Email telah digunakan');
       }
@@ -117,6 +128,7 @@ export class AuthService {
         email,
         password: await encryptPassword(password),
         fullname,
+        roleId: findRole?.id,
       });
 
       return {
@@ -126,10 +138,11 @@ export class AuthService {
       throw new BadRequestException(error);
     }
   }
-  async googleLogin(payload: TGoogleRequest) {
+  async google(payload: TGoogleRequest) {
     try {
-      const { email } = payload;
-      const res = await this.drizzle
+      const { email, avatar, fullname } = payload;
+
+      let res = await this.drizzle
         .select({
           id: schema.users.id,
           fullname: schema.users.fullname,
@@ -146,7 +159,45 @@ export class AuthService {
         .then((res) => res.at(0));
 
       if (!res) {
-        throw new UnauthorizedException('Akun tidak ditemukan');
+        const [insertUser, findRole] = await Promise.all([
+          this.drizzle
+            .insert(schema.users)
+            .values({
+              email,
+              avatar,
+              fullname,
+            })
+            .returning({
+              id: schema.users.id,
+              fullname: schema.users.fullname,
+              email: schema.users.email,
+            })
+            .then((res) => res.at(0)),
+          this.drizzle
+            .select({
+              id: schema.roles.id,
+              name: schema.roles.name,
+              permissions: schema.roles.permissions,
+            })
+            .from(schema.roles)
+            .where(ilike(schema.roles.name, 'Ormawa'))
+            .then((res) => res.at(0)),
+        ]);
+
+        if (!insertUser || !findRole) {
+          throw new BadRequestException();
+        }
+
+        res = {
+          id: insertUser.id,
+          fullname: insertUser.fullname,
+          email: insertUser.email,
+          role: {
+            id: findRole.id,
+            name: findRole.name,
+            permissions: findRole.permissions,
+          },
+        };
       }
 
       const [accessToken, refreshToken, expired] = await Promise.all([
@@ -192,28 +243,6 @@ export class AuthService {
           },
         },
       };
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
-  }
-  async googleRegister(payload: TGoogleRequest) {
-    try {
-      const { email, avatar, fullname } = payload;
-      const isEmailExist = await this.drizzle
-        .select({
-          id: schema.users.id,
-        })
-        .from(schema.users)
-        .where(eq(schema.users.email, email as string))
-        .then((res) => res.at(0));
-      if (isEmailExist) {
-        throw new ConflictException('Email telah digunakan');
-      }
-      await this.drizzle.insert(schema.users).values({
-        email,
-        avatar,
-        fullname,
-      });
     } catch (error) {
       throw new BadRequestException(error);
     }

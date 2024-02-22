@@ -37,6 +37,7 @@
     "api:cms:e2e": "nx e2e api-cms-e2e",
     "api:db:generate": "drizzle-kit generate:pg",
     "api:db:push": "dotenv -e ./apps/api/backoffice/.env npx drizzle-kit push:pg",
+    "api:db:seed": "dotenv -e ./apps/api/backoffice/.env ts-node ./libs/api/src/common/models/seed.ts",
     "prepare": "husky install"
   },
   "private": true,
@@ -75,6 +76,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@nestjs/schematics": "^10.0.1",
     "@nestjs/testing": "^10.0.2",
     "@nx-tools/container-metadata": "^5.2.0",

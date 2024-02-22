@@ -17,15 +17,9 @@ export class AuthController {
     return await this.authService.register(request);
   }
 
-  @Post('/google/login')
+  @Post('/google')
   @UseGuards(GoogleGuard)
-  async googleLogin(@Request() request: THeaderRequest) {
-    return await this.authService.googleLogin(request.user);
-  }
-
-  @Post('/google/register')
-  @UseGuards(GoogleGuard)
-  async googleRegister(@Request() request: THeaderRequest) {
-    return await this.authService.googleRegister(request.user);
+  async google(@Request() request: THeaderRequest) {
+    return await this.authService.google(request.user);
   }
 }
