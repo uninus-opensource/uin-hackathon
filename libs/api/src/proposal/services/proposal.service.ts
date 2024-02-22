@@ -14,96 +14,76 @@ export class ProposalService {
     @Inject('drizzle') private drizzle: NodePgDatabase<typeof schema>
   ) {}
   async findOne() {
-    try {
-      const res = await this.drizzle
-        .select({
-          id: schema.proposals.id,
-        })
-        .from(schema.proposals)
+    const res = await this.drizzle
+      .select({
+        id: schema.proposals.id,
+      })
+      .from(schema.proposals)
 
-        .where(eq(schema.proposals.id, ''))
-        .then((res) => res.at(0));
+      .where(eq(schema.proposals.id, ''))
+      .then((res) => res.at(0));
 
-      if (!res) {
-        throw new NotFoundException('User tidak ditemukan');
-      }
-      return res;
-    } catch (error) {
-      throw new BadRequestException(error);
+    if (!res) {
+      throw new NotFoundException('User tidak ditemukan');
     }
+    return res;
   }
   async findMany() {
-    try {
-      const res = await this.drizzle
-        .select({
-          id: schema.proposals.id,
-        })
-        .from(schema.proposals);
+    const res = await this.drizzle
+      .select({
+        id: schema.proposals.id,
+      })
+      .from(schema.proposals);
 
-      if (!res) {
-        throw new NotFoundException('User tidak ditemukan');
-      }
-      return res;
-    } catch (error) {
-      throw new BadRequestException(error);
+    if (!res) {
+      throw new NotFoundException('User tidak ditemukan');
     }
+    return res;
   }
   async delete() {
-    try {
-      const res = await this.drizzle
-        .delete(schema.proposals)
-        .where(eq(schema.proposals.id, ''))
-        .returning({
-          id: schema.proposals.id,
-        })
-        .then((res) => res.at(0));
+    const res = await this.drizzle
+      .delete(schema.proposals)
+      .where(eq(schema.proposals.id, ''))
+      .returning({
+        id: schema.proposals.id,
+      })
+      .then((res) => res.at(0));
 
-      if (!res) {
-        throw new NotFoundException('User tidak ditemukan');
-      }
-      return res;
-    } catch (error) {
-      throw new BadRequestException(error);
+    if (!res) {
+      throw new NotFoundException('User tidak ditemukan');
     }
+    return res;
   }
   async update() {
-    try {
-      const res = await this.drizzle
-        .update(schema.proposals)
-        .set({
-          title: '',
-        })
-        .where(eq(schema.proposals.id, ''))
-        .returning({
-          id: schema.proposals.id,
-        })
-        .then((res) => res.at(0));
+    const res = await this.drizzle
+      .update(schema.proposals)
+      .set({
+        title: '',
+      })
+      .where(eq(schema.proposals.id, ''))
+      .returning({
+        id: schema.proposals.id,
+      })
+      .then((res) => res.at(0));
 
-      if (!res) {
-        throw new NotFoundException('User tidak ditemukan');
-      }
-      return res;
-    } catch (error) {
-      throw new BadRequestException(error);
+    if (!res) {
+      throw new NotFoundException('User tidak ditemukan');
     }
+    return res;
   }
   async create() {
-    try {
-      const res = await this.drizzle
-        .insert(schema.proposals)
-        .values({
-          title: '',
-        })
-        .returning({
-          id: schema.proposals.id,
-        })
-        .then((res) => res.at(0));
+    const res = await this.drizzle
+      .insert(schema.proposals)
+      .values({
+        title: '',
+      })
+      .returning({
+        id: schema.proposals.id,
+      })
+      .then((res) => res.at(0));
 
-      if (!res) {
-        throw new NotFoundException('User tidak ditemukan');
-      }
-    } catch (error) {
-      throw new BadRequestException(error);
+    if (!res) {
+      throw new NotFoundException('User tidak ditemukan');
     }
   }
 }
