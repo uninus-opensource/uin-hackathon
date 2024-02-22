@@ -103,7 +103,6 @@ export class AuthService {
   async register(payload: TRegisterRequest): Promise<TRegisterResponse> {
     try {
       const { email, password, fullname } = payload;
-
       const [isEmailExist, findRole] = await Promise.all([
         this.drizzle
           .select({
@@ -142,49 +141,50 @@ export class AuthService {
     try {
       const { email, avatar, fullname } = payload;
 
-      let res = await this.drizzle
-        .select({
-          id: schema.users.id,
-          fullname: schema.users.fullname,
-          email: schema.users.email,
-          role: {
-            id: schema.roles.id,
-            name: schema.roles.name,
-            permissions: schema.roles.permissions,
-          },
-        })
-        .from(schema.users)
-        .leftJoin(schema.roles, eq(schema.roles.id, schema.users.roleId))
-        .where(eq(schema.users.email, email as string))
-        .then((res) => res.at(0));
-
-      if (!res) {
-        const [insertUser, findRole] = await Promise.all([
-          this.drizzle
-            .insert(schema.users)
-            .values({
-              email,
-              avatar,
-              fullname,
-            })
-            .returning({
-              id: schema.users.id,
-              fullname: schema.users.fullname,
-              email: schema.users.email,
-            })
-            .then((res) => res.at(0)),
-          this.drizzle
-            .select({
+      // eslint-disable-next-line prefer-const
+      let [res, findRole] = await Promise.all([
+        this.drizzle
+          .select({
+            id: schema.users.id,
+            fullname: schema.users.fullname,
+            email: schema.users.email,
+            role: {
               id: schema.roles.id,
               name: schema.roles.name,
               permissions: schema.roles.permissions,
-            })
-            .from(schema.roles)
-            .where(ilike(schema.roles.name, 'Ormawa'))
-            .then((res) => res.at(0)),
-        ]);
+            },
+          })
+          .from(schema.users)
+          .leftJoin(schema.roles, eq(schema.roles.id, schema.users.roleId))
+          .where(eq(schema.users.email, email as string))
+          .then((res) => res.at(0)),
+        this.drizzle
+          .select({
+            id: schema.roles.id,
+            name: schema.roles.name,
+            permissions: schema.roles.permissions,
+          })
+          .from(schema.roles)
+          .where(ilike(schema.roles.name, 'Ormawa'))
+          .then((res) => res.at(0)),
+      ]);
+      if (!res) {
+        const insertUser = await this.drizzle
+          .insert(schema.users)
+          .values({
+            email,
+            avatar,
+            fullname,
+            roleId: findRole?.id,
+          })
+          .returning({
+            id: schema.users.id,
+            fullname: schema.users.fullname,
+            email: schema.users.email,
+          })
+          .then((res) => res.at(0));
 
-        if (!insertUser || !findRole) {
+        if (!insertUser) {
           throw new BadRequestException();
         }
 
@@ -193,9 +193,9 @@ export class AuthService {
           fullname: insertUser.fullname,
           email: insertUser.email,
           role: {
-            id: findRole.id,
-            name: findRole.name,
-            permissions: findRole.permissions,
+            id: findRole?.id as string,
+            name: findRole?.name as string,
+            permissions: findRole?.permissions || [],
           },
         };
       }

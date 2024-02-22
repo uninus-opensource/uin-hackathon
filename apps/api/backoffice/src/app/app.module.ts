@@ -8,6 +8,7 @@ import {
   DrizzleModule,
   AccessStrategy,
   RefreshStrategy,
+  GoogleStrategy,
 } from '@psu/api';
 
 @Module({
@@ -22,6 +23,6 @@ import {
     }),
   ],
   controllers: [],
-  providers: [AccessStrategy, RefreshStrategy],
+  providers: [AccessStrategy, RefreshStrategy, GoogleStrategy],
 })
 export class AppModule {}
