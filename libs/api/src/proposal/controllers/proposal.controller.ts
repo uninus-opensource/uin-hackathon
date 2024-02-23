@@ -1,9 +1,12 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
+  Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 
@@ -16,27 +19,27 @@ export class ProposalController {
   constructor(private readonly proposalService: ProposalService) {}
 
   @Get('/:id')
-  async findOne() {
-    return await this.proposalService.findOne();
+  async findOne(@Param('id') id: string) {
+    return await this.proposalService.findOne(id);
   }
 
   @Get()
-  async findMany() {
-    return await this.proposalService.findMany();
+  async findMany(@Query() request: any) {
+    return await this.proposalService.findMany(request);
   }
 
   @Delete('/:id')
-  async delete() {
-    return await this.proposalService.delete();
+  async delete(@Param('id') id: string) {
+    return await this.proposalService.delete(id);
   }
 
   @Patch('/:id')
-  async update() {
-    return await this.proposalService.update();
+  async update(@Param('id') id: string, @Body() data: any) {
+    return await this.proposalService.update({ id, ...data });
   }
 
   @Post()
-  async create() {
-    return await this.proposalService.create();
+  async create(@Body() data: any) {
+    return await this.proposalService.create(data);
   }
 }

@@ -9,3 +9,11 @@ export type TUser = {
     permissions: Array<string>;
   };
 };
+
+export type TUserRequest = {
+  id?: string;
+};
+
+export type TUserResponse = TUserRequest[];
+
+export type TUserSingleResponse = TUserRequest;

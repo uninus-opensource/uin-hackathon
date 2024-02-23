@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import * as schema from '../../common/models';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
@@ -13,7 +8,7 @@ export class UserService {
     @Inject('drizzle') private drizzle: NodePgDatabase<typeof schema>
   ) {}
 
-  async findOne() {
+  async findOne(id: string) {
     const res = await this.drizzle
       .select({
         id: schema.users.id,
@@ -21,7 +16,20 @@ export class UserService {
         email: schema.users.email,
         createdAt: schema.users.createdAt,
         updatedAt: schema.users.updatedAt,
+        faculty: {
+          id: schema.faculty.id,
+          name: schema.faculty.name,
+        },
+        department: {
+          id: schema.department.id,
+          name: schema.department.name,
+        },
+        organization: {
+          id: schema.organizations.id,
+          name: schema.organizations.name,
+        },
         role: {
+          id: schema.roles.id,
           name: schema.roles.name,
           permissions: schema.roles.permissions,
         },
@@ -32,7 +40,19 @@ export class UserService {
         schema.userAffiliations,
         eq(schema.userAffiliations.userId, schema.users.id)
       )
-      .where(eq(schema.users.id, ''))
+      .leftJoin(
+        schema.organizations,
+        eq(schema.userAffiliations.organizationId, schema.organizations.id)
+      )
+      .leftJoin(
+        schema.faculty,
+        eq(schema.userAffiliations.facultyId, schema.faculty.id)
+      )
+      .leftJoin(
+        schema.department,
+        eq(schema.userAffiliations.departmentId, schema.department.id)
+      )
+      .where(eq(schema.users.id, id))
       .then((res) => res.at(0));
 
     if (!res) {
@@ -40,7 +60,7 @@ export class UserService {
     }
     return res;
   }
-  async findMany() {
+  async findMany(data:any) {
     const res = await this.drizzle
       .select({
         id: schema.users.id,
@@ -48,7 +68,20 @@ export class UserService {
         email: schema.users.email,
         createdAt: schema.users.createdAt,
         updatedAt: schema.users.updatedAt,
+        faculty: {
+          id: schema.faculty.id,
+          name: schema.faculty.name,
+        },
+        department: {
+          id: schema.department.id,
+          name: schema.department.name,
+        },
+        organization: {
+          id: schema.organizations.id,
+          name: schema.organizations.name,
+        },
         role: {
+          id: schema.roles.id,
           name: schema.roles.name,
           permissions: schema.roles.permissions,
         },
@@ -58,6 +91,18 @@ export class UserService {
       .leftJoin(
         schema.userAffiliations,
         eq(schema.userAffiliations.userId, schema.users.id)
+      )
+      .leftJoin(
+        schema.organizations,
+        eq(schema.userAffiliations.organizationId, schema.organizations.id)
+      )
+      .leftJoin(
+        schema.faculty,
+        eq(schema.userAffiliations.facultyId, schema.faculty.id)
+      )
+      .leftJoin(
+        schema.department,
+        eq(schema.userAffiliations.departmentId, schema.department.id)
       );
 
     if (!res) {
@@ -65,10 +110,10 @@ export class UserService {
     }
     return res;
   }
-  async delete() {
+  async delete(id: string) {
     const res = await this.drizzle
       .delete(schema.users)
-      .where(eq(schema.users.id, ''))
+      .where(eq(schema.users.id, id))
       .returning({
         id: schema.users.id,
       })
@@ -79,13 +124,12 @@ export class UserService {
     }
     return res;
   }
-  async update() {
+  async update(data: any) {
+    const { id, ...resData } = data;
     const res = await this.drizzle
       .update(schema.users)
-      .set({
-        email: '',
-      })
-      .where(eq(schema.users.id, ''))
+      .set(resData)
+      .where(eq(schema.users.id, id))
       .returning({
         id: schema.users.id,
       })
@@ -96,13 +140,10 @@ export class UserService {
     }
     return res;
   }
-  async create() {
+  async create(data: any) {
     const res = await this.drizzle
       .insert(schema.users)
-      .values({
-        email: '3432432',
-        roleId: '',
-      })
+      .values(data)
       .returning({
         id: schema.users.id,
       })

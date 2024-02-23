@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import * as schema from '../../common/models';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
@@ -13,14 +8,14 @@ export class ProposalService {
   constructor(
     @Inject('drizzle') private drizzle: NodePgDatabase<typeof schema>
   ) {}
-  async findOne() {
+  async findOne(id: string) {
     const res = await this.drizzle
       .select({
         id: schema.proposals.id,
       })
       .from(schema.proposals)
 
-      .where(eq(schema.proposals.id, ''))
+      .where(eq(schema.proposals.id, id))
       .then((res) => res.at(0));
 
     if (!res) {
@@ -28,7 +23,7 @@ export class ProposalService {
     }
     return res;
   }
-  async findMany() {
+  async findMany(data: any) {
     const res = await this.drizzle
       .select({
         id: schema.proposals.id,
@@ -40,10 +35,10 @@ export class ProposalService {
     }
     return res;
   }
-  async delete() {
+  async delete(id: string) {
     const res = await this.drizzle
       .delete(schema.proposals)
-      .where(eq(schema.proposals.id, ''))
+      .where(eq(schema.proposals.id, id))
       .returning({
         id: schema.proposals.id,
       })
@@ -54,13 +49,12 @@ export class ProposalService {
     }
     return res;
   }
-  async update() {
+  async update(data: any) {
+    const { id, ...resData } = data;
     const res = await this.drizzle
       .update(schema.proposals)
-      .set({
-        title: '',
-      })
-      .where(eq(schema.proposals.id, ''))
+      .set(resData)
+      .where(eq(schema.proposals.id, id))
       .returning({
         id: schema.proposals.id,
       })
@@ -71,12 +65,10 @@ export class ProposalService {
     }
     return res;
   }
-  async create() {
+  async create(data: any) {
     const res = await this.drizzle
       .insert(schema.proposals)
-      .values({
-        title: '',
-      })
+      .values(data)
       .returning({
         id: schema.proposals.id,
       })

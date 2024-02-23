@@ -14,14 +14,14 @@ export class ActivityService {
     @Inject('drizzle') private drizzle: NodePgDatabase<typeof schema>
   ) {}
 
-  async findOne() {
+  async findOne(id: string) {
     const res = await this.drizzle
       .select({
         id: schema.activities.id,
       })
       .from(schema.activities)
 
-      .where(eq(schema.activities.id, ''))
+      .where(eq(schema.activities.id, id))
       .then((res) => res.at(0));
 
     if (!res) {
@@ -29,7 +29,7 @@ export class ActivityService {
     }
     return res;
   }
-  async findMany() {
+  async findMany(data: any) {
     const res = await this.drizzle
       .select({
         id: schema.activities.id,
@@ -41,10 +41,10 @@ export class ActivityService {
     }
     return res;
   }
-  async delete() {
+  async delete(id: string) {
     const res = await this.drizzle
       .delete(schema.activities)
-      .where(eq(schema.activities.id, ''))
+      .where(eq(schema.activities.id, id))
       .returning({
         id: schema.activities.id,
       })
@@ -55,13 +55,12 @@ export class ActivityService {
     }
     return res;
   }
-  async update() {
+  async update(data: any) {
+    const { id, ...resdata } = data;
     const res = await this.drizzle
       .update(schema.activities)
-      .set({
-        name: '',
-      })
-      .where(eq(schema.activities.id, ''))
+      .set(resdata)
+      .where(eq(schema.activities.id, id))
       .returning({
         id: schema.activities.id,
       })
@@ -72,12 +71,10 @@ export class ActivityService {
     }
     return res;
   }
-  async create() {
+  async create(data: any) {
     const res = await this.drizzle
       .insert(schema.activities)
-      .values({
-        name: 'test',
-      })
+      .values(data)
       .returning({
         id: schema.activities.id,
       })

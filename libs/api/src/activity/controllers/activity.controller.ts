@@ -1,9 +1,12 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
+  Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ActivityService } from '../services';
@@ -15,27 +18,27 @@ export class ActivityController {
   constructor(private readonly activityService: ActivityService) {}
 
   @Get('/:id')
-  async findOne() {
-    return await this.activityService.findOne();
+  async findOne(@Param('id') id: string) {
+    return await this.activityService.findOne(id);
   }
 
   @Get()
-  async findMany() {
-    return await this.activityService.findMany();
+  async findMany(@Query() request: any) {
+    return await this.activityService.findMany(request);
   }
 
   @Delete('/:id')
-  async delete() {
-    return await this.activityService.delete();
+  async delete(@Param('id') id: string) {
+    return await this.activityService.delete(id);
   }
 
   @Patch('/:id')
-  async update() {
-    return await this.activityService.update();
+  async update(@Param('id') id: string, @Body() data: any) {
+    return await this.activityService.update({ id, ...data });
   }
 
   @Post()
-  async create() {
-    return await this.activityService.create();
+  async create(@Body() data: any) {
+    return await this.activityService.create(data);
   }
 }
