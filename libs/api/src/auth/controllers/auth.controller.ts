@@ -31,8 +31,8 @@ export class AuthController {
 
   @Post('/refresh')
   @UseGuards(RefreshGuard)
-  async refresh(@Body() request: TJwtRequest) {
-    return await this.authService.refresh(request);
+  async refresh(@Request() request: THeaderRequest) {
+    return await this.authService.refresh(request.user);
   }
 
   @Get('/google')
