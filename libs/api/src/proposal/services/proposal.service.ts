@@ -33,7 +33,17 @@ export class ProposalService {
     if (!res) {
       throw new NotFoundException('User tidak ditemukan');
     }
-    return res;
+    return {
+      data: res,
+      meta: {
+        total: 0,
+        lastPage: 0,
+        currentPage: 0,
+        perPage: 0,
+        prev: null,
+        next: null,
+      },
+    };
   }
   async delete(id: string) {
     const res = await this.drizzle
@@ -47,7 +57,10 @@ export class ProposalService {
     if (!res) {
       throw new NotFoundException('User tidak ditemukan');
     }
-    return res;
+    return {
+      message: 'Berhasil menghapus proposal',
+      data: res,
+    };
   }
   async update(data: any) {
     const { id, ...resData } = data;
@@ -63,7 +76,10 @@ export class ProposalService {
     if (!res) {
       throw new NotFoundException('User tidak ditemukan');
     }
-    return res;
+    return {
+      message: 'Berhasil update proposal',
+      data: res,
+    };
   }
   async create(data: any) {
     const res = await this.drizzle
@@ -77,5 +93,9 @@ export class ProposalService {
     if (!res) {
       throw new NotFoundException('User tidak ditemukan');
     }
+    return {
+      message: 'Berhasil delete proposal',
+      data: res,
+    };
   }
 }

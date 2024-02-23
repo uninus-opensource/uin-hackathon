@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from '../services';
 import { AccessGuard } from '../../common';
-import { THeaderRequest } from '@psu/entities';
+import { THeaderRequest, TUserRequest } from '@psu/entities';
 
 @Controller('user')
 @UseGuards(AccessGuard)
@@ -51,12 +51,12 @@ export class UserController {
   }
 
   @Patch('/:id')
-  async update(@Param('id') id: string, @Body() data: any) {
+  async update(@Param('id') id: string, @Body() data: TUserRequest) {
     return await this.userService.update({ id, ...data });
   }
 
   @Post()
-  async create(@Body() data: any) {
+  async create(@Body() data: TUserRequest) {
     return await this.userService.create(data);
   }
 }

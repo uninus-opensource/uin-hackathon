@@ -1,3 +1,5 @@
+// import { users } from '@psu/api/';
+import { TMetaResponse } from './meta.type';
 export type TUser = {
   id: string;
   fullname: string;
@@ -12,8 +14,10 @@ export type TUser = {
 
 export type TUserRequest = {
   id?: string;
+  fullname: string;
+  image?: string;
+  email: string;
 };
+export type TUserResponse = TMetaResponse<TUserRequest[]>;
 
-export type TUserResponse = TUserRequest[];
-
-export type TUserSingleResponse = TUserRequest;
+export type TUserSingleResponse = TMetaResponse<TUserRequest>;

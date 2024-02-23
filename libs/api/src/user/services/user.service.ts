@@ -2,6 +2,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import * as schema from '../../common/models';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
+import { TUserRequest } from '@psu/entities';
 @Injectable()
 export class UserService {
   constructor(
@@ -60,7 +61,7 @@ export class UserService {
     }
     return res;
   }
-  async findMany(data:any) {
+  async findMany(data: any) {
     const res = await this.drizzle
       .select({
         id: schema.users.id,
@@ -108,7 +109,17 @@ export class UserService {
     if (!res) {
       throw new NotFoundException('User tidak ditemukan');
     }
-    return res;
+    return {
+      data: res,
+      meta: {
+        total: 0,
+        lastPage: 0,
+        currentPage: 0,
+        perPage: 0,
+        prev: null,
+        next: null,
+      },
+    };
   }
   async delete(id: string) {
     const res = await this.drizzle
@@ -116,42 +127,57 @@ export class UserService {
       .where(eq(schema.users.id, id))
       .returning({
         id: schema.users.id,
+        fullname: schema.users.fullname,
+        email: schema.users.email,
       })
       .then((res) => res.at(0));
 
     if (!res) {
       throw new NotFoundException('User tidak ditemukan');
     }
-    return res;
+    return {
+      message: 'Berhasil menghapus user',
+      data: res,
+    };
   }
-  async update(data: any) {
+  async update(data: TUserRequest) {
     const { id, ...resData } = data;
     const res = await this.drizzle
       .update(schema.users)
       .set(resData)
-      .where(eq(schema.users.id, id))
+      .where(eq(schema.users.id, id as string))
       .returning({
         id: schema.users.id,
+        fullname: schema.users.fullname,
+        email: schema.users.email,
       })
       .then((res) => res.at(0));
 
     if (!res) {
       throw new NotFoundException('User tidak ditemukan');
     }
-    return res;
+    return {
+      message: 'Berhasil update user',
+      data: res,
+    };
   }
-  async create(data: any) {
+  async create(data: TUserRequest) {
     const res = await this.drizzle
       .insert(schema.users)
       .values(data)
       .returning({
         id: schema.users.id,
+        fullname: schema.users.fullname,
+        email: schema.users.email,
       })
       .then((res) => res.at(0));
 
     if (!res) {
       throw new NotFoundException('User tidak ditemukan');
     }
-    return res;
+    return {
+      message: 'Berhasil menambahkan user',
+      data: res,
+    };
   }
 }

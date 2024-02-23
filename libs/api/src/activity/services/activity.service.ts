@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import * as schema from '../../common/models';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
@@ -39,7 +34,17 @@ export class ActivityService {
     if (!res) {
       throw new NotFoundException('User tidak ditemukan');
     }
-    return res;
+    return {
+      data: res,
+      meta: {
+        total: 0,
+        lastPage: 0,
+        currentPage: 0,
+        perPage: 0,
+        prev: null,
+        next: null,
+      },
+    };
   }
   async delete(id: string) {
     const res = await this.drizzle
@@ -53,7 +58,10 @@ export class ActivityService {
     if (!res) {
       throw new NotFoundException('User tidak ditemukan');
     }
-    return res;
+    return {
+      message: 'Berhasil menghapus kegiatan',
+      data: res,
+    };
   }
   async update(data: any) {
     const { id, ...resdata } = data;
@@ -69,7 +77,10 @@ export class ActivityService {
     if (!res) {
       throw new NotFoundException('User tidak ditemukan');
     }
-    return res;
+    return {
+      message: 'Berhasil update kegiatan',
+      data: res,
+    };
   }
   async create(data: any) {
     const res = await this.drizzle
@@ -83,5 +94,9 @@ export class ActivityService {
     if (!res) {
       throw new NotFoundException('User tidak ditemukan');
     }
+    return {
+      message: 'Berhasil menambahkan kegiatan',
+      data: res,
+    };
   }
 }
