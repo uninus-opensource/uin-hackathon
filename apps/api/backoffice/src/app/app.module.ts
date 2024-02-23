@@ -1,16 +1,28 @@
 import { Module } from '@nestjs/common';
-
+import { PassportModule } from '@nestjs/passport';
 import {
   ActivityModule,
   AuthModule,
   ProposalModule,
-  TrpcModule,
   UserModule,
+  DrizzleModule,
+  AccessStrategy,
+  RefreshStrategy,
+  GoogleStrategy,
 } from '@psu/api';
 
 @Module({
-  imports: [ActivityModule, AuthModule, ProposalModule, TrpcModule, UserModule],
+  imports: [
+    ActivityModule,
+    AuthModule,
+    ProposalModule,
+    UserModule,
+    DrizzleModule,
+    PassportModule.register({
+      defaultStrategy: 'access',
+    }),
+  ],
   controllers: [],
-  providers: [],
+  providers: [AccessStrategy, RefreshStrategy, GoogleStrategy],
 })
 export class AppModule {}

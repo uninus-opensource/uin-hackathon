@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-
 import { ActivityService } from '../services';
 import { ActivityController } from '../controllers';
 

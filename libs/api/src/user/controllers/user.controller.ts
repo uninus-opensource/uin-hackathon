@@ -8,6 +8,6 @@ export class UserController {
 
   @Get()
   getData() {
-    return this.userService.getData();
+    return;
   }
 }
