@@ -44,10 +44,3 @@ export type TGoogleRequest = {
   avatar?: string;
   email: string;
 };
-
-export type THeaderRequest = {
-  user: TJwtRequest & {
-    fullname?: string;
-    avatar?: string;
-  };
-};

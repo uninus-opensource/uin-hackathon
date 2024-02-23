@@ -1,7 +1,7 @@
 export type TMetaResponse<T = null | undefined> = {
   message?: string;
   data?: T;
-  meta: {
+  meta?: {
     total: number;
     lastPage: number;
     currentPage: number;

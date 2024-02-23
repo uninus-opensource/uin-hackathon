@@ -12,7 +12,11 @@ import {
 } from '@nestjs/common';
 import { UserService } from '../services';
 import { AccessGuard } from '../../common';
-import { THeaderRequest, TUserRequest } from '@psu/entities';
+import {
+  THeaderRequest,
+  TPaginationRequest,
+  TUserRequest,
+} from '@psu/entities';
 
 @Controller('user')
 @UseGuards(AccessGuard)
@@ -28,7 +32,10 @@ export class UserController {
   }
 
   @Patch('/me')
-  async updateProfile(@Request() request: THeaderRequest, @Body() data: any) {
+  async updateProfile(
+    @Request() request: THeaderRequest,
+    @Body() data: TUserRequest
+  ) {
     const {
       user: { sub: id },
     } = request;
@@ -41,7 +48,7 @@ export class UserController {
   }
 
   @Get()
-  async findMany(@Query() request: any) {
+  async findMany(@Query() request: TPaginationRequest) {
     return await this.userService.findMany(request);
   }
 

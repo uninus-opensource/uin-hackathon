@@ -14,9 +14,10 @@ export type TUser = {
 
 export type TUserRequest = {
   id?: string;
-  fullname: string;
-  image?: string;
-  email: string;
+  fullname: string | null;
+  email?: string;
+  roleId?: string;
+  avatar?: string;
 };
 export type TUserResponse = TMetaResponse<TUserRequest[]>;
 

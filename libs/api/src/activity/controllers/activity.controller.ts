@@ -12,7 +12,7 @@ import {
 import { ActivityService } from '../services';
 import { AccessGuard } from '../../common';
 
-@Controller()
+@Controller('activity')
 @UseGuards(AccessGuard)
 export class ActivityController {
   constructor(private readonly activityService: ActivityService) {}
