@@ -3,18 +3,53 @@ import {
   pgTable,
   text,
   primaryKey,
-  boolean,
+  pgEnum,
   uuid,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+export const activityStatusEnum = pgEnum('activityStatus', [
+  'Requested',
+  'Completed',
+  'Not Reported',
+  'Rejected by Vice Dean',
+  'Rejected by Vice Chancellor',
+  'Rejected by Head Department',
+  'Rejected by Student Government',
+  'Rejected by Student Council',
+  'Approved by Vice Dean',
+  'Approved by Vice Chancellor',
+  'Approved by Head Department',
+  'Approved by Student Government',
+  'Approved by Student Council',
+]);
+
+export const reviewStatusEnum = pgEnum('reviewStatus', [
+  'Rejected by Vice Dean',
+  'Rejected by Vice Chancellor',
+  'Rejected by Head Department',
+  'Rejected by Student Government',
+  'Rejected by Student Council',
+  'Approved by Vice Dean',
+  'Approved by Vice Chancellor',
+  'Approved by Head Department',
+  'Approved by Student Government',
+  'Approved by Student Council',
+]);
+
+export const organizationTypeEnum = pgEnum('organizationType', [
+  'Ormawa',
+  'UKM',
+]);
 
 export const users = pgTable('users', {
   id: uuid('id').defaultRandom().primaryKey(),
-  fullname: text('fullname'),
+  fullname: text('fullname').notNull(),
   email: text('email').notNull(),
   avatar: text('avatar'),
   password: text('password'),
-  roleId: uuid('role_id').references(() => roles.id),
+  roleId: uuid('role_id')
+    .notNull()
+    .references(() => roles.id),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
@@ -27,7 +62,7 @@ export const roles = pgTable('roles', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
 
-export const userAffiliations = pgTable(
+export const additional = pgTable(
   'user_affiliations',
   {
     userId: uuid('userId')
@@ -39,41 +74,46 @@ export const userAffiliations = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
   },
-  (affiliations) => ({
-    compoundKey: primaryKey({
-      columns: [affiliations.userId, affiliations.organizationId],
-    }),
-  })
+  (table) => {
+    return {
+      organization: primaryKey({
+        columns: [table.userId, table.organizationId],
+      }),
+      faculty: primaryKey({
+        name: 'faculty',
+        columns: [table.userId, table.facultyId],
+      }),
+      department: primaryKey({
+        name: 'department',
+        columns: [table.userId, table.departmentId],
+      }),
+    };
+  }
 );
 
 export const activities = pgTable('activities', {
   id: uuid('id').defaultRandom().primaryKey(),
-  name: text('name'),
-  description: text('description'),
-  location: text('location'),
-  startDate: timestamp('start_date', { withTimezone: true }),
-  endDate: timestamp('end_date', { withTimezone: true }),
-  budget: text('budget'),
-  applicantId: uuid('applicant_id').references(() => users.id),
+  name: text('name').notNull(),
+  lead: text('lead').notNull(),
+  proposal: text('proposal').notNull(),
+  description: text('description').notNull(),
+  location: text('location').notNull(),
+  startDate: timestamp('start_date', { withTimezone: true }).notNull(),
+  endDate: timestamp('end_date', { withTimezone: true }).notNull(),
+  budget: text('budget').notNull(),
+  applicantId: uuid('applicant_id')
+    .notNull()
+    .references(() => users.id),
+  status: activityStatusEnum('activityStatus').default('Requested'),
+  reviewers: text('reviewers').array(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
 
 export const organizations = pgTable('organizations', {
   id: uuid('id').defaultRandom().primaryKey(),
-  name: text('name'),
-  facultyId: uuid('faculty_id').references(() => faculty.id),
-  departmentId: uuid('department_id').references(() => department.id),
-  organizationLevelId: uuid('organization_level_id').references(
-    () => organizationLevel.id
-  ),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
-});
-
-export const organizationLevel = pgTable('organization_level', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  name: text('name'),
+  name: text('name').notNull(),
+  organizationType: organizationTypeEnum('organizationType'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
@@ -95,15 +135,20 @@ export const department = pgTable('department', {
 
 export const reviews = pgTable('reviews', {
   id: uuid('id').defaultRandom().primaryKey(),
-  reviewerId: uuid('reviewer_id').references(() => users.id),
-  isApproved: boolean('is_approved'),
-  commenst: text('commenst'),
+  reviewerId: uuid('reviewer_id')
+    .notNull()
+    .references(() => users.id),
+  activityId: uuid('activity_id')
+    .notNull()
+    .references(() => activities.id),
+  note: text('note'),
+  status: reviewStatusEnum('reviewStatus'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
 
 export const usersRelations = relations(users, ({ one }) => ({
-  userAffiliations: one(userAffiliations),
+  additional: one(additional),
   roles: one(roles, {
     fields: [users.roleId],
     references: [roles.id],
@@ -115,23 +160,20 @@ export const rolesRelations = relations(roles, ({ many }) => ({
 }));
 
 //Informasi tambahan user, untuk role Wakil Dekan, Ketua Prodi dan ormawa
-export const userAffiliationsRelations = relations(
-  userAffiliations,
-  ({ one }) => ({
-    faculty: one(faculty, {
-      fields: [userAffiliations.facultyId],
-      references: [faculty.id],
-    }),
-    department: one(department, {
-      fields: [userAffiliations.departmentId],
-      references: [department.id],
-    }),
-    organization: one(organizations, {
-      fields: [userAffiliations.organizationId],
-      references: [organizations.id],
-    }),
-  })
-);
+export const additionalRelations = relations(additional, ({ one }) => ({
+  faculty: one(faculty, {
+    fields: [additional.facultyId],
+    references: [faculty.id],
+  }),
+  department: one(department, {
+    fields: [additional.departmentId],
+    references: [department.id],
+  }),
+  organization: one(organizations, {
+    fields: [additional.organizationId],
+    references: [organizations.id],
+  }),
+}));
 
 //Table kegiatan berelasi dengan user(pemohon) serta proposal (one to many)
 export const activitiesRelations = relations(activities, ({ one, many }) => ({
@@ -141,38 +183,13 @@ export const activitiesRelations = relations(activities, ({ one, many }) => ({
   }),
 }));
 
-//Memuat relasi fakultas dan departmen(untuk ormawa himpunan dan senat/bem), serta terdapat organization level(universitas,fakultas, prodi)
-export const organizationsRelations = relations(organizations, ({ one }) => ({
-  faculty: one(faculty, {
-    fields: [organizations.facultyId],
-    references: [faculty.id],
-  }),
-  department: one(department, {
-    fields: [organizations.departmentId],
-    references: [department.id],
-  }),
-  organizationLevel: one(organizationLevel, {
-    fields: [organizations.organizationLevelId],
-    references: [organizationLevel.id],
-  }),
-}));
-// Memiliki relasi terhadap table organization(one to many)
-export const organizationLevelRelations = relations(
-  organizationLevel,
-  ({ many }) => ({
-    organization: many(organizations),
-  })
-);
-
-//Memiliki relasi ke table organization (ormawa senat/bem) serta userAffiliations(untuk role Wakil Dekan, Ketua Prodi dan ormawa)
+//Memiliki relasi ke table organization (ormawa senat/bem) serta additional(untuk role Wakil Dekan, Ketua Prodi dan ormawa)
 export const facultyRelations = relations(faculty, ({ many }) => ({
-  userAffiliations: many(userAffiliations),
-  organizations: many(organizations),
+  additional: many(additional),
 }));
-//Memiliki relasi ke table organization (ormawa himpunan), fakultas serta userAffiliations(untuk role Wakil Dekan, Ketua Prodi dan ormawa)
+//Memiliki relasi ke table organization (ormawa himpunan), fakultas serta additional(untuk role Wakil Dekan, Ketua Prodi dan ormawa)
 export const departmentRelations = relations(department, ({ many, one }) => ({
-  userAffiliations: many(userAffiliations),
-  organizations: many(organizations),
+  additional: many(additional),
   faculty: one(faculty, {
     fields: [department.facultyId],
     references: [faculty.id],
@@ -185,48 +202,8 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
     fields: [reviews.reviewerId],
     references: [users.id],
   }),
+  activity: one(activities, {
+    fields: [reviews.activityId],
+    references: [activities.id],
+  }),
 }));
-
-// export const accounts = pgTable(
-//   'account',
-//   {
-//     userId: text('userId')
-//       .notNull()
-//       .references(() => users.id, { onDelete: 'cascade' }),
-//     type: text('type').notNull(),
-//     provider: text('provider').notNull(),
-//     providerAccountId: text('providerAccountId').notNull(),
-//     refresh_token: text('refresh_token'),
-//     access_token: text('access_token'),
-//     expires_at: uuid('expires_at'),
-//     token_type: text('token_type'),
-//     scope: text('scope'),
-//     id_token: text('id_token'),
-//     session_state: text('session_state'),
-//   },
-//   (account) => ({
-//     compoundKey: primaryKey({
-//       columns: [account.provider, account.providerAccountId],
-//     }),
-//   })
-// );
-
-// export const sessions = pgTable('session', {
-//   sessionToken: text('sessionToken').notNull().primaryKey(),
-//   userId: text('userId')
-//     .notNull()
-//     .references(() => users.id, { onDelete: 'cascade' }),
-//   expires: timestamp('expires', { mode: 'date' }).notNull(),
-// });
-
-// export const verificationTokens = pgTable(
-//   'verificationToken',
-//   {
-//     identifier: text('identifier').notNull(),
-//     token: text('token').notNull(),
-//     expires: timestamp('expires', { mode: 'date' }).notNull(),
-//   },
-//   (vt) => ({
-//     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
-//   })
-// );

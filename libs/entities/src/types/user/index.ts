@@ -17,6 +17,7 @@ export type TUserRequest = {
   email?: string;
   roleId?: string;
   avatar?: string;
+  password?: string;
 };
 export type TUserResponse = TMetaResponse<TUserRequest[]>;
 

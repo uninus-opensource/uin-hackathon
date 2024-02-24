@@ -9,6 +9,7 @@ import {
   TUserResponse,
   TUserSingleResponse,
 } from '@psu/entities';
+import { encryptPassword } from '../../common';
 @Injectable()
 export class UserService {
   constructor(
@@ -44,20 +45,20 @@ export class UserService {
       .from(schema.users)
       .leftJoin(schema.roles, eq(schema.roles.id, schema.users.roleId))
       .leftJoin(
-        schema.userAffiliations,
-        eq(schema.userAffiliations.userId, schema.users.id)
+        schema.additional,
+        eq(schema.additional.userId, schema.users.id)
       )
       .leftJoin(
         schema.organizations,
-        eq(schema.userAffiliations.organizationId, schema.organizations.id)
+        eq(schema.additional.organizationId, schema.organizations.id)
       )
       .leftJoin(
         schema.faculty,
-        eq(schema.userAffiliations.facultyId, schema.faculty.id)
+        eq(schema.additional.facultyId, schema.faculty.id)
       )
       .leftJoin(
         schema.department,
-        eq(schema.userAffiliations.departmentId, schema.department.id)
+        eq(schema.additional.departmentId, schema.department.id)
       )
       .where(eq(schema.users.id, id))
       .then((res) => res.at(0));
@@ -102,20 +103,20 @@ export class UserService {
         .from(schema.users)
         .leftJoin(schema.roles, eq(schema.roles.id, schema.users.roleId))
         .leftJoin(
-          schema.userAffiliations,
-          eq(schema.userAffiliations.userId, schema.users.id)
+          schema.additional,
+          eq(schema.additional.userId, schema.users.id)
         )
         .leftJoin(
           schema.organizations,
-          eq(schema.userAffiliations.organizationId, schema.organizations.id)
+          eq(schema.additional.organizationId, schema.organizations.id)
         )
         .leftJoin(
           schema.faculty,
-          eq(schema.userAffiliations.facultyId, schema.faculty.id)
+          eq(schema.additional.facultyId, schema.faculty.id)
         )
         .leftJoin(
           schema.department,
-          eq(schema.userAffiliations.departmentId, schema.department.id)
+          eq(schema.additional.departmentId, schema.department.id)
         )
         .where(
           and(...(search ? [ilike(schema.users.fullname, `%${search}%`)] : []))
@@ -171,11 +172,17 @@ export class UserService {
     };
   }
   async update(data: TUserRequest): Promise<TUserSingleResponse> {
-    const { id, ...resData } = data;
     const res = await this.drizzle
       .update(schema.users)
-      .set(resData)
-      .where(eq(schema.users.id, id as string))
+      .set({
+        fullname: data.fullname as string,
+        email: data.email as string,
+        roleId: data.roleId as string,
+        avatar: data.avatar,
+        password: await encryptPassword(data.password as string),
+        updatedAt: new Date(),
+      })
+      .where(eq(schema.users.id, data.id as string))
       .returning({
         id: schema.users.id,
         fullname: schema.users.fullname,
@@ -195,10 +202,11 @@ export class UserService {
     const res = await this.drizzle
       .insert(schema.users)
       .values({
-        fullname: data.fullname,
+        fullname: data.fullname as string,
         email: data.email as string,
-        roleId: data.roleId,
+        roleId: data.roleId as string,
         avatar: data.avatar,
+        password: await encryptPassword(data.password as string),
       })
       .returning({
         id: schema.users.id,

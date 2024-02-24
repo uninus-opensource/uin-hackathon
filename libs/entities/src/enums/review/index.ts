@@ -1,7 +1,4 @@
-export enum EActivityStatus {
-  REQUESTED = 'Requested',
-  COMPLETED = 'Completed',
-  NOTREPORTED = 'Not Reported',
+export enum EReviewStatus {
   REJECTEDBYDEAN = 'Rejected by Vice Dean',
   REJECTEDBYCHANCELLOR = 'Rejected by Vice Chancellor',
   REJECTEDBYDEPARTMENT = 'Rejected by Head Department',
@@ -14,10 +11,7 @@ export enum EActivityStatus {
   APPROVEDBYSTUDENTCOUNCIL = 'Approved by Student Council',
 }
 
-export enum EActivityStatusTranslation {
-  REQUESTED = 'Sedang diajukan',
-  COMPLETED = 'Seleai',
-  NOTREPORTED = 'Belum melaporkan',
+export enum EReviewStatusTranslation {
   REJECTEDBYDEAN = 'Ditolak oleh Wakil Dekan',
   REJECTEDBYCHANCELLOR = 'Ditolak oleh Wakil Rektor',
   REJECTEDBYDEPARTMENT = 'Ditolak oleh Kaprodi',
