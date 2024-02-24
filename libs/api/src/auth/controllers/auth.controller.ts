@@ -7,12 +7,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from '../services';
-import {
-  TLoginRequest,
-  TRegisterRequest,
-  THeaderRequest,
-  TJwtRequest,
-} from '@psu/entities';
+import { TLoginRequest, TRegisterRequest, THeaderRequest } from '@psu/entities';
 import { GoogleGuard, RefreshGuard } from '../../common/guards';
 
 @Controller('auth')
