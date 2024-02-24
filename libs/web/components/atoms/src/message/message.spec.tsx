@@ -11,19 +11,19 @@ describe('Testing Message component', () => {
 
   it('applies the correct styles based on status prop', () => {
     const { container, rerender } = render(
-      <Message status="none">Test Message</Message>
+      <Message status="default">Test Message</Message>
     );
 
-    expect(container.firstChild).toHaveClass('text-gray-400');
+    expect(container.firstChild).toHaveClass('text-grey');
 
     rerender(<Message status="error">Test Message</Message>);
-    expect(container.firstChild).toHaveClass('text-red-400');
+    expect(container.firstChild).toHaveClass('text-error');
 
     rerender(<Message status="success">Test Message</Message>);
-    expect(container.firstChild).toHaveClass('text-green-400');
+    expect(container.firstChild).toHaveClass('text-success');
 
     rerender(<Message status="warning">Test Message</Message>);
-    expect(container.firstChild).toHaveClass('text-yellow-400');
+    expect(container.firstChild).toHaveClass('text-warning');
   });
 
   it('applies additional classes passed in the className prop', () => {

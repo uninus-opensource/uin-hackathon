@@ -22,17 +22,33 @@ export const InputCheckbox: FC<TInputSpecial> = ({
       'h-6 w-6 before:h-12 before:w-12': size === 'lg',
     }
   );
+
+  const iconClassName = clsx(
+    'absolute text-white transition-opacity opacity-0 pointer-events-none peer-checked:opacity-100',
+    {
+      'left-[1px]': size === 'sm',
+      'left-[2px]': size === 'md',
+      'left-[3px]': size === 'lg',
+    }
+  );
+
+  const svgClassName = clsx({
+    'h-3 w-3': size === 'sm',
+    'h-4 w-4': size === 'md',
+    'h-5 w-5': size === 'lg',
+  });
+
   return (
     <div className="inline-flex items-center">
       <label
-        className="relative flex items-center p-3 rounded-full cursor-pointer"
+        className="relative flex items-center py-3 pr-2 rounded-full cursor-pointer"
         htmlFor="check"
       >
         <input {...props} type="checkbox" className={className} id={id} />
-        <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+        <span className={iconClassName}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-3.5 w-3.5"
+            className={svgClassName}
             viewBox="0 0 20 20"
             fill="currentColor"
             stroke="currentColor"

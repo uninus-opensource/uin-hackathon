@@ -89,6 +89,12 @@ export type TButton = DetailedHTMLProps<
   state?: TState;
 };
 
+export type TInputMolecule = {
+  label?: string;
+  message?: string;
+  text?: string;
+};
+
 export type TLabel = LabelHTMLAttributes<HTMLLabelElement> & {
   required?: boolean;
   disabled?: boolean;

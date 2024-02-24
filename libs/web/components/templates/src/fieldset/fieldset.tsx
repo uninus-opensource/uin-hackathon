@@ -8,7 +8,7 @@ export const Fieldset: FC<TFieldSet> = (props): ReactElement => {
 
   const inputType = match(props.type)
     .with('checkbox', () => (
-      <section className="flex flex-col gap-y-2">
+      <section className="flex flex-col">
         {props?.label && (
           <Label
             htmlFor={props.name}
@@ -19,7 +19,7 @@ export const Fieldset: FC<TFieldSet> = (props): ReactElement => {
             {props.label}
           </Label>
         )}
-        <section className="flex gap-x-2">
+        <section className="flex items-center">
           {props.children}
           {props?.text && (
             <Label
