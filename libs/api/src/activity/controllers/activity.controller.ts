@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { ActivityService } from '../services';
 import { AccessGuard } from '../../common';
+import { TActivityRequest, TPaginationRequest } from '@psu/entities';
 
 @Controller('activity')
 @UseGuards(AccessGuard)
@@ -23,7 +24,7 @@ export class ActivityController {
   }
 
   @Get()
-  async findMany(@Query() request: any) {
+  async findMany(@Query() request: TPaginationRequest) {
     return await this.activityService.findMany(request);
   }
 
@@ -33,12 +34,12 @@ export class ActivityController {
   }
 
   @Patch('/:id')
-  async update(@Param('id') id: string, @Body() data: any) {
+  async update(@Param('id') id: string, @Body() data: TActivityRequest) {
     return await this.activityService.update({ id, ...data });
   }
 
   @Post()
-  async create(@Body() data: any) {
+  async create(@Body() data: TActivityRequest) {
     return await this.activityService.create(data);
   }
 }

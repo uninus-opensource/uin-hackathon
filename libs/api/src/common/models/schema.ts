@@ -48,7 +48,7 @@ export const userAffiliations = pgTable(
 
 export const activities = pgTable('activities', {
   id: uuid('id').defaultRandom().primaryKey(),
-  name: text('name').notNull(),
+  name: text('name'),
   description: text('description'),
   location: text('location'),
   startDate: timestamp('start_date', { withTimezone: true }),

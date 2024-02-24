@@ -2,13 +2,19 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import * as schema from '../../common/models';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
+import {
+  TPaginationRequest,
+  TProposalRequest,
+  TProposalResponse,
+  TProposalSingleResponse,
+} from '@psu/entities';
 
 @Injectable()
 export class ProposalService {
   constructor(
     @Inject('drizzle') private drizzle: NodePgDatabase<typeof schema>
   ) {}
-  async findOne(id: string) {
+  async findOne(id: string): Promise<TProposalSingleResponse> {
     const res = await this.drizzle
       .select({
         id: schema.proposals.id,
@@ -21,9 +27,12 @@ export class ProposalService {
     if (!res) {
       throw new NotFoundException('User tidak ditemukan');
     }
-    return res;
+    return {
+      message: 'Berhasil mengambil data',
+      data: res,
+    };
   }
-  async findMany(data: any) {
+  async findMany(data: TPaginationRequest): Promise<TProposalResponse> {
     const res = await this.drizzle
       .select({
         id: schema.proposals.id,
@@ -45,7 +54,7 @@ export class ProposalService {
       },
     };
   }
-  async delete(id: string) {
+  async delete(id: string): Promise<TProposalSingleResponse> {
     const res = await this.drizzle
       .delete(schema.proposals)
       .where(eq(schema.proposals.id, id))
@@ -62,12 +71,12 @@ export class ProposalService {
       data: res,
     };
   }
-  async update(data: any) {
+  async update(data: TProposalRequest): Promise<TProposalSingleResponse> {
     const { id, ...resData } = data;
     const res = await this.drizzle
       .update(schema.proposals)
       .set(resData)
-      .where(eq(schema.proposals.id, id))
+      .where(eq(schema.proposals.id, id as string))
       .returning({
         id: schema.proposals.id,
       })
@@ -81,7 +90,7 @@ export class ProposalService {
       data: res,
     };
   }
-  async create(data: any) {
+  async create(data: TProposalRequest): Promise<TProposalSingleResponse> {
     const res = await this.drizzle
       .insert(schema.proposals)
       .values(data)

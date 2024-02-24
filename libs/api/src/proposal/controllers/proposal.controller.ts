@@ -12,6 +12,7 @@ import {
 
 import { ProposalService } from '../services';
 import { AccessGuard } from '../../common';
+import { TPaginationRequest, TProposalRequest } from '@psu/entities';
 
 @Controller('proposal')
 @UseGuards(AccessGuard)
@@ -24,7 +25,7 @@ export class ProposalController {
   }
 
   @Get()
-  async findMany(@Query() request: any) {
+  async findMany(@Query() request: TPaginationRequest) {
     return await this.proposalService.findMany(request);
   }
 
@@ -34,12 +35,12 @@ export class ProposalController {
   }
 
   @Patch('/:id')
-  async update(@Param('id') id: string, @Body() data: any) {
+  async update(@Param('id') id: string, @Body() data: TProposalRequest) {
     return await this.proposalService.update({ id, ...data });
   }
 
   @Post()
-  async create(@Body() data: any) {
+  async create(@Body() data: TProposalRequest) {
     return await this.proposalService.create(data);
   }
 }

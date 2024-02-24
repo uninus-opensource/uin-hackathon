@@ -66,6 +66,7 @@ export class UserService {
       throw new NotFoundException('User tidak ditemukan');
     }
     return {
+      message: 'Berhasil mengambil data',
       data: res,
     };
   }

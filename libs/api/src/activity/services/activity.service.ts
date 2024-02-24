@@ -2,6 +2,12 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import * as schema from '../../common/models';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
+import {
+  TActivityRequest,
+  TActivityResponse,
+  TActivitySingleResponse,
+  TPaginationRequest,
+} from '@psu/entities';
 
 @Injectable()
 export class ActivityService {
@@ -9,7 +15,7 @@ export class ActivityService {
     @Inject('drizzle') private drizzle: NodePgDatabase<typeof schema>
   ) {}
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<TActivitySingleResponse> {
     const res = await this.drizzle
       .select({
         id: schema.activities.id,
@@ -22,9 +28,12 @@ export class ActivityService {
     if (!res) {
       throw new NotFoundException('User tidak ditemukan');
     }
-    return res;
+    return {
+      message: 'Berhasil mengambil data',
+      data: res,
+    };
   }
-  async findMany(data: any) {
+  async findMany(data: TPaginationRequest): Promise<TActivityResponse> {
     const res = await this.drizzle
       .select({
         id: schema.activities.id,
@@ -46,7 +55,7 @@ export class ActivityService {
       },
     };
   }
-  async delete(id: string) {
+  async delete(id: string): Promise<TActivitySingleResponse> {
     const res = await this.drizzle
       .delete(schema.activities)
       .where(eq(schema.activities.id, id))
@@ -63,12 +72,12 @@ export class ActivityService {
       data: res,
     };
   }
-  async update(data: any) {
+  async update(data: TActivityRequest): Promise<TActivitySingleResponse> {
     const { id, ...resdata } = data;
     const res = await this.drizzle
       .update(schema.activities)
       .set(resdata)
-      .where(eq(schema.activities.id, id))
+      .where(eq(schema.activities.id, id as string))
       .returning({
         id: schema.activities.id,
       })
@@ -82,7 +91,7 @@ export class ActivityService {
       data: res,
     };
   }
-  async create(data: any) {
+  async create(data: TActivityRequest): Promise<TActivitySingleResponse> {
     const res = await this.drizzle
       .insert(schema.activities)
       .values(data)
