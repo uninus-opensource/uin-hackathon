@@ -1,3 +1,3 @@
-export * from './lib/entities';
+export * from './common';
 export * from './auth.type';
 export * from './user.type';
