@@ -13,8 +13,12 @@ export default meta;
 type Story = StoryObj<typeof FieldCheckbox>;
 
 export const Primary: Story = {
+<<<<<<< Updated upstream
   args: {
     label: 'Apakah anda gay?',
     text: 'Ya',
   },
+=======
+  args: {},
+>>>>>>> Stashed changes
 };

@@ -115,7 +115,18 @@ export class ActivityService {
   async create(data: TActivityRequest): Promise<TActivitySingleResponse> {
     const res = await this.drizzle
       .insert(schema.activities)
-      .values(data)
+      .values({
+        name: data.name as string,
+        lead: data.lead as string,
+        proposal: data.proposal as string,
+        description: data.description as string,
+        location: data.location as string,
+        startDate: data.startDate as Date,
+        endDate: data.endDate as Date,
+        budget: data.budget as string,
+        applicantId: data.applicantId as string,
+        reviewers: [],
+      })
       .returning({
         id: schema.activities.id,
       })

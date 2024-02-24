@@ -3,8 +3,15 @@ import { TMetaResponse } from '../common';
 export type TActivityRequest = {
   id?: string;
   name?: string;
+  lead?: string;
+  proposal?: string;
   description?: string;
   location?: string;
+  startDate?: Date;
+  endDate?: Date;
+  budget?: string;
+  applicantId?: string;
+  reviewers?: string[];
 };
 
 export type TActivityResponse = TMetaResponse<TActivityRequest[]>;

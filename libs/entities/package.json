@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "dependencies": {
     "tslib": "^2.3.0",
-    "clsx": "latest"
+    "clsx": "latest",
+    "react": "18.2.0"
   },
   "type": "commonjs",
   "main": "./src/index.js",

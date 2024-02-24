@@ -98,7 +98,7 @@ export class AuthService {
     };
   }
   async register(payload: TRegisterRequest): Promise<TRegisterResponse> {
-    const { email, password, fullname } = payload;
+    const { email, password, fullname, avatar } = payload;
     const [isEmailExist, findRole] = await Promise.all([
       this.drizzle
         .select({
@@ -122,10 +122,11 @@ export class AuthService {
     const createUser = await this.drizzle
       .insert(schema.users)
       .values({
-        email,
-        password: await encryptPassword(password),
-        fullname,
-        roleId: findRole?.id,
+        fullname: fullname as string,
+        email: email as string,
+        roleId: findRole?.id as string,
+        avatar: avatar,
+        password: await encryptPassword(password as string),
       })
       .returning({
         id: schema.users.id,
@@ -188,10 +189,10 @@ export class AuthService {
       const insertUser = await this.drizzle
         .insert(schema.users)
         .values({
-          email,
-          avatar,
-          fullname,
-          roleId: findRole?.id,
+          fullname: fullname as string,
+          email: email as string,
+          roleId: findRole?.id as string,
+          avatar: avatar,
         })
         .returning({
           id: schema.users.id,
