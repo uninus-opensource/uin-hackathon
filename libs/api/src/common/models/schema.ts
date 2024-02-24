@@ -48,7 +48,7 @@ export const userAffiliations = pgTable(
 
 export const activities = pgTable('activities', {
   id: uuid('id').defaultRandom().primaryKey(),
-  name: text('name').notNull(),
+  name: text('name'),
   description: text('description'),
   location: text('location'),
   startDate: timestamp('start_date', { withTimezone: true }),
@@ -96,77 +96,11 @@ export const department = pgTable('department', {
 export const reviews = pgTable('reviews', {
   id: uuid('id').defaultRandom().primaryKey(),
   reviewerId: uuid('reviewer_id').references(() => users.id),
-  proposalId: uuid('proposal_id').references(() => proposals.id),
   isApproved: boolean('is_approved'),
   commenst: text('commenst'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
-
-export const proposals = pgTable('proposals', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  title: text('title'),
-  file: text('file'),
-  proposalStatusId: uuid('proposal_staus_id').references(
-    () => proposalStatus.id
-  ),
-  activityId: uuid('activity_id').references(() => activities.id, {
-    onDelete: 'cascade',
-  }),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
-});
-
-export const proposalStatus = pgTable('proposal_status', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  name: text('name'),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
-});
-
-// export const accounts = pgTable(
-//   'account',
-//   {
-//     userId: text('userId')
-//       .notNull()
-//       .references(() => users.id, { onDelete: 'cascade' }),
-//     type: text('type').notNull(),
-//     provider: text('provider').notNull(),
-//     providerAccountId: text('providerAccountId').notNull(),
-//     refresh_token: text('refresh_token'),
-//     access_token: text('access_token'),
-//     expires_at: uuid('expires_at'),
-//     token_type: text('token_type'),
-//     scope: text('scope'),
-//     id_token: text('id_token'),
-//     session_state: text('session_state'),
-//   },
-//   (account) => ({
-//     compoundKey: primaryKey({
-//       columns: [account.provider, account.providerAccountId],
-//     }),
-//   })
-// );
-
-// export const sessions = pgTable('session', {
-//   sessionToken: text('sessionToken').notNull().primaryKey(),
-//   userId: text('userId')
-//     .notNull()
-//     .references(() => users.id, { onDelete: 'cascade' }),
-//   expires: timestamp('expires', { mode: 'date' }).notNull(),
-// });
-
-// export const verificationTokens = pgTable(
-//   'verificationToken',
-//   {
-//     identifier: text('identifier').notNull(),
-//     token: text('token').notNull(),
-//     expires: timestamp('expires', { mode: 'date' }).notNull(),
-//   },
-//   (vt) => ({
-//     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
-//   })
-// );
 
 export const usersRelations = relations(users, ({ one }) => ({
   userAffiliations: one(userAffiliations),
@@ -205,7 +139,6 @@ export const activitiesRelations = relations(activities, ({ one, many }) => ({
     fields: [activities.applicantId],
     references: [users.id],
   }),
-  proposals: many(proposals),
 }));
 
 //Memuat relasi fakultas dan departmen(untuk ormawa himpunan dan senat/bem), serta terdapat organization level(universitas,fakultas, prodi)
@@ -252,28 +185,48 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
     fields: [reviews.reviewerId],
     references: [users.id],
   }),
-  proposal: one(proposals, {
-    fields: [reviews.proposalId],
-    references: [proposals.id],
-  }),
 }));
 
-//Memiliki relasi ke proposal status, serta ke table kegiatan(activity)
-export const proposalsRelations = relations(proposals, ({ one }) => ({
-  proposalStatus: one(proposalStatus, {
-    fields: [proposals.proposalStatusId],
-    references: [proposalStatus.id],
-  }),
-  activity: one(activities, {
-    fields: [proposals.activityId],
-    references: [activities.id],
-  }),
-}));
+// export const accounts = pgTable(
+//   'account',
+//   {
+//     userId: text('userId')
+//       .notNull()
+//       .references(() => users.id, { onDelete: 'cascade' }),
+//     type: text('type').notNull(),
+//     provider: text('provider').notNull(),
+//     providerAccountId: text('providerAccountId').notNull(),
+//     refresh_token: text('refresh_token'),
+//     access_token: text('access_token'),
+//     expires_at: uuid('expires_at'),
+//     token_type: text('token_type'),
+//     scope: text('scope'),
+//     id_token: text('id_token'),
+//     session_state: text('session_state'),
+//   },
+//   (account) => ({
+//     compoundKey: primaryKey({
+//       columns: [account.provider, account.providerAccountId],
+//     }),
+//   })
+// );
 
-//Table berisi status proposal (Approve, reject, revision) dan memiliki relasi ke table proposals
-export const proposalStatusRelations = relations(
-  proposalStatus,
-  ({ many }) => ({
-    proposals: many(proposals),
-  })
-);
+// export const sessions = pgTable('session', {
+//   sessionToken: text('sessionToken').notNull().primaryKey(),
+//   userId: text('userId')
+//     .notNull()
+//     .references(() => users.id, { onDelete: 'cascade' }),
+//   expires: timestamp('expires', { mode: 'date' }).notNull(),
+// });
+
+// export const verificationTokens = pgTable(
+//   'verificationToken',
+//   {
+//     identifier: text('identifier').notNull(),
+//     token: text('token').notNull(),
+//     expires: timestamp('expires', { mode: 'date' }).notNull(),
+//   },
+//   (vt) => ({
+//     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
+//   })
+// );

@@ -1,13 +1,45 @@
-import { Controller, Get } from '@nestjs/common';
-
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ActivityService } from '../services';
+import { AccessGuard } from '../../common';
+import { TActivityRequest, TPaginationRequest } from '@psu/entities';
 
-@Controller()
+@Controller('activity')
+// @UseGuards(AccessGuard)
 export class ActivityController {
   constructor(private readonly activityService: ActivityService) {}
 
+  @Get('/:id')
+  async findOne(@Param('id') id: string) {
+    return await this.activityService.findOne(id);
+  }
+
   @Get()
-  getData() {
-    return this.activityService.getData();
+  async findMany(@Query() request: TPaginationRequest) {
+    return await this.activityService.findMany(request);
+  }
+
+  @Delete('/:id')
+  async delete(@Param('id') id: string) {
+    return await this.activityService.delete(id);
+  }
+
+  @Patch('/:id')
+  async update(@Param('id') id: string, @Body() data: TActivityRequest) {
+    return await this.activityService.update({ id, ...data });
+  }
+
+  @Post()
+  async create(@Body() data: TActivityRequest) {
+    return await this.activityService.create(data);
   }
 }

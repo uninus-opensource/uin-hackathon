@@ -1,28 +1,100 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import * as schema from '../../common/models';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { eq } from 'drizzle-orm';
+import { asc, desc, eq, ilike, and } from 'drizzle-orm';
+import {
+  EPaginationOrderBy,
+  TPaginationRequest,
+  TUserRequest,
+  TUserResponse,
+  TUserSingleResponse,
+} from '@psu/entities';
 @Injectable()
 export class UserService {
   constructor(
     @Inject('drizzle') private drizzle: NodePgDatabase<typeof schema>
   ) {}
 
-  async findByEmail() {
-    try {
-      const res = await this.drizzle
+  async findOne(id: string): Promise<TUserSingleResponse> {
+    const res = await this.drizzle
+      .select({
+        id: schema.users.id,
+        fullname: schema.users.fullname,
+        email: schema.users.email,
+        createdAt: schema.users.createdAt,
+        updatedAt: schema.users.updatedAt,
+        faculty: {
+          id: schema.faculty.id,
+          name: schema.faculty.name,
+        },
+        department: {
+          id: schema.department.id,
+          name: schema.department.name,
+        },
+        organization: {
+          id: schema.organizations.id,
+          name: schema.organizations.name,
+        },
+        role: {
+          id: schema.roles.id,
+          name: schema.roles.name,
+          permissions: schema.roles.permissions,
+        },
+      })
+      .from(schema.users)
+      .leftJoin(schema.roles, eq(schema.roles.id, schema.users.roleId))
+      .leftJoin(
+        schema.userAffiliations,
+        eq(schema.userAffiliations.userId, schema.users.id)
+      )
+      .leftJoin(
+        schema.organizations,
+        eq(schema.userAffiliations.organizationId, schema.organizations.id)
+      )
+      .leftJoin(
+        schema.faculty,
+        eq(schema.userAffiliations.facultyId, schema.faculty.id)
+      )
+      .leftJoin(
+        schema.department,
+        eq(schema.userAffiliations.departmentId, schema.department.id)
+      )
+      .where(eq(schema.users.id, id))
+      .then((res) => res.at(0));
+
+    if (!res) {
+      throw new NotFoundException('User tidak ditemukan');
+    }
+    return {
+      message: 'Berhasil mengambil data user',
+      data: res,
+    };
+  }
+  async findMany(data: TPaginationRequest): Promise<TUserResponse> {
+    const { page = 1, perPage = 10, orderBy, search } = data;
+    const orderByFunction = orderBy == EPaginationOrderBy.DESC ? desc : asc;
+    const [res, count] = await Promise.all([
+      this.drizzle
         .select({
           id: schema.users.id,
           fullname: schema.users.fullname,
           email: schema.users.email,
           createdAt: schema.users.createdAt,
           updatedAt: schema.users.updatedAt,
+          faculty: {
+            id: schema.faculty.id,
+            name: schema.faculty.name,
+          },
+          department: {
+            id: schema.department.id,
+            name: schema.department.name,
+          },
+          organization: {
+            id: schema.organizations.id,
+            name: schema.organizations.name,
+          },
           role: {
+            id: schema.roles.id,
             name: schema.roles.name,
             permissions: schema.roles.permissions,
           },
@@ -33,134 +105,114 @@ export class UserService {
           schema.userAffiliations,
           eq(schema.userAffiliations.userId, schema.users.id)
         )
-        .where(eq(schema.users.email, ''))
-        .then((res) => res.at(0));
-
-      if (!res) {
-        throw new NotFoundException('User tidak ditemukan');
-      }
-      return res;
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
-  }
-  async findById() {
-    try {
-      const res = await this.drizzle
-        .select({
-          id: schema.users.id,
-          fullname: schema.users.fullname,
-          email: schema.users.email,
-          createdAt: schema.users.createdAt,
-          updatedAt: schema.users.updatedAt,
-          role: {
-            name: schema.roles.name,
-            permissions: schema.roles.permissions,
-          },
-        })
-        .from(schema.users)
-        .leftJoin(schema.roles, eq(schema.roles.id, schema.users.roleId))
         .leftJoin(
-          schema.userAffiliations,
-          eq(schema.userAffiliations.userId, schema.users.id)
+          schema.organizations,
+          eq(schema.userAffiliations.organizationId, schema.organizations.id)
         )
-        .where(eq(schema.users.id, ''))
-        .then((res) => res.at(0));
-
-      if (!res) {
-        throw new NotFoundException('User tidak ditemukan');
-      }
-      return res;
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
-  }
-  async findMany() {
-    try {
-      const res = await this.drizzle
+        .leftJoin(
+          schema.faculty,
+          eq(schema.userAffiliations.facultyId, schema.faculty.id)
+        )
+        .leftJoin(
+          schema.department,
+          eq(schema.userAffiliations.departmentId, schema.department.id)
+        )
+        .where(
+          and(...(search ? [ilike(schema.users.fullname, `%${search}%`)] : []))
+        )
+        .limit(Number(perPage))
+        .offset((Number(page) - 1) * Number(perPage))
+        .orderBy(orderByFunction(schema.users.fullname)),
+      this.drizzle
         .select({
           id: schema.users.id,
-          fullname: schema.users.fullname,
-          email: schema.users.email,
-          createdAt: schema.users.createdAt,
-          updatedAt: schema.users.updatedAt,
-          role: {
-            name: schema.roles.name,
-            permissions: schema.roles.permissions,
-          },
         })
         .from(schema.users)
-        .leftJoin(schema.roles, eq(schema.roles.id, schema.users.roleId))
-        .leftJoin(
-          schema.userAffiliations,
-          eq(schema.userAffiliations.userId, schema.users.id)
-        );
 
-      if (!res) {
-        throw new NotFoundException('User tidak ditemukan');
-      }
-      return res;
-    } catch (error) {
-      throw new BadRequestException(error);
+        .where(
+          and(...(search ? [ilike(schema.users.fullname, `%${search}%`)] : []))
+        )
+        .then((res) => res.length),
+    ]);
+
+    if (!res) {
+      throw new NotFoundException('User tidak ditemukan');
     }
+    const lastPage = Math.ceil(count / Number(perPage));
+    return {
+      data: res,
+      meta: {
+        total: count,
+        lastPage,
+        currentPage: Number(page),
+        perPage: Number(perPage),
+        prev: Number(page) > 1 ? Number(page) - 1 : null,
+        next: Number(page) < lastPage ? Number(page) + 1 : null,
+      },
+    };
   }
-  async delete() {
-    try {
-      const res = await this.drizzle
-        .delete(schema.users)
-        .where(eq(schema.users.id, ''))
-        .returning({
-          id: schema.users.id,
-        })
-        .then((res) => res.at(0));
+  async delete(id: string): Promise<TUserSingleResponse> {
+    const res = await this.drizzle
+      .delete(schema.users)
+      .where(eq(schema.users.id, id))
+      .returning({
+        id: schema.users.id,
+        fullname: schema.users.fullname,
+        email: schema.users.email,
+      })
+      .then((res) => res.at(0));
 
-      if (!res) {
-        throw new NotFoundException('User tidak ditemukan');
-      }
-      return res;
-    } catch (error) {
-      throw new BadRequestException(error);
+    if (!res) {
+      throw new NotFoundException('User tidak ditemukan');
     }
+    return {
+      message: 'Berhasil menghapus user',
+      data: res,
+    };
   }
-  async update() {
-    try {
-      const res = await this.drizzle
-        .update(schema.users)
-        .set({
-          email: '',
-        })
-        .where(eq(schema.users.id, ''))
-        .returning({
-          id: schema.users.id,
-        })
-        .then((res) => res.at(0));
+  async update(data: TUserRequest): Promise<TUserSingleResponse> {
+    const { id, ...resData } = data;
+    const res = await this.drizzle
+      .update(schema.users)
+      .set(resData)
+      .where(eq(schema.users.id, id as string))
+      .returning({
+        id: schema.users.id,
+        fullname: schema.users.fullname,
+        email: schema.users.email,
+      })
+      .then((res) => res.at(0));
 
-      if (!res) {
-        throw new NotFoundException('User tidak ditemukan');
-      }
-      return res;
-    } catch (error) {
-      throw new BadRequestException(error);
+    if (!res) {
+      throw new NotFoundException('User tidak ditemukan');
     }
+    return {
+      message: 'Berhasil update user',
+      data: res,
+    };
   }
-  async create() {
-    try {
-      const res = await this.drizzle
-        .insert(schema.users)
-        .values({
-          email: '3432432',
-          roleId: '',
-        })
-        .returning({
-          id: schema.users.id,
-        })
-        .then((res) => res.at(0));
+  async create(data: TUserRequest): Promise<TUserSingleResponse> {
+    const res = await this.drizzle
+      .insert(schema.users)
+      .values({
+        fullname: data.fullname,
+        email: data.email as string,
+        roleId: data.roleId,
+        avatar: data.avatar,
+      })
+      .returning({
+        id: schema.users.id,
+        fullname: schema.users.fullname,
+        email: schema.users.email,
+      })
+      .then((res) => res.at(0));
 
-      if (!res) {
-        throw new NotFoundException('User tidak ditemukan');
-      }
-    } catch (error) {
-      throw new BadRequestException(error);
+    if (!res) {
+      throw new NotFoundException('User tidak ditemukan');
     }
+    return {
+      message: 'Berhasil menambahkan user',
+      data: res,
+    };
   }
 }
