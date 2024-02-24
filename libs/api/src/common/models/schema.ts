@@ -176,7 +176,7 @@ export const additionalRelations = relations(additional, ({ one }) => ({
 }));
 
 //Table kegiatan berelasi dengan user(pemohon) serta proposal (one to many)
-export const activitiesRelations = relations(activities, ({ one, many }) => ({
+export const activitiesRelations = relations(activities, ({ one }) => ({
   users: one(users, {
     fields: [activities.applicantId],
     references: [users.id],
