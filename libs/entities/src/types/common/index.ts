@@ -1,8 +1,36 @@
+import { EPaginationOrderBy } from '../../enums';
+import { TJwtRequest } from '../auth';
 import {
   DetailedHTMLProps,
   InputHTMLAttributes,
   TextareaHTMLAttributes,
 } from 'react';
+export type THeaderRequest = {
+  user: TJwtRequest & {
+    fullname?: string;
+    avatar?: string;
+  };
+};
+
+export type TPaginationRequest = {
+  page: string;
+  perPage: string;
+  orderBy: EPaginationOrderBy;
+  search: string;
+};
+
+export type TMetaResponse<T = null | undefined> = {
+  message?: string;
+  data?: T;
+  meta?: {
+    total: number;
+    lastPage: number;
+    currentPage: number;
+    perPage: number;
+    prev?: null | number;
+    next?: null | number;
+  };
+};
 
 export type TSize = 'sm' | 'md' | 'lg';
 

@@ -1,5 +1,4 @@
-// import { users } from '@psu/api/';
-import { TMetaResponse } from './meta.type';
+import { TMetaResponse } from '../common';
 export type TUser = {
   id: string;
   fullname: string;

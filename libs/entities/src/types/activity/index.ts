@@ -1,4 +1,4 @@
-import { TMetaResponse } from './meta.type';
+import { TMetaResponse } from '../common';
 
 export type TActivityRequest = {
   id?: string;
