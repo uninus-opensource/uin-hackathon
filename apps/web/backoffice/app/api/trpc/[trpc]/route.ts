@@ -1,8 +1,8 @@
+import { appRouter } from '@psu/api';
 import {
   FetchCreateContextFnOptions,
   fetchRequestHandler,
 } from '@trpc/server/adapters/fetch';
-import { appRouter } from '@psu/trpc';
 
 const handler = (request: Request) => {
   console.log(`incoming request ${request.url}`);
