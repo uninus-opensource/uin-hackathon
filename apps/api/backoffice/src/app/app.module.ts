@@ -3,7 +3,6 @@ import { PassportModule } from '@nestjs/passport';
 import {
   ActivityModule,
   AuthModule,
-  ProposalModule,
   UserModule,
   DrizzleModule,
   AccessStrategy,
@@ -15,7 +14,6 @@ import {
   imports: [
     ActivityModule,
     AuthModule,
-    ProposalModule,
     UserModule,
     DrizzleModule,
     PassportModule.register({

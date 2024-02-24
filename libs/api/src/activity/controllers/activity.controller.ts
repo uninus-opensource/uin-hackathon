@@ -14,7 +14,7 @@ import { AccessGuard } from '../../common';
 import { TActivityRequest, TPaginationRequest } from '@psu/entities';
 
 @Controller('activity')
-@UseGuards(AccessGuard)
+// @UseGuards(AccessGuard)
 export class ActivityController {
   constructor(private readonly activityService: ActivityService) {}
 

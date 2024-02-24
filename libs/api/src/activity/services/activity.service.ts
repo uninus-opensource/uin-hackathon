@@ -1,8 +1,9 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import * as schema from '../../common/models';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { eq } from 'drizzle-orm';
+import { and, asc, desc, eq, ilike } from 'drizzle-orm';
 import {
+  EPaginationOrderBy,
   TActivityRequest,
   TActivityResponse,
   TActivitySingleResponse,
@@ -26,32 +27,52 @@ export class ActivityService {
       .then((res) => res.at(0));
 
     if (!res) {
-      throw new NotFoundException('User tidak ditemukan');
+      throw new NotFoundException('Kegiatan tidak ditemukan');
     }
     return {
-      message: 'Berhasil mengambil data',
+      message: 'Berhasil mengambil data kegiatan',
       data: res,
     };
   }
   async findMany(data: TPaginationRequest): Promise<TActivityResponse> {
-    const res = await this.drizzle
-      .select({
-        id: schema.activities.id,
-      })
-      .from(schema.activities);
+    const { page = 1, perPage = 10, orderBy, search } = data;
+    const orderByFunction = orderBy == EPaginationOrderBy.DESC ? desc : asc;
+    const [res, count] = await Promise.all([
+      this.drizzle
+        .select({
+          id: schema.activities.id,
+        })
+        .from(schema.activities)
+        .where(
+          and(...(search ? [ilike(schema.activities.name, `%${search}%`)] : []))
+        )
+        .limit(Number(perPage))
+        .offset((Number(page) - 1) * Number(perPage))
+        .orderBy(orderByFunction(schema.activities.name)),
+      this.drizzle
+        .select({
+          id: schema.activities.id,
+        })
+        .from(schema.activities)
+        .where(
+          and(...(search ? [ilike(schema.activities.name, `%${search}%`)] : []))
+        )
+        .then((res) => res.length),
+    ]);
 
     if (!res) {
-      throw new NotFoundException('User tidak ditemukan');
+      throw new NotFoundException('Kegiatan tidak ditemukan');
     }
+    const lastPage = Math.ceil(count / Number(perPage));
     return {
       data: res,
       meta: {
-        total: 0,
-        lastPage: 0,
-        currentPage: 0,
-        perPage: 0,
-        prev: null,
-        next: null,
+        total: count,
+        lastPage,
+        currentPage: Number(page),
+        perPage: Number(perPage),
+        prev: Number(page) > 1 ? Number(page) - 1 : null,
+        next: Number(page) < lastPage ? Number(page) + 1 : null,
       },
     };
   }
@@ -65,7 +86,7 @@ export class ActivityService {
       .then((res) => res.at(0));
 
     if (!res) {
-      throw new NotFoundException('User tidak ditemukan');
+      throw new NotFoundException('Kegiatan tidak ditemukan');
     }
     return {
       message: 'Berhasil menghapus kegiatan',
@@ -84,7 +105,7 @@ export class ActivityService {
       .then((res) => res.at(0));
 
     if (!res) {
-      throw new NotFoundException('User tidak ditemukan');
+      throw new NotFoundException('Kegiatan tidak ditemukan');
     }
     return {
       message: 'Berhasil update kegiatan',
@@ -101,7 +122,7 @@ export class ActivityService {
       .then((res) => res.at(0));
 
     if (!res) {
-      throw new NotFoundException('User tidak ditemukan');
+      throw new NotFoundException('Kegiatan tidak ditemukan');
     }
     return {
       message: 'Berhasil menambahkan kegiatan',
