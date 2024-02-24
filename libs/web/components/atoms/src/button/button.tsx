@@ -1,8 +1,8 @@
 import type { FC, ReactElement } from 'react';
-import { TButton } from './type';
 import { clsx } from 'clsx';
 import { P, match } from 'ts-pattern';
 import Link from 'next/link';
+import { TButton } from '@psu/entities';
 
 export const Button: FC<TButton> = ({
   variant = 'primary',

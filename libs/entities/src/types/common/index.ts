@@ -1,10 +1,15 @@
 import { EPaginationOrderBy } from '../../enums';
 import { TJwtRequest } from '../auth';
-import {
+import type {
+  ButtonHTMLAttributes,
   DetailedHTMLProps,
+  HTMLAttributes,
   InputHTMLAttributes,
+  LabelHTMLAttributes,
   TextareaHTMLAttributes,
 } from 'react';
+import type { FieldValues, UseControllerProps } from 'react-hook-form';
+
 export type THeaderRequest = {
   user: TJwtRequest & {
     fullname?: string;
@@ -47,21 +52,22 @@ export type TVariantType = 'solid' | 'outline';
 
 export type TState = 'default' | 'loading';
 
+export type TInputExtend = {
+  size?: TSize;
+  status?: Omit<TVariant, 'primary' | 'secondary'>;
+};
+
 export type TInput = Omit<
   DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
   'size'
-> & {
-  size: TSize;
-  status: Omit<TVariant, 'primary' | 'secondary'>;
-};
+> &
+  TInputExtend;
 
-export type TInputCheckbox = Omit<
+export type TInputSpecial = Omit<
   DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
-  'size' | 'type'
-> & {
-  size: TSize;
-  status: Omit<TVariant, 'primary' | 'secondary'>;
-};
+  'size' | 'type' | 'placeholder'
+> &
+  TInputExtend;
 
 export type TTextArea = Omit<
   DetailedHTMLProps<
@@ -69,7 +75,40 @@ export type TTextArea = Omit<
     HTMLTextAreaElement
   >,
   'size'
+> &
+  TInputExtend;
+
+export type TButton = DetailedHTMLProps<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
 > & {
-  size: TSize;
-  status: Omit<TVariant, 'primary' | 'secondary'>;
+  variant?: Omit<TVariant, 'default' | 'info'>;
+  size?: TSize;
+  variantType?: TVariantType;
+  href?: string;
+  state?: TState;
 };
+
+export type TLabel = LabelHTMLAttributes<HTMLLabelElement> & {
+  required?: boolean;
+  disabled?: boolean;
+} & TInputExtend;
+
+export type TControlledInput<T extends FieldValues> = UseControllerProps<T> &
+  TInput;
+export type TControlledInputSpecial<T extends FieldValues> =
+  UseControllerProps<T> & TInputSpecial;
+export type TControlledTextArea<T extends FieldValues> = UseControllerProps<T> &
+  TTextArea;
+
+export type TMessage = DetailedHTMLProps<
+  HTMLAttributes<HTMLSpanElement>,
+  HTMLSpanElement
+> &
+  TInputExtend;
+
+export type TFieldSet = Omit<DetailedHTMLProps<any, any>, 'size' | 'type'> &
+  TInputExtend &
+  Pick<InputHTMLAttributes<HTMLInputElement>, 'type'>;
+
+export * from './style';
