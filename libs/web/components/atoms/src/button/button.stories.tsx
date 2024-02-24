@@ -5,7 +5,7 @@ import { Button } from './index';
 const meta: Meta<typeof Button> = {
   component: Button,
   tags: ['autodocs'],
-  title: 'Button',
+  title: 'Components/Atoms/Button',
   argTypes: {
     variant: {
       options: ['primary', 'secondary', 'error', 'warning', 'success', 'info'],

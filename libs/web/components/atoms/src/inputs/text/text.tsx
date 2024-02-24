@@ -1,6 +1,5 @@
 import { FC, useId } from 'react';
-import { TInput } from '../type';
-import { className } from '../style';
+import { TInput, className } from '@psu/entities';
 
 export const InputText: FC<TInput> = ({
   size = 'sm',

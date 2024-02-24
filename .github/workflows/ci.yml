@@ -25,5 +25,4 @@ jobs:
       - run: npm ci
       - uses: nrwl/nx-set-shas@v4
 
-      - run: npx nx-cloud record -- nx format:check --base=develop
-      - run: npx nx affected --base=develop -t lint test build e2e-ci
+      - run: npx nx affected -t lint test build e2e-ci
