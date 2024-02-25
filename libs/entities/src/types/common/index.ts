@@ -151,4 +151,34 @@ export type TSelect = TInputExtend & {
   name?: string;
 };
 
+export type TLineChart = {
+  chartType:
+    | 'januari'
+    | 'februari'
+    | 'maret'
+    | 'april'
+    | 'mei'
+    | 'juni'
+    | 'juli'
+    | 'agustus'
+    | 'september'
+    | 'oktober'
+    | 'november'
+    | 'desember';
+  title: string;
+  data: {
+    labels: string[];
+    datasets: Array<{
+      label: string;
+      backgroundColor: string;
+      borderColor: string;
+      pointBackgroundColor: string;
+      pointBorderColor: string;
+      borderWidth: number;
+      data: number[];
+      tention: number;
+    }>;
+  };
+};
+
 export * from './style';
