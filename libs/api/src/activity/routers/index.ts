@@ -1,1 +1,4 @@
-export * from './activity.router';
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class ActivityRouter {}

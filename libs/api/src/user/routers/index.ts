@@ -1,1 +1,4 @@
-export * from './user.router';
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class UserRouter {}
