@@ -226,4 +226,31 @@ export class UserService {
       data: res,
     };
   }
+
+  async findUserByEmail(email: string) {
+    const res = await this.drizzle
+      .select({
+        id: schema.users.id,
+        fullname: schema.users.fullname,
+        email: schema.users.email,
+        createdAt: schema.users.createdAt,
+        updatedAt: schema.users.updatedAt,
+        organizationId: schema.organizations.id,
+        role: {
+          id: schema.roles.id,
+          name: schema.roles.name,
+          permissions: schema.roles.permissions,
+        },
+      })
+      .from(schema.users)
+      .leftJoin(schema.roles, eq(schema.roles.id, schema.users.roleId))
+
+      .where(eq(schema.users.email, email))
+      .then((res) => res.at(0));
+
+    if (!res) {
+      throw new NotFoundException('Email tidak ditemukan');
+    }
+    return res;
+  }
 }

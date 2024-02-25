@@ -8,6 +8,7 @@ import {
   GoogleStrategy,
   ActivityModule,
   AuthModule,
+  EmailModule
 } from '@psu/api';
 
 @Module({
@@ -16,6 +17,7 @@ import {
     AuthModule,
     UserModule,
     DrizzleModule,
+    EmailModule,
     PassportModule.register({
       defaultStrategy: 'access',
     }),
