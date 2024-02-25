@@ -167,7 +167,7 @@ export type TLineChart = {
     | 'november'
     | 'desember';
   title: string;
-  data: {
+  data?: {
     labels: string[];
     datasets: Array<{
       label: string;

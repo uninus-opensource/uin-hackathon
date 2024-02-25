@@ -11,7 +11,6 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { FC, ReactElement, useEffect, useRef, useState } from 'react';
-import { MdShowChart } from 'react-icons/md';
 import { InputSelect } from '../..';
 import { optionsMonth, optionStatus } from '../store';
 import { TLineChart } from '@psu/entities';
@@ -56,6 +55,9 @@ export const LineChart: FC<TLineChart> = ({ ...props }): ReactElement => {
         position: 'bottom' as const,
         labels: {
           usePointStyle: true,
+          boxWidth: 8,
+          boxHeight: 8,
+          border: 0,
         },
       },
     },
@@ -70,7 +72,7 @@ export const LineChart: FC<TLineChart> = ({ ...props }): ReactElement => {
         borderColor: '#AFFFD4',
         pointBackgroundColor: '#AFFFD4',
         pointBorderColor: '#02E56D',
-        pointBorderWidth: 2,
+        pointBorderWidth: 1,
         data: [20, 10, 5, 15],
         tention: 0.2,
       },
@@ -79,7 +81,7 @@ export const LineChart: FC<TLineChart> = ({ ...props }): ReactElement => {
         backgroundColor: '#FFF986',
         borderColor: '#FFF986',
         pointBorderColor: '#F8BF02',
-        pointBorderWidth: 2,
+        pointBorderWidth: 1,
         data: [5, 10, 12, 7],
         pointBackgroundColor: '#FFF986',
         tention: 0.2,
@@ -89,7 +91,7 @@ export const LineChart: FC<TLineChart> = ({ ...props }): ReactElement => {
         backgroundColor: '#FFCDA8',
         borderColor: '#FFCDA8',
         pointBorderColor: '#FF601C',
-        pointBorderWidth: 2,
+        pointBorderWidth: 1,
         pointBackgroundColor: '#FFCDA8',
         data: [4, 9, 15, 10],
         tention: 0.2,
@@ -98,7 +100,7 @@ export const LineChart: FC<TLineChart> = ({ ...props }): ReactElement => {
   };
   return (
     <section>
-      <div className="w-full rounded-lg bg-white p-4 my-2 shadow-sm">
+      <div className="w-full">
         <div className="flex items-center justify-between">
           <div className="flex gap-x-2 items-center">
             <h1 className="text-xl font-semibold ">{props.title}</h1>

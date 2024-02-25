@@ -3,8 +3,7 @@ import { TInput, className } from '@psu/entities';
 
 export const InputText: FC<TInput> = ({
   size = 'sm',
-  status = 'primary',
-  type = 'text',
+  status = 'default',
   placeholder = 'Masukkan Data',
   ...props
 }) => {
@@ -14,7 +13,6 @@ export const InputText: FC<TInput> = ({
       {...props}
       id={id}
       className={className({ size, status })}
-      type={type}
       placeholder={placeholder}
     />
   );

@@ -6,6 +6,11 @@ jest.mock('react-chartjs-2', () => ({
   Line: jest.fn(),
 }));
 
+jest.mock('next/navigation', () => ({
+  useRouter: jest.fn(),
+  usePathname: jest.fn(),
+}));
+
 describe('Dashboard Page', () => {
   it('Should render successfully', () => {
     const { baseElement } = render(<DashbaordPage />);
