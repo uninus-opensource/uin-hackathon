@@ -4,13 +4,13 @@ import { ControlledFieldSelect } from '@psu/web-component-organisms';
 import { FC, Fragment, ReactElement } from 'react';
 import Link from 'next/link';
 import { useFormContext } from 'react-hook-form';
-import { TRegister } from '../register';
+import { TRegisterOrganization } from '../register';
 
 export const AuthRegisterOrganizationModule: FC = (): ReactElement => {
   const {
     control,
-    formState: { errors },
-  } = useFormContext<TRegister>();
+    formState: { errors, isValid },
+  } = useFormContext<TRegisterOrganization>();
 
   const dummyOrganizations = [
     { label: 'Organisasi 1', value: 'Organisasi 1' },
@@ -77,7 +77,7 @@ export const AuthRegisterOrganizationModule: FC = (): ReactElement => {
           message={errors.organization?.message}
         />
       </section>
-      <Button type="submit" size="lg">
+      <Button disabled={!isValid} type="submit" size="lg">
         Daftar Sekarang
       </Button>
       <div className="w-full flex justify-between">

@@ -9,18 +9,20 @@ import { FcGoogle } from 'react-icons/fc';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const schema = z.object({
   email: z.string().email({ message: 'Email tidak valid' }),
   password: z
     .string({ required_error: 'Kata sandi wajib diisi' })
-    .min(6, { message: 'Kata sandi minimal 6 karakter' }),
+    .min(1, { message: 'Kata sandi wajib diisi' }),
 });
 
 export const AuthLoginModule: FC = (): ReactElement => {
   const {
     control,
-    formState: { errors },
+    handleSubmit,
+    formState: { errors, isValid },
   } = useForm<TLoginRequest>({
     resolver: zodResolver(schema),
     mode: 'all',
@@ -30,8 +32,15 @@ export const AuthLoginModule: FC = (): ReactElement => {
     },
   });
 
+  const router = useRouter();
+
+  const onSubmit = handleSubmit((data) => {
+    console.log(data);
+    router.push('/dashboard');
+  });
+
   return (
-    <Form>
+    <Form onSubmit={onSubmit}>
       <h1 className="text-2xl md:text-3xl font-bold text-black text-center">
         OS HUB
       </h1>
@@ -40,6 +49,7 @@ export const AuthLoginModule: FC = (): ReactElement => {
           control={control}
           name="email"
           label="Email"
+          type="email"
           size="md"
           placeholder="Contoh: email@example.com"
           status={errors.email ? 'error' : 'default'}
@@ -50,9 +60,8 @@ export const AuthLoginModule: FC = (): ReactElement => {
           name="password"
           label="Kata Sandi"
           size="md"
+          type="password"
           placeholder="Masukkan Kata Sandi"
-          status={errors.password ? 'error' : 'default'}
-          message={errors.password?.message}
         />
       </section>
       <div className="w-full my-4 flex justify-end">
@@ -60,7 +69,9 @@ export const AuthLoginModule: FC = (): ReactElement => {
           Lupa Kata Sandi
         </Link>
       </div>
-      <Button size="lg">Masuk</Button>
+      <Button disabled={!isValid} type="submit" size="lg">
+        Masuk
+      </Button>
       <div className="w-full flex justify-between">
         <h1 className="font-regular text-xs sm:text-sm text-grey">
           Belum mempunyai akun?
@@ -80,7 +91,7 @@ export const AuthLoginModule: FC = (): ReactElement => {
         <hr className="border border-grey-300 my-4" />
       </div>
 
-      <Button variantType="outline" size="lg">
+      <Button type="button" variantType="outline" size="lg">
         <div className="flex items-center gap-x-3 justify-center">
           <FcGoogle size={27} />
           <span data-testid="btn-google" className="text-grey-400">

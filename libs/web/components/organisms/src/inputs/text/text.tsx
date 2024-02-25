@@ -7,5 +7,5 @@ export const ControlledFieldText = <T extends FieldValues>(
   props: TControlledInput<T>
 ): ReactElement => {
   const { field } = useController<T>(props);
-  return <FieldText {...field} {...props} />;
+  return <FieldText {...props} {...field} />;
 };

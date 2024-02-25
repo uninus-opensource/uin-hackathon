@@ -8,11 +8,17 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@psu/web-component-templates';
 
-const schema = z.object({
+const schemaPersonal = z.object({
   fullname: z.string().min(1, { message: 'Nama Lengkap wajib diisi' }),
   password: z.string().min(1, { message: 'Kata sandi wajib diisi' }),
   email: z.string().email({ message: 'Email tidak valid' }),
   nim: z.string().min(1, { message: 'NIM wajib diisi' }),
+  confirmPassword: z
+    .string()
+    .min(1, { message: 'Konfirmasi kata sandi wajib diisi' }),
+});
+
+const schemaOrganization = z.object({
   organization: z.string().min(1, { message: 'Organisasi wajib diisi' }),
   organizationType: z
     .string()
@@ -20,17 +26,30 @@ const schema = z.object({
   organizationLevel: z
     .string()
     .min(1, { message: 'Level Organisasi wajib diisi' }),
-  confirmPassword: z
-    .string()
-    .min(1, { message: 'Konfirmasi kata sandi wajib diisi' }),
 });
 
-export type TRegister = z.infer<typeof schema>;
+const mergedSchema = schemaOrganization.merge(schemaPersonal);
+
+export type TRegisterPersonal = z.infer<typeof schemaPersonal>;
+export type TRegisterOrganization = z.infer<typeof schemaOrganization>;
 
 export const AuthRegisterModule: FC = (): ReactElement => {
   const [step] = useQueryState('step', parseAsString.withDefault('personal'));
-  const methods = useForm<TRegister>({
-    resolver: zodResolver(schema),
+
+  const methods = useForm<TRegisterPersonal & TRegisterOrganization>({
+    resolver: zodResolver(
+      step === 'personal'
+        ? schemaPersonal.superRefine(({ confirmPassword, password }, ctx) => {
+            if (confirmPassword !== password) {
+              ctx.addIssue({
+                code: 'custom',
+                path: ['confirmPassword'],
+                message: 'Konfirmasi Kata sandi harus sama dengan Kata sandi',
+              });
+            }
+          })
+        : mergedSchema
+    ),
     mode: 'all',
     defaultValues: {
       fullname: '',

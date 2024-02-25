@@ -11,6 +11,7 @@ export const Fieldset: FC<TFieldSet> = (props): ReactElement => {
       <section className="flex flex-col">
         {props?.label && (
           <Label
+            id={props.id}
             htmlFor={props.name}
             disabled={props.disabled}
             size={props.size}
@@ -23,7 +24,7 @@ export const Fieldset: FC<TFieldSet> = (props): ReactElement => {
           {props.children}
           {props?.text && (
             <Label
-              id={props.name}
+              id={props.id}
               htmlFor={props.name}
               disabled={props.disabled}
               size={props.size}
@@ -38,6 +39,7 @@ export const Fieldset: FC<TFieldSet> = (props): ReactElement => {
       <section className="flex flex-col gap-y-1">
         {props?.label && (
           <Label
+            id={props.id}
             htmlFor={props.name}
             disabled={props.disabled}
             size={props.size}
@@ -54,6 +56,7 @@ export const Fieldset: FC<TFieldSet> = (props): ReactElement => {
       <section className="relative flex flex-col gap-y-1 w-full">
         {props?.label && (
           <Label
+            id={props.id}
             htmlFor={props.name}
             disabled={props.disabled}
             size={props.size}

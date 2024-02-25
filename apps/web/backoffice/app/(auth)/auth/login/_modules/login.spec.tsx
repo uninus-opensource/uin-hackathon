@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import AuthLoginModule from '.';
+import { AuthLoginModule } from '.';
 import { render } from '@testing-library/react';
 
 jest.mock('react-hook-form', () => ({
@@ -56,6 +56,11 @@ jest.mock(
     ({ children }: PropsWithChildren) =>
       children
 );
+
+jest.mock('next/navigation', () => ({
+  useRouter: jest.fn(),
+  usePathname: jest.fn(),
+}));
 
 describe('Auth Login Module', () => {
   it('Should render successfully', () => {
