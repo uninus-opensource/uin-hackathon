@@ -45,7 +45,7 @@ export class AuthService {
         fullname: schema.users.fullname,
         email: schema.users.email,
         password: schema.users.password,
-        organizationId: schema.additional.organizationId,
+
         role: {
           id: schema.roles.id,
           name: schema.roles.name,
@@ -72,7 +72,7 @@ export class AuthService {
       generateAccessToken({
         sub: res.id,
         email: res.email,
-        organizationId: res.organizationId as string,
+
         role: {
           name: res.role?.name || '',
           permissions: res.role?.permissions || [],
@@ -82,7 +82,6 @@ export class AuthService {
       generateRefreshToken({
         sub: res.id,
         email: res.email,
-        organizationId: res.organizationId as string,
         role: {
           name: res.role?.name || '',
           permissions: res.role?.permissions || [],
@@ -176,7 +175,6 @@ export class AuthService {
     const accessToken = await generateAccessToken({
       sub: findUser.id,
       email: findUser.email,
-      organizationId: findUser.organizationId,
       role: {
         name: findUser.role?.name || '',
         permissions: findUser.role?.permissions || [],

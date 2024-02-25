@@ -1,5 +1,5 @@
 {
-  "id": "37586322-7c08-45e2-8f14-08500966a6e0",
+  "id": "2c23df3a-e137-4e9c-a2c8-25530c0e0c64",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -10,12 +10,25 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "name": {
           "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lead": {
+          "name": "lead",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "proposal": {
+          "name": "proposal",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -24,35 +37,48 @@
           "name": "description",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "location": {
           "name": "location",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "start_date": {
           "name": "start_date",
           "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "end_date": {
           "name": "end_date",
           "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "budget": {
           "name": "budget",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "applicant_id": {
-          "name": "applicant_id",
-          "type": "integer",
+        "organization_id": {
+          "name": "organization_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "activityStatus": {
+          "name": "activityStatus",
+          "type": "activityStatus",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'Requested'"
+        },
+        "reviewers": {
+          "name": "reviewers",
+          "type": "text[]",
           "primaryKey": false,
           "notNull": false
         },
@@ -73,17 +99,144 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "activities_applicant_id_users_id_fk": {
-          "name": "activities_applicant_id_users_id_fk",
+        "activities_organization_id_organizations_id_fk": {
+          "name": "activities_organization_id_organizations_id_fk",
           "tableFrom": "activities",
-          "tableTo": "users",
-          "columnsFrom": ["applicant_id"],
-          "columnsTo": ["id"],
+          "tableTo": "organizations",
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "additional": {
+      "name": "additional",
+      "schema": "",
+      "columns": {
+        "userId": {
+          "name": "userId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "organization_id": {
+          "name": "organization_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "faculty_id": {
+          "name": "faculty_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "department_id": {
+          "name": "department_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "additional_userId_users_id_fk": {
+          "name": "additional_userId_users_id_fk",
+          "tableFrom": "additional",
+          "tableTo": "users",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "additional_organization_id_organizations_id_fk": {
+          "name": "additional_organization_id_organizations_id_fk",
+          "tableFrom": "additional",
+          "tableTo": "organizations",
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "additional_faculty_id_faculty_id_fk": {
+          "name": "additional_faculty_id_faculty_id_fk",
+          "tableFrom": "additional",
+          "tableTo": "faculty",
+          "columnsFrom": [
+            "faculty_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "additional_department_id_department_id_fk": {
+          "name": "additional_department_id_department_id_fk",
+          "tableFrom": "additional",
+          "tableTo": "department",
+          "columnsFrom": [
+            "department_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "additional_userId_organization_id_pk": {
+          "name": "additional_userId_organization_id_pk",
+          "columns": [
+            "userId",
+            "organization_id"
+          ]
+        },
+        "faculty": {
+          "name": "faculty",
+          "columns": [
+            "userId",
+            "faculty_id"
+          ]
+        },
+        "department": {
+          "name": "department",
+          "columns": [
+            "userId",
+            "department_id"
+          ]
+        }
+      },
       "uniqueConstraints": {}
     },
     "department": {
@@ -92,9 +245,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "name": {
           "name": "name",
@@ -104,7 +258,7 @@
         },
         "faculty_id": {
           "name": "faculty_id",
-          "type": "integer",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": false
         },
@@ -129,8 +283,12 @@
           "name": "department_faculty_id_faculty_id_fk",
           "tableFrom": "department",
           "tableTo": "faculty",
-          "columnsFrom": ["faculty_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "faculty_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -144,51 +302,16 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "name": {
           "name": "name",
           "type": "text",
           "primaryKey": false,
           "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "organization_level": {
-      "name": "organization_level",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -216,95 +339,20 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "name": {
           "name": "name",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
-        },
-        "faculty_id": {
-          "name": "faculty_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "department_id": {
-          "name": "department_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "organization_level_id": {
-          "name": "organization_level_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "organizations_faculty_id_faculty_id_fk": {
-          "name": "organizations_faculty_id_faculty_id_fk",
-          "tableFrom": "organizations",
-          "tableTo": "faculty",
-          "columnsFrom": ["faculty_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "organizations_department_id_department_id_fk": {
-          "name": "organizations_department_id_department_id_fk",
-          "tableFrom": "organizations",
-          "tableTo": "department",
-          "columnsFrom": ["department_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "organizations_organization_level_id_organization_level_id_fk": {
-          "name": "organizations_organization_level_id_organization_level_id_fk",
-          "tableFrom": "organizations",
-          "tableTo": "organization_level",
-          "columnsFrom": ["organization_level_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "proposal_status": {
-      "name": "proposal_status",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "integer",
-          "primaryKey": true,
           "notNull": true
         },
-        "name": {
-          "name": "name",
-          "type": "text",
+        "organizationType": {
+          "name": "organizationType",
+          "type": "organizationType",
           "primaryKey": false,
           "notNull": false
         },
@@ -328,110 +376,38 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "proposals": {
-      "name": "proposals",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "title": {
-          "name": "title",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "file": {
-          "name": "file",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "proposal_staus_id": {
-          "name": "proposal_staus_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "activity_id": {
-          "name": "activity_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "proposals_proposal_staus_id_proposal_status_id_fk": {
-          "name": "proposals_proposal_staus_id_proposal_status_id_fk",
-          "tableFrom": "proposals",
-          "tableTo": "proposal_status",
-          "columnsFrom": ["proposal_staus_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "proposals_activity_id_activities_id_fk": {
-          "name": "proposals_activity_id_activities_id_fk",
-          "tableFrom": "proposals",
-          "tableTo": "activities",
-          "columnsFrom": ["activity_id"],
-          "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "reviews": {
       "name": "reviews",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "reviewer_id": {
           "name": "reviewer_id",
-          "type": "integer",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "proposal_id": {
-          "name": "proposal_id",
-          "type": "integer",
+        "activity_id": {
+          "name": "activity_id",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "is_approved": {
-          "name": "is_approved",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "commenst": {
-          "name": "commenst",
+        "note": {
+          "name": "note",
           "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reviewStatus": {
+          "name": "reviewStatus",
+          "type": "reviewStatus",
           "primaryKey": false,
           "notNull": false
         },
@@ -456,17 +432,25 @@
           "name": "reviews_reviewer_id_users_id_fk",
           "tableFrom": "reviews",
           "tableTo": "users",
-          "columnsFrom": ["reviewer_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "reviewer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "reviews_proposal_id_proposals_id_fk": {
-          "name": "reviews_proposal_id_proposals_id_fk",
+        "reviews_activity_id_activities_id_fk": {
+          "name": "reviews_activity_id_activities_id_fk",
           "tableFrom": "reviews",
-          "tableTo": "proposals",
-          "columnsFrom": ["proposal_id"],
-          "columnsTo": ["id"],
+          "tableTo": "activities",
+          "columnsFrom": [
+            "activity_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -480,9 +464,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "name": {
           "name": "name",
@@ -516,111 +501,22 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "user_affiliations": {
-      "name": "user_affiliations",
-      "schema": "",
-      "columns": {
-        "userId": {
-          "name": "userId",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "organization_id": {
-          "name": "organization_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "faculty_id": {
-          "name": "faculty_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "department_id": {
-          "name": "department_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "user_affiliations_userId_users_id_fk": {
-          "name": "user_affiliations_userId_users_id_fk",
-          "tableFrom": "user_affiliations",
-          "tableTo": "users",
-          "columnsFrom": ["userId"],
-          "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "user_affiliations_organization_id_organizations_id_fk": {
-          "name": "user_affiliations_organization_id_organizations_id_fk",
-          "tableFrom": "user_affiliations",
-          "tableTo": "organizations",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "user_affiliations_faculty_id_faculty_id_fk": {
-          "name": "user_affiliations_faculty_id_faculty_id_fk",
-          "tableFrom": "user_affiliations",
-          "tableTo": "faculty",
-          "columnsFrom": ["faculty_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "user_affiliations_department_id_department_id_fk": {
-          "name": "user_affiliations_department_id_department_id_fk",
-          "tableFrom": "user_affiliations",
-          "tableTo": "department",
-          "columnsFrom": ["department_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "user_affiliations_userId_organization_id_pk": {
-          "name": "user_affiliations_userId_organization_id_pk",
-          "columns": ["userId", "organization_id"]
-        }
-      },
-      "uniqueConstraints": {}
-    },
     "users": {
       "name": "users",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "fullname": {
           "name": "fullname",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "email": {
           "name": "email",
@@ -642,7 +538,7 @@
         },
         "role_id": {
           "name": "role_id",
-          "type": "integer",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
@@ -667,8 +563,12 @@
           "name": "users_role_id_roles_id_fk",
           "tableFrom": "users",
           "tableTo": "roles",
-          "columnsFrom": ["role_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "role_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -677,7 +577,49 @@
       "uniqueConstraints": {}
     }
   },
-  "enums": {},
+  "enums": {
+    "activityStatus": {
+      "name": "activityStatus",
+      "values": {
+        "Requested": "Requested",
+        "Completed": "Completed",
+        "Reported": "Reported",
+        "Not Reported": "Not Reported",
+        "Rejected by Vice Dean": "Rejected by Vice Dean",
+        "Rejected by Vice Chancellor": "Rejected by Vice Chancellor",
+        "Rejected by Head Department": "Rejected by Head Department",
+        "Rejected by Student Government": "Rejected by Student Government",
+        "Rejected by Student Council": "Rejected by Student Council",
+        "Approved by Vice Dean": "Approved by Vice Dean",
+        "Approved by Vice Chancellor": "Approved by Vice Chancellor",
+        "Approved by Head Department": "Approved by Head Department",
+        "Approved by Student Government": "Approved by Student Government",
+        "Approved by Student Council": "Approved by Student Council"
+      }
+    },
+    "organizationType": {
+      "name": "organizationType",
+      "values": {
+        "Ormawa": "Ormawa",
+        "UKM": "UKM"
+      }
+    },
+    "reviewStatus": {
+      "name": "reviewStatus",
+      "values": {
+        "Rejected by Vice Dean": "Rejected by Vice Dean",
+        "Rejected by Vice Chancellor": "Rejected by Vice Chancellor",
+        "Rejected by Head Department": "Rejected by Head Department",
+        "Rejected by Student Government": "Rejected by Student Government",
+        "Rejected by Student Council": "Rejected by Student Council",
+        "Approved by Vice Dean": "Approved by Vice Dean",
+        "Approved by Vice Chancellor": "Approved by Vice Chancellor",
+        "Approved by Head Department": "Approved by Head Department",
+        "Approved by Student Government": "Approved by Student Government",
+        "Approved by Student Council": "Approved by Student Council"
+      }
+    }
+  },
   "schemas": {},
   "_meta": {
     "columns": {},

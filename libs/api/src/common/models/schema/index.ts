@@ -64,7 +64,7 @@ export const roles = pgTable('roles', {
 });
 
 export const additional = pgTable(
-  'user_affiliations',
+  'additional',
   {
     userId: uuid('userId')
       .notNull()

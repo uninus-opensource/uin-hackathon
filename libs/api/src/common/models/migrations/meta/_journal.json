@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1708518238744,
-      "tag": "0000_adorable_rogue",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1708518649415,
-      "tag": "0001_legal_earthquake",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1708519280602,
-      "tag": "0002_same_tigra",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1708519716600,
-      "tag": "0003_serious_scream",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1708520021754,
-      "tag": "0004_black_groot",
+      "when": 1708883509737,
+      "tag": "0000_romantic_magus",
       "breakpoints": true
     }
   ]

@@ -235,7 +235,7 @@ export class UserService {
         email: schema.users.email,
         createdAt: schema.users.createdAt,
         updatedAt: schema.users.updatedAt,
-        organizationId: schema.organizations.id,
+        organizationId: schema.additional.organizationId,
         role: {
           id: schema.roles.id,
           name: schema.roles.name,
@@ -244,7 +244,10 @@ export class UserService {
       })
       .from(schema.users)
       .leftJoin(schema.roles, eq(schema.roles.id, schema.users.roleId))
-
+      .leftJoin(
+        schema.additional,
+        eq(schema.additional.userId, schema.users.id)
+      )
       .where(eq(schema.users.email, email))
       .then((res) => res.at(0));
 
