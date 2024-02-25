@@ -1,5 +1,5 @@
 {
-  "id": "2c23df3a-e137-4e9c-a2c8-25530c0e0c64",
+  "id": "48c981e7-5f9e-4e20-9194-da99fd81d19f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -214,29 +214,7 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "additional_userId_organization_id_pk": {
-          "name": "additional_userId_organization_id_pk",
-          "columns": [
-            "userId",
-            "organization_id"
-          ]
-        },
-        "faculty": {
-          "name": "faculty",
-          "columns": [
-            "userId",
-            "faculty_id"
-          ]
-        },
-        "department": {
-          "name": "department",
-          "columns": [
-            "userId",
-            "department_id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
     "department": {
@@ -353,6 +331,12 @@
         "organizationType": {
           "name": "organizationType",
           "type": "organizationType",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "organizationLevel": {
+          "name": "organizationLevel",
+          "type": "organizationLevel",
           "primaryKey": false,
           "notNull": false
         },
@@ -530,6 +514,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "nim": {
+          "name": "nim",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "password": {
           "name": "password",
           "type": "text",
@@ -595,6 +585,14 @@
         "Approved by Head Department": "Approved by Head Department",
         "Approved by Student Government": "Approved by Student Government",
         "Approved by Student Council": "Approved by Student Council"
+      }
+    },
+    "organizationLevel": {
+      "name": "organizationLevel",
+      "values": {
+        "Universitas": "Universitas",
+        "Fakultas": "Fakultas",
+        "Prodi": "Prodi"
       }
     },
     "organizationType": {

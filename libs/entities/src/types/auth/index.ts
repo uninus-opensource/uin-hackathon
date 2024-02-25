@@ -20,6 +20,8 @@ export type TJwtRequest = {
   email: string;
   fullname?: string;
   organizationId?: string;
+  facultyId?: string;
+  departmentId?: string;
   role: {
     name: string;
     permissions: Array<string>;
@@ -30,6 +32,8 @@ export type TRegisterRequest = Pick<TLoginRequest, 'email'> & {
   fullname: string;
   password: string;
   avatar?: string;
+  organizationId?: string;
+  nim?: string;
 };
 
 export type TRegisterResponse = {

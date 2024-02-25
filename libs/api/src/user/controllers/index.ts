@@ -73,4 +73,9 @@ export class UserController {
   async create(@Body(new ZodValidationPipe(VSCreateUser)) data: TUserRequest) {
     return await this.userService.create(data);
   }
+
+  @Post()
+  async findUserByEmail(@Body('email') email: string) {
+    return await this.userService.findUserByEmail(email);
+  }
 }

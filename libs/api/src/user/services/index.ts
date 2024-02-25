@@ -233,9 +233,19 @@ export class UserService {
         id: schema.users.id,
         fullname: schema.users.fullname,
         email: schema.users.email,
-        createdAt: schema.users.createdAt,
-        updatedAt: schema.users.updatedAt,
-        organizationId: schema.additional.organizationId,
+        password: schema.users.password,
+        organization: {
+          id: schema.organizations.id,
+          name: schema.organizations.name,
+        },
+        faculty: {
+          id: schema.faculty.id,
+          name: schema.faculty.name,
+        },
+        department: {
+          id: schema.department.id,
+          name: schema.department.name,
+        },
         role: {
           id: schema.roles.id,
           name: schema.roles.name,
@@ -247,6 +257,18 @@ export class UserService {
       .leftJoin(
         schema.additional,
         eq(schema.additional.userId, schema.users.id)
+      )
+      .leftJoin(
+        schema.organizations,
+        eq(schema.additional.organizationId, schema.organizations.id)
+      )
+      .leftJoin(
+        schema.faculty,
+        eq(schema.additional.facultyId, schema.faculty.id)
+      )
+      .leftJoin(
+        schema.department,
+        eq(schema.additional.departmentId, schema.department.id)
       )
       .where(eq(schema.users.email, email))
       .then((res) => res.at(0));

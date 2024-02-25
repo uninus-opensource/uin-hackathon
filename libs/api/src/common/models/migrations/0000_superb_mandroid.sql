@@ -5,6 +5,12 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ CREATE TYPE "organizationLevel" AS ENUM('Universitas', 'Fakultas', 'Prodi');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  CREATE TYPE "organizationType" AS ENUM('Ormawa', 'UKM');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -39,8 +45,7 @@ CREATE TABLE IF NOT EXISTS "additional" (
 	"faculty_id" uuid,
 	"department_id" uuid,
 	"created_at" timestamp with time zone DEFAULT now(),
-	"updated_at" timestamp with time zone DEFAULT now(),
-	CONSTRAINT "additional_userId_organization_id_pk" PRIMARY KEY("userId","organization_id")
+	"updated_at" timestamp with time zone DEFAULT now()
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "department" (
@@ -62,6 +67,7 @@ CREATE TABLE IF NOT EXISTS "organizations" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
 	"organizationType" "organizationType",
+	"organizationLevel" "organizationLevel",
 	"created_at" timestamp with time zone DEFAULT now(),
 	"updated_at" timestamp with time zone DEFAULT now()
 );
@@ -89,6 +95,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"fullname" text NOT NULL,
 	"email" text NOT NULL,
 	"avatar" text,
+	"nim" text,
 	"password" text,
 	"role_id" uuid NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now(),
