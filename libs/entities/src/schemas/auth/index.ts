@@ -15,10 +15,12 @@ export const VSLogin = z.object({
 });
 
 export const VSRegister = z.object({
-  email: z.string().min(1, { message: 'Email harus diisi' }).email({
+  email: z.string({ required_error: 'Email harus diisi' }).email({
     message: 'Email harus valid',
   }),
-  fullname: z.string().min(2, { message: 'Nama Lengkap harus diisi' }),
+  fullname: z
+    .string({ required_error: 'Nama Lengkap harus diisi' })
+    .min(2, { message: 'Nama Lengkap harus diisi' }),
   password: z
     .string({ required_error: 'Password harus diisi' })
     .min(8, { message: 'Password minimal 8 karakter' })
@@ -28,10 +30,6 @@ export const VSRegister = z.object({
     .refine((data) => data.match(/[0-9]/g), {
       message: 'Password harus ada angka',
     }),
-
-  confirmPassword: z.string({
-    required_error: 'Konfirmasi password harus diisi',
-  }),
 });
 
 export type TVSRegister = z.infer<typeof VSRegister>;

@@ -17,7 +17,7 @@ import {
   VSCreateActivity,
   VSUpdateActivity,
 } from '@psu/entities';
-import { ZodValidationPipe } from '../../common/pipes/zod.pipe';
+import { ZodValidationPipe } from '../../common/pipes/';
 
 @Controller('activity')
 @UseGuards(AccessGuard)

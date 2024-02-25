@@ -20,7 +20,7 @@ import {
   VSUpdateProfile,
   VSUpdateUser,
 } from '@psu/entities';
-import { ZodValidationPipe } from '../../common/pipes/zod.pipe';
+import { ZodValidationPipe } from '../../common/pipes/';
 
 @Controller('user')
 @UseGuards(AccessGuard)
@@ -43,7 +43,7 @@ export class UserController {
     const {
       user: { sub: id },
     } = request;
-    return await this.userService.update({ id, ...data });
+    return await this.userService.update({ id, fullname: data.fullname });
   }
 
   @Get('/:id')

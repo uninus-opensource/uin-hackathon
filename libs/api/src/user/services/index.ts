@@ -172,17 +172,20 @@ export class UserService {
     };
   }
   async update(data: TUserRequest): Promise<TUserSingleResponse> {
+    const { id, ...restData } = data;
+    const password =
+      restData.password && (await encryptPassword(restData.password as string));
     const res = await this.drizzle
       .update(schema.users)
       .set({
-        fullname: data.fullname as string,
-        email: data.email as string,
-        roleId: data.roleId as string,
-        avatar: data.avatar,
-        password: await encryptPassword(data.password as string),
+        fullname: restData.fullname as string,
+        email: restData.email as string,
+        roleId: restData.roleId as string,
+        avatar: restData.avatar,
+        password,
         updatedAt: new Date(),
       })
-      .where(eq(schema.users.id, data.id as string))
+      .where(eq(schema.users.id, id as string))
       .returning({
         id: schema.users.id,
         fullname: schema.users.fullname,

@@ -15,7 +15,7 @@ import {
   VSRegister,
 } from '@psu/entities';
 import { GoogleGuard, RefreshGuard } from '../../common/guards';
-import { ZodValidationPipe } from '../../common/pipes/zod.pipe';
+import { ZodValidationPipe } from '../../common/pipes/';
 
 @Controller('auth')
 export class AuthController {
