@@ -5,3 +5,4 @@ export * from './trpc';
 export * from './drizzle';
 export * from './common';
 export * from './email';
+export * from './file';

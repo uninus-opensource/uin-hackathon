@@ -9,6 +9,7 @@ import {
   ActivityModule,
   AuthModule,
   EmailModule,
+  FileModule,
 } from '@psu/api';
 
 @Module({
@@ -18,6 +19,7 @@ import {
     UserModule,
     DrizzleModule,
     EmailModule,
+    FileModule,
     PassportModule.register({
       defaultStrategy: 'access',
     }),
