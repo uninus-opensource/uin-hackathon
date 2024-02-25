@@ -104,8 +104,14 @@ export type TLabel = LabelHTMLAttributes<HTMLLabelElement> & {
 export type TControlledInput<T extends FieldValues> = UseControllerProps<T> &
   TInput &
   TInputMolecule;
+
+export type TControlledSelect<T extends FieldValues> = UseControllerProps<T> &
+  TSelect &
+  TInputMolecule;
+
 export type TControlledInputSpecial<T extends FieldValues> =
   UseControllerProps<T> & TInputSpecial & TInputMolecule;
+
 export type TControlledTextArea<T extends FieldValues> = UseControllerProps<T> &
   TTextArea &
   TInputMolecule;

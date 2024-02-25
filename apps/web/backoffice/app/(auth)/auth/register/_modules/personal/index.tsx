@@ -1,45 +1,32 @@
 'use client';
 import { Button } from '@psu/web-component-atoms';
-import { Form } from '@psu/web-component-templates';
 import { ControlledFieldText } from '@psu/web-component-organisms';
-import { useForm } from 'react-hook-form';
-import { FC, ReactElement } from 'react';
+import { useFormContext } from 'react-hook-form';
+import { FC, Fragment, ReactElement } from 'react';
 import { FcGoogle } from 'react-icons/fc';
-import z from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+import { parseAsString, useQueryState } from 'next-usequerystate';
+import { TRegister } from '../register';
 
-const schema = z.object({
-  fullname: z.string().min(1, { message: 'Nama Lengkap wajib diisi' }),
-  password: z.string().min(1, { message: 'Kata sandi wajib diisi' }),
-  email: z.string().email({ message: 'Email tidak valid' }),
-  nim: z.string().min(1, { message: 'NIM wajib diisi' }),
-  confirmPassword: z
-    .string()
-    .min(1, { message: 'Konfirmasi kata sandi wajib diisi' })
-    .refine((value) => value === 'password', {
-      message: 'Konfirmasi kata sandi tidak sama',
-      path: ['confirmPassword'],
-    }),
-});
-
-export const AuthRegisterModule: FC = (): ReactElement => {
+export const AuthRegisterPersonalModule: FC = (): ReactElement => {
   const {
     control,
     formState: { errors },
-  } = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    mode: 'all',
-    defaultValues: {
-      fullname: '',
-      email: '',
-      password: '',
-    },
-  });
+  } = useFormContext<TRegister>();
+
+  const [_, setStep] = useQueryState(
+    'step',
+    parseAsString.withDefault('personal')
+  );
 
   return (
-    <Form>
-      <h1 className="text-2xl font-bold text-black text-left">Registrasi</h1>
+    <Fragment>
+      <h1
+        data-testid="title"
+        className="text-2xl font-bold text-black text-left"
+      >
+        Registrasi
+      </h1>
       <section className="flex flex-col gap-y-3 mt-[18px]">
         <Button variantType="outline" size="lg">
           <div className="flex items-center gap-x-3 justify-center">
@@ -64,7 +51,7 @@ export const AuthRegisterModule: FC = (): ReactElement => {
             control={control}
             name="fullname"
             label="Nama Lengkap"
-            size="md"
+            size="sm"
             placeholder="Masukkan Nama Lengkap"
             status={errors.fullname ? 'error' : 'default'}
             message={errors.fullname?.message}
@@ -73,7 +60,8 @@ export const AuthRegisterModule: FC = (): ReactElement => {
             control={control}
             name="password"
             label="Kata Sandi"
-            size="md"
+            size="sm"
+            type="password"
             placeholder="Masukkan Kata Sandi"
             status={errors.password ? 'error' : 'default'}
             message={errors.password?.message}
@@ -85,16 +73,16 @@ export const AuthRegisterModule: FC = (): ReactElement => {
             control={control}
             name="nim"
             label="NIM"
-            size="md"
+            size="sm"
             placeholder="Contoh: 41037000***"
-            status={errors.email ? 'error' : 'default'}
-            message={errors.email?.message}
+            status={errors.nim ? 'error' : 'default'}
+            message={errors.nim?.message}
           />
           <ControlledFieldText
             control={control}
             name="confirmPassword"
             label="Konfirmasi Kata Sandi"
-            size="md"
+            size="sm"
             placeholder="Masukkan Konfirmasi Kata Sandi"
             status={errors.confirmPassword ? 'error' : 'default'}
             message={errors.confirmPassword?.message}
@@ -106,14 +94,17 @@ export const AuthRegisterModule: FC = (): ReactElement => {
             control={control}
             name="email"
             label="Email"
-            size="md"
+            type="email"
+            size="sm"
             placeholder="Contoh: email@example.com"
             status={errors.email ? 'error' : 'default'}
             message={errors.email?.message}
           />
         </div>
       </section>
-      <Button size="lg">Berikutnya</Button>
+      <Button type="button" onClick={() => setStep('organization')} size="lg">
+        Berikutnya
+      </Button>
       <div className="w-full flex justify-between">
         <h1 className="font-regular text-xs sm:text-sm text-grey">
           Sudah punya akun?
@@ -125,6 +116,6 @@ export const AuthRegisterModule: FC = (): ReactElement => {
           Klik untuk masuk
         </Link>
       </div>
-    </Form>
+    </Fragment>
   );
 };
