@@ -17,7 +17,13 @@ export const Label: FC<TLabel> = (props): ReactElement => {
   );
 
   return (
-    <label data-testid="label" className={className} {...props}>
+    <label
+      id={props.id}
+      data-testid="label"
+      htmlFor={props.htmlFor}
+      className={className}
+      {...props}
+    >
       {props.children}
       {props.required && (
         <span data-testid="required" className="text-error">

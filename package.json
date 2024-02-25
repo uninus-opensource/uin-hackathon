@@ -1,6 +1,6 @@
 {
   "name": "@psu/source",
-  "version": "v0.0.1-alpha",
+  "version": "v0.1.0-beta",
   "license": "MIT",
   "scripts": {
     "web:backoffice:dev": "nx dev web-backoffice",

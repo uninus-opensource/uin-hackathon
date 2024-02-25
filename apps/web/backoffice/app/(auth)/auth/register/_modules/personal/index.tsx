@@ -6,13 +6,13 @@ import { FC, Fragment, ReactElement } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import Link from 'next/link';
 import { parseAsString, useQueryState } from 'next-usequerystate';
-import { TRegister } from '../register';
+import { TRegisterPersonal } from '../register';
 
 export const AuthRegisterPersonalModule: FC = (): ReactElement => {
   const {
     control,
-    formState: { errors },
-  } = useFormContext<TRegister>();
+    formState: { errors, isValid },
+  } = useFormContext<TRegisterPersonal>();
 
   const [_, setStep] = useQueryState(
     'step',
@@ -52,6 +52,7 @@ export const AuthRegisterPersonalModule: FC = (): ReactElement => {
             name="fullname"
             label="Nama Lengkap"
             size="sm"
+            type="text"
             placeholder="Masukkan Nama Lengkap"
             status={errors.fullname ? 'error' : 'default'}
             message={errors.fullname?.message}
@@ -74,6 +75,7 @@ export const AuthRegisterPersonalModule: FC = (): ReactElement => {
             name="nim"
             label="NIM"
             size="sm"
+            type="number"
             placeholder="Contoh: 41037000***"
             status={errors.nim ? 'error' : 'default'}
             message={errors.nim?.message}
@@ -83,13 +85,14 @@ export const AuthRegisterPersonalModule: FC = (): ReactElement => {
             name="confirmPassword"
             label="Konfirmasi Kata Sandi"
             size="sm"
+            type="password"
             placeholder="Masukkan Konfirmasi Kata Sandi"
             status={errors.confirmPassword ? 'error' : 'default'}
             message={errors.confirmPassword?.message}
           />
         </div>
 
-        <div className="flex md:flex-row flex-col gap-x-4">
+        <div className="flex md:flex-row flex-col gap-x-4 mb-4">
           <ControlledFieldText
             control={control}
             name="email"
@@ -102,7 +105,12 @@ export const AuthRegisterPersonalModule: FC = (): ReactElement => {
           />
         </div>
       </section>
-      <Button type="button" onClick={() => setStep('organization')} size="lg">
+      <Button
+        disabled={!isValid}
+        type="button"
+        onClick={() => setStep('organization')}
+        size="lg"
+      >
         Berikutnya
       </Button>
       <div className="w-full flex justify-between">
