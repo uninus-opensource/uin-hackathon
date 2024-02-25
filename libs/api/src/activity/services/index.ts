@@ -1,5 +1,6 @@
-import { NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import * as schema from '../../common/models';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { and, asc, desc, eq, ilike } from 'drizzle-orm';
 import {
   EPaginationOrderBy,
@@ -8,13 +9,15 @@ import {
   TActivitySingleResponse,
   TPaginationRequest,
 } from '@psu/entities';
-import { dbConnection } from '../../drizzle';
 
-const db = dbConnection;
+@Injectable()
+export class ActivityService {
+  constructor(
+    @Inject('drizzle') private drizzle: NodePgDatabase<typeof schema>
+  ) {}
 
-export const activityService = {
-  findOne: async (id: string): Promise<TActivitySingleResponse> => {
-    const res = await db
+  async findOne(id: string): Promise<TActivitySingleResponse> {
+    const res = await this.drizzle
       .select({
         id: schema.activities.id,
       })
@@ -30,12 +33,12 @@ export const activityService = {
       message: 'Berhasil mengambil data kegiatan',
       data: res,
     };
-  },
-  findMany: async (data: TPaginationRequest): Promise<TActivityResponse> => {
+  }
+  async findMany(data: TPaginationRequest): Promise<TActivityResponse> {
     const { page = 1, perPage = 10, orderBy, search } = data;
     const orderByFunction = orderBy == EPaginationOrderBy.DESC ? desc : asc;
     const [res, count] = await Promise.all([
-      db
+      this.drizzle
         .select({
           id: schema.activities.id,
         })
@@ -46,7 +49,7 @@ export const activityService = {
         .limit(Number(perPage))
         .offset((Number(page) - 1) * Number(perPage))
         .orderBy(orderByFunction(schema.activities.name)),
-      db
+      this.drizzle
         .select({
           id: schema.activities.id,
         })
@@ -72,9 +75,9 @@ export const activityService = {
         next: Number(page) < lastPage ? Number(page) + 1 : null,
       },
     };
-  },
-  delete: async (id: string): Promise<TActivitySingleResponse> => {
-    const res = await db
+  }
+  async delete(id: string): Promise<TActivitySingleResponse> {
+    const res = await this.drizzle
       .delete(schema.activities)
       .where(eq(schema.activities.id, id))
       .returning({
@@ -89,10 +92,10 @@ export const activityService = {
       message: 'Berhasil menghapus kegiatan',
       data: res,
     };
-  },
-  update: async (data: TActivityRequest): Promise<TActivitySingleResponse> => {
+  }
+  async update(data: TActivityRequest): Promise<TActivitySingleResponse> {
     const { id, ...resdata } = data;
-    const res = await db
+    const res = await this.drizzle
       .update(schema.activities)
       .set(resdata)
       .where(eq(schema.activities.id, id as string))
@@ -108,9 +111,9 @@ export const activityService = {
       message: 'Berhasil update kegiatan',
       data: res,
     };
-  },
-  create: async (data: TActivityRequest): Promise<TActivitySingleResponse> => {
-    const res = await db
+  }
+  async create(data: TActivityRequest): Promise<TActivitySingleResponse> {
+    const res = await this.drizzle
       .insert(schema.activities)
       .values({
         name: data.name as string,
@@ -136,5 +139,5 @@ export const activityService = {
       message: 'Berhasil menambahkan kegiatan',
       data: res,
     };
-  },
-};
+  }
+}

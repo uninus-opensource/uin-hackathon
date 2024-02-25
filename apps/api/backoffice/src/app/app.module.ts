@@ -6,17 +6,19 @@ import {
   AccessStrategy,
   RefreshStrategy,
   GoogleStrategy,
-  TrpcModule,
+  ActivityModule,
+  AuthModule,
 } from '@psu/api';
 
 @Module({
   imports: [
+    ActivityModule,
+    AuthModule,
     UserModule,
     DrizzleModule,
     PassportModule.register({
       defaultStrategy: 'access',
     }),
-    TrpcModule,
   ],
   controllers: [],
   providers: [AccessStrategy, RefreshStrategy, GoogleStrategy],

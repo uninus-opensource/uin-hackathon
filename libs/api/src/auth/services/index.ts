@@ -1,10 +1,12 @@
 import {
   BadRequestException,
   ConflictException,
+  Inject,
+  Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import * as schema from '../../common/models';
-
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq, ilike } from 'drizzle-orm';
 import {
   TLoginRequest,
@@ -20,15 +22,14 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from '../../common';
-
-import { dbConnection } from '../../drizzle';
-
-const db = dbConnection;
-
-export const authService = {
-  login: async (payload: TLoginRequest): Promise<TLoginResponse> => {
+@Injectable()
+export class AuthService {
+  constructor(
+    @Inject('drizzle') private drizzle: NodePgDatabase<typeof schema>
+  ) {}
+  async login(payload: TLoginRequest): Promise<TLoginResponse> {
     const { email, password } = payload;
-    const res = await db
+    const res = await this.drizzle
       .select({
         id: schema.users.id,
         fullname: schema.users.fullname,
@@ -95,18 +96,18 @@ export const authService = {
         },
       },
     };
-  },
-  register: async (payload: TRegisterRequest): Promise<TRegisterResponse> => {
+  }
+  async register(payload: TRegisterRequest): Promise<TRegisterResponse> {
     const { email, password, fullname, avatar } = payload;
     const [isEmailExist, findRole] = await Promise.all([
-      db
+      this.drizzle
         .select({
           id: schema.users.id,
         })
         .from(schema.users)
         .where(eq(schema.users.email, email))
         .then((res) => res.at(0)),
-      db
+      this.drizzle
         .select({
           id: schema.roles.id,
         })
@@ -118,7 +119,7 @@ export const authService = {
     if (isEmailExist) {
       throw new ConflictException('Email telah digunakan');
     }
-    const createUser = await db
+    const createUser = await this.drizzle
       .insert(schema.users)
       .values({
         fullname: fullname as string,
@@ -139,8 +140,9 @@ export const authService = {
     return {
       message: 'Akun berhasil dibuat, silahkan login!',
     };
-  },
-  refresh: async (payload: TJwtRequest) => {
+  }
+
+  async refresh(payload: TJwtRequest) {
     const expiresIn = 15 * 60 * 1000;
     const accessToken = await generateAccessToken(payload);
 
@@ -151,13 +153,14 @@ export const authService = {
       accessToken,
       exp: expirationTime,
     };
-  },
-  google: async (payload: TGoogleRequest) => {
+  }
+
+  async google(payload: TGoogleRequest) {
     const { email, avatar, fullname } = payload;
 
     // eslint-disable-next-line prefer-const
     let [res, findRole] = await Promise.all([
-      db
+      this.drizzle
         .select({
           id: schema.users.id,
           fullname: schema.users.fullname,
@@ -172,7 +175,7 @@ export const authService = {
         .leftJoin(schema.roles, eq(schema.roles.id, schema.users.roleId))
         .where(eq(schema.users.email, email as string))
         .then((res) => res.at(0)),
-      db
+      this.drizzle
         .select({
           id: schema.roles.id,
           name: schema.roles.name,
@@ -183,7 +186,7 @@ export const authService = {
         .then((res) => res.at(0)),
     ]);
     if (!res) {
-      const insertUser = await db
+      const insertUser = await this.drizzle
         .insert(schema.users)
         .values({
           fullname: fullname as string,
@@ -257,5 +260,5 @@ export const authService = {
         },
       },
     };
-  },
-};
+  }
+}

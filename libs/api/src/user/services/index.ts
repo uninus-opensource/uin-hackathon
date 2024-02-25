@@ -10,13 +10,14 @@ import {
   TUserSingleResponse,
 } from '@psu/entities';
 import { encryptPassword } from '../../common';
-import { dbConnection } from '../../drizzle';
+@Injectable()
+export class UserService {
+  constructor(
+    @Inject('drizzle') private drizzle: NodePgDatabase<typeof schema>
+  ) {}
 
-const db = dbConnection;
-
-export const userService = {
-  findOne: async (id: string): Promise<TUserSingleResponse> => {
-    const res = await db
+  async findOne(id: string): Promise<TUserSingleResponse> {
+    const res = await this.drizzle
       .select({
         id: schema.users.id,
         fullname: schema.users.fullname,
@@ -69,12 +70,12 @@ export const userService = {
       message: 'Berhasil mengambil data user',
       data: res,
     };
-  },
-  findMany: async (data: TPaginationRequest): Promise<TUserResponse> => {
+  }
+  async findMany(data: TPaginationRequest): Promise<TUserResponse> {
     const { page = 1, perPage = 10, orderBy, search } = data;
     const orderByFunction = orderBy == EPaginationOrderBy.DESC ? desc : asc;
     const [res, count] = await Promise.all([
-      db
+      this.drizzle
         .select({
           id: schema.users.id,
           fullname: schema.users.fullname,
@@ -123,7 +124,7 @@ export const userService = {
         .limit(Number(perPage))
         .offset((Number(page) - 1) * Number(perPage))
         .orderBy(orderByFunction(schema.users.fullname)),
-      db
+      this.drizzle
         .select({
           id: schema.users.id,
         })
@@ -150,9 +151,9 @@ export const userService = {
         next: Number(page) < lastPage ? Number(page) + 1 : null,
       },
     };
-  },
-  delete: async (id: string): Promise<TUserSingleResponse> => {
-    const res = await db
+  }
+  async delete(id: string): Promise<TUserSingleResponse> {
+    const res = await this.drizzle
       .delete(schema.users)
       .where(eq(schema.users.id, id))
       .returning({
@@ -169,19 +170,22 @@ export const userService = {
       message: 'Berhasil menghapus user',
       data: res,
     };
-  },
-  update: async (data: TUserRequest): Promise<TUserSingleResponse> => {
-    const res = await db
+  }
+  async update(data: TUserRequest): Promise<TUserSingleResponse> {
+    const { id, ...restData } = data;
+    const password =
+      restData.password && (await encryptPassword(restData.password as string));
+    const res = await this.drizzle
       .update(schema.users)
       .set({
-        fullname: data.fullname as string,
-        email: data.email as string,
-        roleId: data.roleId as string,
-        avatar: data.avatar,
-        password: await encryptPassword(data.password as string),
+        fullname: restData.fullname as string,
+        email: restData.email as string,
+        roleId: restData.roleId as string,
+        avatar: restData.avatar,
+        password,
         updatedAt: new Date(),
       })
-      .where(eq(schema.users.id, data.id as string))
+      .where(eq(schema.users.id, id as string))
       .returning({
         id: schema.users.id,
         fullname: schema.users.fullname,
@@ -196,9 +200,9 @@ export const userService = {
       message: 'Berhasil update user',
       data: res,
     };
-  },
-  create: async (data: TUserRequest): Promise<TUserSingleResponse> => {
-    const res = await db
+  }
+  async create(data: TUserRequest): Promise<TUserSingleResponse> {
+    const res = await this.drizzle
       .insert(schema.users)
       .values({
         fullname: data.fullname as string,
@@ -221,5 +225,5 @@ export const userService = {
       message: 'Berhasil menambahkan user',
       data: res,
     };
-  },
-};
+  }
+}

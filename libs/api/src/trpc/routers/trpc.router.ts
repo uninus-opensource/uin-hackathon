@@ -2,8 +2,8 @@ import { INestApplication, Injectable } from '@nestjs/common';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { initTRPC } from '@trpc/server';
 import { z } from 'zod';
-import { authService } from '../../auth';
-import { TLoginRequest, TRegisterRequest } from '@psu/entities';
+// import { authService } from '../../auth';
+// import { TLoginRequest, TRegisterRequest } from '@psu/entities';
 export const t = initTRPC.create();
 export const router = t.router;
 export const procedure = t.procedure;
@@ -15,7 +15,7 @@ export const appRouter = router({
     login: procedure
       .input(z.object({ email: z.string(), password: z.string() }))
       .query(async ({ input }) => {
-        return await authService.login(input as TLoginRequest);
+        return [];
       }),
     register: procedure
       .input(
@@ -26,7 +26,7 @@ export const appRouter = router({
         })
       )
       .query(async ({ input }) => {
-        return await authService.register(input as TRegisterRequest);
+        return [];
       }),
   }),
 });

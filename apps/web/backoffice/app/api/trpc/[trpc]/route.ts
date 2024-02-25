@@ -1,4 +1,4 @@
-import { appRouter } from '@psu/api';
+import { appRouter } from '@psu/trpc';
 import {
   FetchCreateContextFnOptions,
   fetchRequestHandler,

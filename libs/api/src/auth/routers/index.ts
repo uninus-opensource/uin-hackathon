@@ -1,1 +1,4 @@
-export * from './auth.router';
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class AuthRouter {}
