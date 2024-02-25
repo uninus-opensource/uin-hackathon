@@ -151,6 +151,7 @@ export class ActivityService {
     const { type = EChartType.PIE, status, month, organizationId } = data;
     const now = new Date();
     const currentYear = now.getFullYear();
+
     const monthIndex =
       month &&
       monthNames.findIndex(
@@ -474,6 +475,7 @@ export class ActivityService {
       ]);
       return {
         type: EChartType.LINE,
+        month: monthIndex,
         labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
         datasets: [
           {
