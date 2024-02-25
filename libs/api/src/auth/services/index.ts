@@ -25,7 +25,6 @@ import {
   comparePassword,
   encryptPassword,
   generateAccessToken,
-  generateOtp,
   generateRefreshToken,
 } from '../../common';
 import { EmailService } from '../../email';
@@ -46,7 +45,7 @@ export class AuthService {
         fullname: schema.users.fullname,
         email: schema.users.email,
         password: schema.users.password,
-        organizationId: schema.organizations.id,
+        organizationId: schema.additional.organizationId,
         role: {
           id: schema.roles.id,
           name: schema.roles.name,
@@ -73,7 +72,7 @@ export class AuthService {
       generateAccessToken({
         sub: res.id,
         email: res.email,
-        organizationId: res.organizationId,
+        organizationId: res.organizationId as string,
         role: {
           name: res.role?.name || '',
           permissions: res.role?.permissions || [],
@@ -83,7 +82,7 @@ export class AuthService {
       generateRefreshToken({
         sub: res.id,
         email: res.email,
-        organizationId: res.organizationId,
+        organizationId: res.organizationId as string,
         role: {
           name: res.role?.name || '',
           permissions: res.role?.permissions || [],

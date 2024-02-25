@@ -13,7 +13,9 @@ import {
 import { ActivityService } from '../services';
 import { AccessGuard } from '../../common';
 import {
+  EActivityStatusTranslation,
   EChartType,
+  EMonthNames,
   TActivityRequest,
   THeaderRequest,
   TPaginationRequest,
@@ -61,8 +63,12 @@ export class ActivityController {
   async chart(
     @Request() request: THeaderRequest,
     @Query('type') type: EChartType,
-    @Query('status') status: string,
-    @Query('month') month: string
+    @Query('status')
+    status:
+      | EActivityStatusTranslation.REQUESTED
+      | EActivityStatusTranslation.REJECTED
+      | EActivityStatusTranslation.APPROVED,
+    @Query('month') month: EMonthNames
   ) {
     const {
       user: { organizationId },

@@ -1,7 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import * as schema from '../../common/models';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { and, asc, desc, eq, gte, ilike, lt } from 'drizzle-orm';
+import { and, asc, desc, eq, gte, ilike, lt, or } from 'drizzle-orm';
 import {
   EActivityStatus,
   EActivityStatusTranslation,
@@ -10,8 +10,10 @@ import {
   TActivityRequest,
   TActivityResponse,
   TActivitySingleResponse,
+  TChartRequest,
   TChartResponse,
   TPaginationRequest,
+  monthNames,
 } from '@psu/entities';
 
 @Injectable()
@@ -145,20 +147,331 @@ export class ActivityService {
     };
   }
 
-  async chart(data: {
-    type: string;
-    status: string;
-    month: string;
-    organizationId?: string;
-  }): Promise<TChartResponse> {
+  async chart(data: TChartRequest): Promise<TChartResponse> {
     const { type = EChartType.PIE, status, month, organizationId } = data;
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const monthIndex =
+      month &&
+      monthNames.findIndex(
+        (name) => name.toLowerCase() === month.toLowerCase()
+      );
+    const currentMonth = (month ? monthIndex : now.getMonth()) as number;
 
     if (type === EChartType.LINE && organizationId) {
-      // const [requested, approved, rejected] = await Promise.all([
-      //   Promise.all([]),
-      //   Promise.all([]),
-      //   Promise.all([]),
-      // ]);
+      const dayOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      const dayOfLastWeeks = dayOfMonth - 21;
+      const firstWeek = {
+        start: new Date(currentYear, currentMonth, 1),
+        end: new Date(currentYear, currentMonth, 7),
+      };
+      const secondWeek = {
+        start: new Date(currentYear, currentMonth, 8),
+        end: new Date(currentYear, currentMonth, 14),
+      };
+      const thirdWeek = {
+        start: new Date(currentYear, currentMonth, 15),
+        end: new Date(currentYear, currentMonth, 21),
+      };
+      const fourthWeek = {
+        start: new Date(currentYear, currentMonth, 22),
+        end: new Date(currentYear, currentMonth, dayOfLastWeeks),
+      };
+      const [requested, approved, rejected] = await Promise.all([
+        (!status || status === EActivityStatusTranslation.REQUESTED) &&
+          Promise.all([
+            this.drizzle
+              .select({
+                id: schema.activities.id,
+              })
+              .from(schema.activities)
+              .where(
+                and(
+                  eq(schema.activities.status, EActivityStatus.REQUESTED),
+                  eq(
+                    schema.activities.organizationId,
+                    organizationId as string
+                  ),
+                  gte(schema.activities.updatedAt, firstWeek.start),
+                  lt(schema.activities.updatedAt, firstWeek.end)
+                )
+              )
+              .then((res) => res.length),
+            this.drizzle
+              .select({
+                id: schema.activities.id,
+              })
+              .from(schema.activities)
+              .where(
+                and(
+                  eq(schema.activities.status, EActivityStatus.REQUESTED),
+                  eq(
+                    schema.activities.organizationId,
+                    organizationId as string
+                  ),
+                  gte(schema.activities.updatedAt, secondWeek.start),
+                  lt(schema.activities.updatedAt, secondWeek.end)
+                )
+              )
+              .then((res) => res.length),
+            this.drizzle
+              .select({
+                id: schema.activities.id,
+              })
+              .from(schema.activities)
+              .where(
+                and(
+                  eq(schema.activities.status, EActivityStatus.REQUESTED),
+                  eq(
+                    schema.activities.organizationId,
+                    organizationId as string
+                  ),
+                  gte(schema.activities.updatedAt, thirdWeek.start),
+                  lt(schema.activities.updatedAt, thirdWeek.end)
+                )
+              )
+              .then((res) => res.length),
+            this.drizzle
+              .select({
+                id: schema.activities.id,
+              })
+              .from(schema.activities)
+              .where(
+                and(
+                  eq(schema.activities.status, EActivityStatus.REQUESTED),
+                  eq(
+                    schema.activities.organizationId,
+                    organizationId as string
+                  ),
+                  gte(schema.activities.updatedAt, fourthWeek.start),
+                  lt(schema.activities.updatedAt, fourthWeek.end)
+                )
+              )
+              .then((res) => res.length),
+          ]),
+        (!status || status === EActivityStatusTranslation.APPROVED) &&
+          Promise.all([
+            this.drizzle
+              .select({
+                id: schema.activities.id,
+              })
+              .from(schema.activities)
+              .where(
+                and(
+                  eq(
+                    schema.activities.status,
+                    EActivityStatus.APPROVEDBYCHANCELLOR
+                  ),
+                  eq(
+                    schema.activities.organizationId,
+                    organizationId as string
+                  ),
+                  gte(schema.activities.updatedAt, firstWeek.start),
+                  lt(schema.activities.updatedAt, firstWeek.end)
+                )
+              )
+              .then((res) => res.length),
+            this.drizzle
+              .select({
+                id: schema.activities.id,
+              })
+              .from(schema.activities)
+              .where(
+                and(
+                  eq(
+                    schema.activities.status,
+                    EActivityStatus.APPROVEDBYCHANCELLOR
+                  ),
+                  eq(
+                    schema.activities.organizationId,
+                    organizationId as string
+                  ),
+                  gte(schema.activities.updatedAt, secondWeek.start),
+                  lt(schema.activities.updatedAt, secondWeek.end)
+                )
+              )
+              .then((res) => res.length),
+            this.drizzle
+              .select({
+                id: schema.activities.id,
+              })
+              .from(schema.activities)
+              .where(
+                and(
+                  eq(
+                    schema.activities.status,
+                    EActivityStatus.APPROVEDBYCHANCELLOR
+                  ),
+                  eq(
+                    schema.activities.organizationId,
+                    organizationId as string
+                  ),
+                  gte(schema.activities.updatedAt, thirdWeek.start),
+                  lt(schema.activities.updatedAt, thirdWeek.end)
+                )
+              )
+              .then((res) => res.length),
+            this.drizzle
+              .select({
+                id: schema.activities.id,
+              })
+              .from(schema.activities)
+              .where(
+                and(
+                  eq(
+                    schema.activities.status,
+                    EActivityStatus.APPROVEDBYCHANCELLOR
+                  ),
+                  eq(
+                    schema.activities.organizationId,
+                    organizationId as string
+                  ),
+                  gte(schema.activities.updatedAt, fourthWeek.start),
+                  lt(schema.activities.updatedAt, fourthWeek.end)
+                )
+              )
+              .then((res) => res.length),
+          ]),
+        (!status || status === EActivityStatusTranslation.REJECTED) &&
+          Promise.all([
+            this.drizzle
+              .select({
+                id: schema.activities.id,
+              })
+              .from(schema.activities)
+              .where(
+                and(
+                  or(
+                    eq(
+                      schema.activities.status,
+                      EActivityStatus.REJECTEDBYDEAN
+                    ),
+                    eq(
+                      schema.activities.status,
+                      EActivityStatus.REJECTEDBYCHANCELLOR
+                    ),
+                    eq(
+                      schema.activities.status,
+                      EActivityStatus.REJECTEDBYSTUDENTGOVERMENT
+                    ),
+                    eq(
+                      schema.activities.status,
+                      EActivityStatus.REJECTEDBYSTUDENTCOUNCIL
+                    )
+                  ),
+                  eq(
+                    schema.activities.organizationId,
+                    organizationId as string
+                  ),
+                  gte(schema.activities.updatedAt, firstWeek.start),
+                  lt(schema.activities.updatedAt, firstWeek.end)
+                )
+              )
+              .then((res) => res.length),
+            this.drizzle
+              .select({
+                id: schema.activities.id,
+              })
+              .from(schema.activities)
+              .where(
+                and(
+                  or(
+                    eq(
+                      schema.activities.status,
+                      EActivityStatus.REJECTEDBYDEAN
+                    ),
+                    eq(
+                      schema.activities.status,
+                      EActivityStatus.REJECTEDBYCHANCELLOR
+                    ),
+                    eq(
+                      schema.activities.status,
+                      EActivityStatus.REJECTEDBYSTUDENTGOVERMENT
+                    ),
+                    eq(
+                      schema.activities.status,
+                      EActivityStatus.REJECTEDBYSTUDENTCOUNCIL
+                    )
+                  ),
+                  eq(
+                    schema.activities.organizationId,
+                    organizationId as string
+                  ),
+                  gte(schema.activities.updatedAt, secondWeek.start),
+                  lt(schema.activities.updatedAt, secondWeek.end)
+                )
+              )
+              .then((res) => res.length),
+            this.drizzle
+              .select({
+                id: schema.activities.id,
+              })
+              .from(schema.activities)
+              .where(
+                and(
+                  or(
+                    eq(
+                      schema.activities.status,
+                      EActivityStatus.REJECTEDBYDEAN
+                    ),
+                    eq(
+                      schema.activities.status,
+                      EActivityStatus.REJECTEDBYCHANCELLOR
+                    ),
+                    eq(
+                      schema.activities.status,
+                      EActivityStatus.REJECTEDBYSTUDENTGOVERMENT
+                    ),
+                    eq(
+                      schema.activities.status,
+                      EActivityStatus.REJECTEDBYSTUDENTCOUNCIL
+                    )
+                  ),
+                  eq(
+                    schema.activities.organizationId,
+                    organizationId as string
+                  ),
+                  gte(schema.activities.updatedAt, thirdWeek.start),
+                  lt(schema.activities.updatedAt, thirdWeek.end)
+                )
+              )
+              .then((res) => res.length),
+            this.drizzle
+              .select({
+                id: schema.activities.id,
+              })
+              .from(schema.activities)
+              .where(
+                and(
+                  or(
+                    eq(
+                      schema.activities.status,
+                      EActivityStatus.REJECTEDBYDEAN
+                    ),
+                    eq(
+                      schema.activities.status,
+                      EActivityStatus.REJECTEDBYCHANCELLOR
+                    ),
+                    eq(
+                      schema.activities.status,
+                      EActivityStatus.REJECTEDBYSTUDENTGOVERMENT
+                    ),
+                    eq(
+                      schema.activities.status,
+                      EActivityStatus.REJECTEDBYSTUDENTCOUNCIL
+                    )
+                  ),
+                  eq(
+                    schema.activities.organizationId,
+                    organizationId as string
+                  ),
+                  gte(schema.activities.updatedAt, fourthWeek.start),
+                  lt(schema.activities.updatedAt, fourthWeek.end)
+                )
+              )
+              .then((res) => res.length),
+          ]),
+      ]);
       return {
         type: EChartType.LINE,
         labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
@@ -170,7 +483,7 @@ export class ActivityService {
             pointBackgroundColor: '#AFFFD4',
             pointBorderColor: '#02E56D',
             pointBorderWidth: 2,
-            data: [20, 10, 5, 15],
+            data: requested || [],
             tention: 0.2,
           },
           {
@@ -179,7 +492,7 @@ export class ActivityService {
             borderColor: '#FFF986',
             pointBorderColor: '#F8BF02',
             pointBorderWidth: 2,
-            data: [5, 10, 12, 7],
+            data: approved || [],
             pointBackgroundColor: '#FFF986',
             fill: false,
             tention: 0.2,
@@ -190,7 +503,7 @@ export class ActivityService {
             borderColor: '#FFF986',
             pointBorderColor: '#F8BF02',
             pointBorderWidth: 2,
-            data: [5, 10, 12, 7],
+            data: rejected || [],
             pointBackgroundColor: '#FFF986',
             fill: false,
             tention: 0.2,
@@ -200,11 +513,8 @@ export class ActivityService {
     }
 
     if (type === EChartType.PIE && organizationId) {
-      const now = new Date();
-      const curentYear = now.getFullYear();
-      const currentMonth = now.getMonth();
-      const startMonth = new Date(curentYear, currentMonth);
-      const nextMonth = new Date(curentYear, currentMonth + 1);
+      const startMonth = new Date(currentYear, currentMonth);
+      const nextMonth = new Date(currentYear, currentMonth + 1);
       const [ongoing, notReported, reported] = await Promise.all([
         this.drizzle
           .select({
