@@ -10,6 +10,7 @@ import {
   TActivityRequest,
   TActivityResponse,
   TActivitySingleResponse,
+  TChartResponse,
   TPaginationRequest,
 } from '@psu/entities';
 
@@ -149,7 +150,7 @@ export class ActivityService {
     status: string;
     month: string;
     organizationId?: string;
-  }) {
+  }): Promise<TChartResponse> {
     const { type = EChartType.PIE, status, month, organizationId } = data;
     const today = new Date();
 
@@ -157,7 +158,29 @@ export class ActivityService {
       return {
         type: EChartType.LINE,
         labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
-        values: [],
+        datasets: [
+          {
+            label: EActivityStatusTranslation.REQUESTED,
+            data: [],
+            fill: false,
+            borderColor: '#AFFFD4',
+            tension: 0.1,
+          },
+          {
+            label: EActivityStatusTranslation.APPROVED,
+            data: [],
+            fill: false,
+            borderColor: '#FFF986',
+            tension: 0.1,
+          },
+          {
+            label: EActivityStatusTranslation.REJECTED,
+            data: [],
+            fill: false,
+            borderColor: '#FFCDA8',
+            tension: 0.1,
+          },
+        ],
       };
     }
 
@@ -213,14 +236,19 @@ export class ActivityService {
           EActivityStatusTranslation.NOTREPORTED,
           EActivityStatusTranslation.REPORTED,
         ],
-        values: [ongoing, notReported, reported],
+        datasets: [
+          {
+            label: '',
+            data: [ongoing, notReported, reported],
+            backgroundColor: ['#1B81F7', '#FFB800', '34B337'],
+            hoverOffset: 4,
+          },
+        ],
       };
     }
 
     return {
-      type,
-      labels: [],
-      values: [],
+      message: 'Data tidak tersedia',
     };
   }
 }

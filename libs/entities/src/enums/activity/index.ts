@@ -18,10 +18,12 @@ export enum EActivityStatus {
 
 export enum EActivityStatusTranslation {
   REQUESTED = 'Sedang diajukan',
-  COMPLETED = 'Seleai',
+  COMPLETED = 'Selesai',
   ONGOING = 'Kegiatan Berjalan',
   REPORTED = 'Sudah melaporkan',
   NOTREPORTED = 'Belum melaporkan',
+  APPROVED = 'Kegiatan Disetujui',
+  REJECTED = 'Kegiatan Ditolak',
   REJECTEDBYDEAN = 'Ditolak oleh Wakil Dekan',
   REJECTEDBYCHANCELLOR = 'Ditolak oleh Wakil Rektor',
   REJECTEDBYDEPARTMENT = 'Ditolak oleh Kaprodi',
