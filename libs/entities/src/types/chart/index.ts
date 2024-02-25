@@ -5,12 +5,15 @@ export type TChartResponse = {
   type?: EChartType;
   labels?: EActivityStatusTranslation[] | string[];
   datasets?: {
-    label: string;
-    data: number[];
-    backgroundColor?: string[];
+    label?: string;
+    data?: number[];
+    backgroundColor?: string[] | string;
+    pointBorderColor?: string;
+    pointBorderWidth?: number;
+    pointBackgroundColor?: string;
     hoverOffset?: number;
     fill?: boolean;
     borderColor?: string;
-    tension?: number;
+    tention?: number;
   }[];
 };

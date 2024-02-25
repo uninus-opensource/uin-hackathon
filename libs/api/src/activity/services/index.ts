@@ -152,42 +152,64 @@ export class ActivityService {
     organizationId?: string;
   }): Promise<TChartResponse> {
     const { type = EChartType.PIE, status, month, organizationId } = data;
-    const today = new Date();
 
     if (type === EChartType.LINE && organizationId) {
+      // const [requested, approved, rejected] = await Promise.all([
+      //   Promise.all([]),
+      //   Promise.all([]),
+      //   Promise.all([]),
+      // ]);
       return {
         type: EChartType.LINE,
         labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
         datasets: [
           {
             label: EActivityStatusTranslation.REQUESTED,
-            data: [],
-            fill: false,
+            backgroundColor: '#AFFFD4',
             borderColor: '#AFFFD4',
-            tension: 0.1,
+            pointBackgroundColor: '#AFFFD4',
+            pointBorderColor: '#02E56D',
+            pointBorderWidth: 2,
+            data: [20, 10, 5, 15],
+            tention: 0.2,
           },
           {
             label: EActivityStatusTranslation.APPROVED,
-            data: [],
-            fill: false,
+            backgroundColor: '#FFF986',
             borderColor: '#FFF986',
-            tension: 0.1,
+            pointBorderColor: '#F8BF02',
+            pointBorderWidth: 2,
+            data: [5, 10, 12, 7],
+            pointBackgroundColor: '#FFF986',
+            fill: false,
+            tention: 0.2,
           },
           {
             label: EActivityStatusTranslation.REJECTED,
-            data: [],
+            backgroundColor: '#FFF986',
+            borderColor: '#FFF986',
+            pointBorderColor: '#F8BF02',
+            pointBorderWidth: 2,
+            data: [5, 10, 12, 7],
+            pointBackgroundColor: '#FFF986',
             fill: false,
-            borderColor: '#FFCDA8',
-            tension: 0.1,
+            tention: 0.2,
           },
         ],
       };
     }
 
     if (type === EChartType.PIE && organizationId) {
+      const now = new Date();
+      const curentYear = now.getFullYear();
+      const currentMonth = now.getMonth();
+      const startMonth = new Date(curentYear, currentMonth);
+      const nextMonth = new Date(curentYear, currentMonth + 1);
       const [ongoing, notReported, reported] = await Promise.all([
         this.drizzle
-          .select()
+          .select({
+            id: schema.activities.id,
+          })
           .from(schema.activities)
           .where(
             and(
@@ -196,34 +218,38 @@ export class ActivityService {
                 EActivityStatus.APPROVEDBYCHANCELLOR
               ),
               eq(schema.activities.organizationId, organizationId as string),
-              gte(schema.activities.startDate, today),
-              lt(schema.activities.endDate, today)
+              gte(schema.activities.updatedAt, startMonth),
+              lt(schema.activities.updatedAt, nextMonth)
             )
           )
           .then((res) => res.length),
 
         this.drizzle
-          .select()
+          .select({
+            id: schema.activities.id,
+          })
           .from(schema.activities)
           .where(
             and(
               eq(schema.activities.status, EActivityStatus.NOTREPORTED),
               eq(schema.activities.organizationId, organizationId as string),
-              gte(schema.activities.startDate, today),
-              lt(schema.activities.endDate, today)
+              gte(schema.activities.updatedAt, startMonth),
+              lt(schema.activities.updatedAt, nextMonth)
             )
           )
           .then((res) => res.length),
 
         this.drizzle
-          .select()
+          .select({
+            id: schema.activities.id,
+          })
           .from(schema.activities)
           .where(
             and(
               eq(schema.activities.status, EActivityStatus.REPORTED),
               eq(schema.activities.organizationId, organizationId as string),
-              gte(schema.activities.startDate, today),
-              lt(schema.activities.endDate, today)
+              gte(schema.activities.updatedAt, startMonth),
+              lt(schema.activities.updatedAt, nextMonth)
             )
           )
           .then((res) => res.length),
@@ -238,7 +264,7 @@ export class ActivityService {
         ],
         datasets: [
           {
-            label: '',
+            label: 'Laporan Kegiatan',
             data: [ongoing, notReported, reported],
             backgroundColor: ['#1B81F7', '#FFB800', '34B337'],
             hoverOffset: 4,
