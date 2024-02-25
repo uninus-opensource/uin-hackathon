@@ -4,22 +4,18 @@
 
 - Backoffice
 - Backoffice-API
-- Landing
-- CMS-API
 
 ## Demo Aplikasi
 
 - https://himatif-uin-hackathon.uninus.ac.id
-- https://backoffice.himatif-uin-hackathon.uninus.ac.id
-- https://api.backoffice.himatif-uin-hackathon.uninus.ac.id
-- https://api.cms.himatif-uin-hackathon.uninus.ac.id
+- https://api.himatif-uin-hackathon.uninus.ac.id
 
 # WAJIB Setup Husky
 
 Untuk bisa menggunakan husky agar berjalan baik dan benar maka perlu di inisialisasi dulu
 
 - Jalankan perintah
-  > `npm run husky install`
+  > `npx husky install`
 
 # Cara Menggunakan GIT dengan Baik dan Benar
 
@@ -95,14 +91,6 @@ Visual Studio Code
 
   > `npm run web:backoffice:start`
 
-- Untuk menjalankan Projek _Landing Page_ dengan mode **Development** ketik perintah berikut
-
-  > `npm run web:landing:dev`
-
-- Untuk menjalankan Projek _Landing Page_ dengan mode **Production** ( Perlu dilakukan Build terlebih dahulu ) ketik perintah berikut
-
-  > `npm run web:landing:start`
-
 - Untuk menjalankan Projek _API Backoffice_ dengan mode **Development** ketik perintah berikut
 
   > `npm run api:backoffice:dev`
@@ -111,13 +99,6 @@ Visual Studio Code
 
   > `npm run api:backoffice:start`
 
-- Untuk menjalankan Projek _API CMS_ dengan mode **Development** ketik perintah berikut
-
-  > `npm run api:cms:dev`
-
-- Untuk menjalankan Projek _API CMS_ dengan mode **Production** ( Perlu dilakukan Build terlebih dahulu ) ketik perintah berikut
-
-  > `npm run api:cms:start`
 
 ## Mem*Build* Aplikasi ke _Production_
 
@@ -125,17 +106,11 @@ Visual Studio Code
 
   > `npm run web:backoffice:build`
 
-- Untuk mem*build* Projek _Landing Page_ ketik perintah berikut
-
-  > `npm run web:landing:build`
 
 - Untuk mem*build* Projek _API Backoffice_ ketik perintah berikut
 
   > `npm run api:backoffice:build`
 
-- Untuk mem*build* Projek _API CMS_ ketik perintah berikut
-
-  > `npm run api:cms:build`
 
 ## Mem*Build* Aplikasi ke _Production_ Menggunakan Docker
 
@@ -147,17 +122,10 @@ Anda perlu menginstall _Docker_ terlebih dahulu
 
   > `npm run web:backoffice:container`
 
-- Untuk mem*build* Projek _Landing Page_ Dengan _Docker_ ketik perintah berikut
-
-  > `npm run web:landing:container`
 
 - Untuk mem*build* Projek _API Backoffice_ Dengan _Docker_ ketik perintah berikut
 
   > `npm run api:backoffice:container`
-
-- Untuk mem*build* Projek _API CMS_ Dengan _Docker_ ketik perintah berikut
-
-  > `npm run api:cms:container`
 
 ## _Development_ Dengan _NIX_
 

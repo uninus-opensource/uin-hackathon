@@ -34,17 +34,29 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        screenshot: 'only-on-failure',
+        testIdAttribute: 'data-testid',
+      },
     },
 
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: {
+        ...devices['Desktop Firefox'],
+        screenshot: 'only-on-failure',
+        testIdAttribute: 'data-testid',
+      },
     },
 
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      use: {
+        ...devices['Desktop Safari'],
+        screenshot: 'only-on-failure',
+        testIdAttribute: 'data-testid',
+      },
     },
 
     // Uncomment for mobile browsers support

@@ -1,8 +1,9 @@
 import type { NextPage } from 'next';
 import type { ReactElement } from 'react';
+import { DashboardModules } from './_modules';
 
-const DashbaordPage: NextPage = (): ReactElement => {
-  return <></>;
+const DashboardPage: NextPage = (): ReactElement => {
+  return <DashboardModules />;
 };
 
-export default DashbaordPage;
+export default DashboardPage;

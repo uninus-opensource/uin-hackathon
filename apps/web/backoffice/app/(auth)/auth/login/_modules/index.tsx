@@ -91,5 +91,3 @@ export const AuthLoginModule: FC = (): ReactElement => {
     </Form>
   );
 };
-
-export default AuthLoginModule;

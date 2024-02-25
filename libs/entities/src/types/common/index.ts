@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { EPaginationOrderBy } from '../../enums';
 import { TJwtRequest } from '../auth';
 import type {
@@ -148,6 +149,36 @@ export type TSelect = TInputExtend & {
   message?: string;
   value?: string | string[] | null | number | number[] | null;
   name?: string;
+};
+
+export type TLineChart = {
+  chartType:
+    | 'januari'
+    | 'februari'
+    | 'maret'
+    | 'april'
+    | 'mei'
+    | 'juni'
+    | 'juli'
+    | 'agustus'
+    | 'september'
+    | 'oktober'
+    | 'november'
+    | 'desember';
+  title: string;
+  data: {
+    labels: string[];
+    datasets: Array<{
+      label: string;
+      backgroundColor: string;
+      borderColor: string;
+      pointBackgroundColor: string;
+      pointBorderColor: string;
+      borderWidth: number;
+      data: number[];
+      tention: number;
+    }>;
+  };
 };
 
 export * from './style';
