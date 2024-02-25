@@ -29,6 +29,7 @@ type Story = StoryObj<typeof FieldText>;
 export const Primary: Story = {
   args: {
     status: 'default',
+    label: 'Apakah anda gay?',
     size: 'sm',
   },
 };

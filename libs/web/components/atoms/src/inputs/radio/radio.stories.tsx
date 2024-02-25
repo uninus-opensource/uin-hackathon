@@ -5,7 +5,7 @@ import { InputRadio } from './radio';
 const meta: Meta<typeof InputRadio> = {
   component: InputRadio,
   tags: ['autodocs'],
-  title: 'Components/Atoms/Radio',
+  title: 'Components/Atoms/Input Radio',
   argTypes: {
     size: {
       options: ['sm', 'md', 'lg'],
