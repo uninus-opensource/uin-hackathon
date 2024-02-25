@@ -13,8 +13,10 @@ import {
   THeaderRequest,
   VSLogin,
   VSRegister,
+  TForgotPasswordRequest,
+  TResetPasswordRequest,
 } from '@psu/entities';
-import { GoogleGuard, RefreshGuard } from '../../common/guards';
+import { AccessGuard, GoogleGuard, RefreshGuard } from '../../common/guards';
 import { ZodValidationPipe } from '../../common/pipes/';
 
 @Controller('auth')
@@ -37,6 +39,17 @@ export class AuthController {
   @UseGuards(RefreshGuard)
   async refresh(@Request() request: THeaderRequest) {
     return await this.authService.refresh(request.user);
+  }
+
+  @Post('/password/forgot')
+  async forgotPassword(@Body() data: TForgotPasswordRequest) {
+    return await this.authService.forgotPassword(data.email);
+  }
+
+  @Post('/password/reset')
+  @UseGuards(AccessGuard)
+  async resetPassword(@Body() data: TResetPasswordRequest) {
+    return await this.authService.resetPassword(data);
   }
 
   @Get('/google')

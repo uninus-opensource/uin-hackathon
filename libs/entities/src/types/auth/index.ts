@@ -18,6 +18,8 @@ export type TLoginResponse = {
 export type TJwtRequest = {
   sub: string;
   email: string;
+  fullname?: string;
+  organizationId?: string;
   role: {
     name: string;
     permissions: Array<string>;
@@ -44,4 +46,22 @@ export type TGoogleRequest = {
   fullname?: string;
   avatar?: string;
   email: string;
+};
+
+export type TForgotPasswordRequest = {
+  email: string;
+};
+
+export type TForgotPasswordResponse = {
+  message: string;
+};
+
+export type TResetPasswordRequest = {
+  password: string;
+  id?: string;
+  accessToken?: string;
+};
+
+export type TResetPasswordResponse = {
+  message: string;
 };

@@ -3,6 +3,7 @@ import {
   ConflictException,
   Inject,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import * as schema from '../../common/models';
@@ -15,17 +16,27 @@ import {
   TRegisterResponse,
   TGoogleRequest,
   TJwtRequest,
+  emailTemplate,
+  TForgotPasswordResponse,
+  TResetPasswordRequest,
+  TResetPasswordResponse,
 } from '@psu/entities';
 import {
   comparePassword,
   encryptPassword,
   generateAccessToken,
+  generateOtp,
   generateRefreshToken,
 } from '../../common';
+import { EmailService } from '../../email';
+import { UserService } from '../../user';
+
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject('drizzle') private drizzle: NodePgDatabase<typeof schema>
+    @Inject('drizzle') private drizzle: NodePgDatabase<typeof schema>,
+    private readonly emailService: EmailService,
+    private readonly userService: UserService
   ) {}
   async login(payload: TLoginRequest): Promise<TLoginResponse> {
     const { email, password } = payload;
@@ -145,13 +156,60 @@ export class AuthService {
   async refresh(payload: TJwtRequest) {
     const expiresIn = 15 * 60 * 1000;
     const accessToken = await generateAccessToken(payload);
-
     const now = Date.now();
     const expirationTime = now + expiresIn;
 
     return {
       accessToken,
       exp: expirationTime,
+    };
+  }
+
+  async forgotPassword(email: string): Promise<TForgotPasswordResponse> {
+    const findUser = await this.userService.findUserByEmail(email);
+    const accessToken = await generateAccessToken({
+      sub: findUser.id,
+      email: findUser.email,
+      organizationId: findUser.organizationId,
+      role: {
+        name: findUser.role?.name || '',
+        permissions: findUser.role?.permissions || [],
+      },
+    });
+    const template = emailTemplate(
+      findUser.fullname,
+      `${process.env['REDIRECT_FE_URL']}?accessToken=${accessToken}`
+    );
+    await this.emailService.sendEmail(email, template);
+    return {
+      message: 'Silahkan check email anda',
+    };
+  }
+
+  async resetPassword(
+    data: TResetPasswordRequest
+  ): Promise<TResetPasswordResponse> {
+    const { id, password, accessToken } = data;
+    const newPassword = password && (await encryptPassword(password as string));
+    const res = await this.drizzle
+      .update(schema.users)
+      .set({
+        password: newPassword,
+        updatedAt: new Date(),
+      })
+      .where(eq(schema.users.id, id as string))
+      .returning({
+        id: schema.users.id,
+        fullname: schema.users.fullname,
+        email: schema.users.email,
+      })
+      .then((res) => res.at(0));
+
+    if (!res) {
+      throw new NotFoundException('User tidak ditemukan');
+    }
+    return {
+      message: 'Berhasil update password',
     };
   }
 
