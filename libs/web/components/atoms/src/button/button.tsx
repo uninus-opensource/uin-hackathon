@@ -12,10 +12,12 @@ export const Button: FC<TButton> = ({
   ...props
 }): ReactElement => {
   const className = clsx(
-    'rounded-lg text-white hover:opacity-80',
+    'rounded-lg text-white hover:opacity-80 font-medium transition-all',
     'disabled:cursor-not-allowed disabled:hover:opacity-80 disabled:bg-grey-200',
+    'text-sm px-4 py-2',
     {
-      'border bg-transparent': variantType === 'outline',
+      'border bg-transparent border-grey-200 text-grey-900':
+        variantType === 'outline',
       'border-none': variantType === 'solid',
     },
     {
@@ -41,9 +43,9 @@ export const Button: FC<TButton> = ({
         variant === 'info' && variantType === 'outline',
     },
     {
-      'text-sm px-2 py-1': size === 'sm',
-      'text-md px-4 py-2': size === 'md',
-      'text-lg px-6 py-3': size === 'lg',
+      'md:text-sm md:px-2 md:py-1': size === 'sm',
+      'md:text-md md:px-4 md:py-2': size === 'md',
+      'md:text-lg md:px-6 md:py-3': size === 'lg',
     }
   );
 

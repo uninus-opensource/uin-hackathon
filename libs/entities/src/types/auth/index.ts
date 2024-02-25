@@ -47,3 +47,21 @@ export type TGoogleRequest = {
   avatar?: string;
   email: string;
 };
+
+export type TForgotPasswordRequest = {
+  email: string;
+};
+
+export type TForgotPasswordResponse = {
+  message: string;
+};
+
+export type TResetPasswordRequest = {
+  password: string;
+  id?: string;
+  accessToken?: string;
+};
+
+export type TResetPasswordResponse = {
+  message: string;
+};

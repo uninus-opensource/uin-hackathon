@@ -26,7 +26,7 @@ export const InputCheckbox: FC<TInputSpecial> = ({
   const iconClassName = clsx(
     'absolute text-white transition-opacity opacity-0 pointer-events-none peer-checked:opacity-100',
     {
-      'left-[1px]': size === 'sm',
+      'left-[1.8px]': size === 'sm',
       'left-[2px]': size === 'md',
       'left-[3px]': size === 'lg',
     }

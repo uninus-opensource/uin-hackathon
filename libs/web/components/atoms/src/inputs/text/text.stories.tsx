@@ -5,7 +5,7 @@ import { InputText } from './text';
 const meta: Meta<typeof InputText> = {
   component: InputText,
   tags: ['autodocs'],
-  title: 'Components/Atoms/Text',
+  title: 'Components/Atoms/Input Text',
   argTypes: {
     status: {
       options: ['default', 'error', 'warning', 'success'],

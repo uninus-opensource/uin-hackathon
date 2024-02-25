@@ -4,14 +4,14 @@ import { TLabel } from '@psu/entities';
 
 export const Label: FC<TLabel> = (props): ReactElement => {
   const className = clsx(
-    'flex gap-x-1 text-grey select-none font-medium',
+    'flex gap-x-1 text-grey-400 select-none font-medium',
     {
       'text-sm': props.size === 'sm',
       'text-base': props.size === 'md',
       'text-lg': props.size === 'lg',
     },
     {
-      'text-grey cursor-not-allowed opacity-50': props.disabled,
+      'text-grey-300 cursor-not-allowed opacity-50': props.disabled,
     },
     props.className
   );

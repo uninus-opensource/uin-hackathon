@@ -3,6 +3,7 @@ import { TJwtRequest } from '../auth';
 import type {
   ButtonHTMLAttributes,
   DetailedHTMLProps,
+  FormHTMLAttributes,
   HTMLAttributes,
   InputHTMLAttributes,
   LabelHTMLAttributes,
@@ -100,11 +101,19 @@ export type TLabel = LabelHTMLAttributes<HTMLLabelElement> & {
 } & TInputExtend;
 
 export type TControlledInput<T extends FieldValues> = UseControllerProps<T> &
-  TInput;
+  TInput &
+  TInputMolecule;
+
+export type TControlledSelect<T extends FieldValues> = UseControllerProps<T> &
+  TSelect &
+  TInputMolecule;
+
 export type TControlledInputSpecial<T extends FieldValues> =
-  UseControllerProps<T> & TInputSpecial;
+  UseControllerProps<T> & TInputSpecial & TInputMolecule;
+
 export type TControlledTextArea<T extends FieldValues> = UseControllerProps<T> &
-  TTextArea;
+  TTextArea &
+  TInputMolecule;
 
 export type TMessage = DetailedHTMLProps<
   HTMLAttributes<HTMLSpanElement>,
@@ -115,5 +124,30 @@ export type TMessage = DetailedHTMLProps<
 export type TFieldSet = Omit<DetailedHTMLProps<any, any>, 'size' | 'type'> &
   TInputExtend &
   Pick<InputHTMLAttributes<HTMLInputElement>, 'type'>;
+
+export type TForm = DetailedHTMLProps<
+  FormHTMLAttributes<HTMLFormElement>,
+  HTMLFormElement
+>;
+
+export type TSelectOption<T = string | number | boolean | unknown> = {
+  label: string;
+  value: T;
+};
+
+export type TSelect = TInputExtend & {
+  options?: TSelectOption[];
+  disabled?: boolean;
+  label?: string;
+  required?: boolean;
+  placeholder?: string;
+  isSearchable?: boolean;
+  isClearable?: boolean;
+  isMulti?: boolean;
+  onChange?: (value: string) => void;
+  message?: string;
+  value?: string | string[] | null | number | number[] | null;
+  name?: string;
+};
 
 export * from './style';
