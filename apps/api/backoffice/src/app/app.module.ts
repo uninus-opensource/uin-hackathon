@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import {
-  ActivityModule,
-  AuthModule,
   UserModule,
   DrizzleModule,
   AccessStrategy,
   RefreshStrategy,
   GoogleStrategy,
+  ActivityModule,
+  AuthModule,
 } from '@psu/api';
 
 @Module({

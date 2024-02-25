@@ -18,10 +18,10 @@ export type THeaderRequest = {
 };
 
 export type TPaginationRequest = {
-  page: string;
-  perPage: string;
-  orderBy: EPaginationOrderBy;
-  search: string;
+  page?: string;
+  perPage?: string;
+  orderBy?: EPaginationOrderBy;
+  search?: string;
 };
 
 export type TMetaResponse<T = null | undefined> = {
