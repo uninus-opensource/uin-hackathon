@@ -10,6 +10,7 @@ import { relations } from 'drizzle-orm';
 export const activityStatusEnum = pgEnum('activityStatus', [
   'Requested',
   'Completed',
+  'Reported',
   'Not Reported',
   'Rejected by Vice Dean',
   'Rejected by Vice Chancellor',
@@ -101,9 +102,9 @@ export const activities = pgTable('activities', {
   startDate: timestamp('start_date', { withTimezone: true }).notNull(),
   endDate: timestamp('end_date', { withTimezone: true }).notNull(),
   budget: text('budget').notNull(),
-  applicantId: uuid('applicant_id')
+  organizationId: uuid('organization_id')
     .notNull()
-    .references(() => users.id),
+    .references(() => organizations.id),
   status: activityStatusEnum('activityStatus').default('Requested'),
   reviewers: text('reviewers').array(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
@@ -159,6 +160,9 @@ export const rolesRelations = relations(roles, ({ many }) => ({
   users: many(users),
 }));
 
+export const organizationsRelations = relations(organizations, ({ many }) => ({
+  activities: many(activities),
+}));
 //Informasi tambahan user, untuk role Wakil Dekan, Ketua Prodi dan ormawa
 export const additionalRelations = relations(additional, ({ one }) => ({
   faculty: one(faculty, {
@@ -177,9 +181,9 @@ export const additionalRelations = relations(additional, ({ one }) => ({
 
 //Table kegiatan berelasi dengan user(pemohon) serta proposal (one to many)
 export const activitiesRelations = relations(activities, ({ one }) => ({
-  users: one(users, {
-    fields: [activities.applicantId],
-    references: [users.id],
+  organizations: one(organizations, {
+    fields: [activities.organizationId],
+    references: [organizations.id],
   }),
 }));
 

@@ -12,7 +12,6 @@ import type { FieldValues, UseControllerProps } from 'react-hook-form';
 
 export type THeaderRequest = {
   user: TJwtRequest & {
-    fullname?: string;
     avatar?: string;
   };
 };

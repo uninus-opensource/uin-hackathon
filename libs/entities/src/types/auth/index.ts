@@ -18,6 +18,8 @@ export type TLoginResponse = {
 export type TJwtRequest = {
   sub: string;
   email: string;
+  fullname?: string;
+  organizationId?: string;
   role: {
     name: string;
     permissions: Array<string>;

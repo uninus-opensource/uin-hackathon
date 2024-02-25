@@ -10,7 +10,7 @@ export type TActivityRequest = {
   startDate?: Date;
   endDate?: Date;
   budget?: string;
-  applicantId?: string;
+  organizationId?: string;
   reviewers?: string[];
 };
 

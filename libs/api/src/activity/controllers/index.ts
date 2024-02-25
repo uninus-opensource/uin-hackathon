@@ -8,11 +8,14 @@ import {
   Post,
   Query,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { ActivityService } from '../services';
 import { AccessGuard } from '../../common';
 import {
+  EChartType,
   TActivityRequest,
+  THeaderRequest,
   TPaginationRequest,
   VSCreateActivity,
   VSUpdateActivity,
@@ -52,5 +55,23 @@ export class ActivityController {
     @Body(new ZodValidationPipe(VSCreateActivity)) data: TActivityRequest
   ) {
     return await this.activityService.create(data);
+  }
+
+  @Get('/chart')
+  async chart(
+    @Request() request: THeaderRequest,
+    @Query('type') type: EChartType,
+    @Query('status') status: string,
+    @Query('month') month: string
+  ) {
+    const {
+      user: { organizationId },
+    } = request;
+    return await this.activityService.chart({
+      type,
+      status,
+      month,
+      organizationId,
+    });
   }
 }

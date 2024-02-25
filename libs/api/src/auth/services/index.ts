@@ -35,6 +35,7 @@ export class AuthService {
         fullname: schema.users.fullname,
         email: schema.users.email,
         password: schema.users.password,
+        organizationId: schema.organizations.id,
         role: {
           id: schema.roles.id,
           name: schema.roles.name,
@@ -43,6 +44,10 @@ export class AuthService {
       })
       .from(schema.users)
       .leftJoin(schema.roles, eq(schema.roles.id, schema.users.roleId))
+      .leftJoin(
+        schema.additional,
+        eq(schema.additional.userId, schema.users.id)
+      )
       .where(eq(schema.users.email, email))
       .then((res) => res.at(0));
 
@@ -57,6 +62,7 @@ export class AuthService {
       generateAccessToken({
         sub: res.id,
         email: res.email,
+        organizationId: res.organizationId,
         role: {
           name: res.role?.name || '',
           permissions: res.role?.permissions || [],
@@ -66,6 +72,7 @@ export class AuthService {
       generateRefreshToken({
         sub: res.id,
         email: res.email,
+        organizationId: res.organizationId,
         role: {
           name: res.role?.name || '',
           permissions: res.role?.permissions || [],

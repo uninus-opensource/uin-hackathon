@@ -1,8 +1,11 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import * as schema from '../../common/models';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { and, asc, desc, eq, ilike } from 'drizzle-orm';
+import { and, asc, desc, eq, gte, ilike, lt } from 'drizzle-orm';
 import {
+  EActivityStatus,
+  EActivityStatusTranslation,
+  EChartType,
   EPaginationOrderBy,
   TActivityRequest,
   TActivityResponse,
@@ -124,7 +127,7 @@ export class ActivityService {
         startDate: data.startDate as Date,
         endDate: data.endDate as Date,
         budget: data.budget as string,
-        applicantId: data.applicantId as string,
+        organizationId: data.organizationId as string,
         reviewers: [],
       })
       .returning({
@@ -138,6 +141,86 @@ export class ActivityService {
     return {
       message: 'Berhasil menambahkan kegiatan',
       data: res,
+    };
+  }
+
+  async chart(data: {
+    type: string;
+    status: string;
+    month: string;
+    organizationId?: string;
+  }) {
+    const { type = EChartType.PIE, status, month, organizationId } = data;
+    const today = new Date();
+
+    if (type === EChartType.LINE && organizationId) {
+      return {
+        type: EChartType.LINE,
+        labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
+        values: [],
+      };
+    }
+
+    if (type === EChartType.PIE && organizationId) {
+      const [ongoing, notReported, reported] = await Promise.all([
+        this.drizzle
+          .select()
+          .from(schema.activities)
+          .where(
+            and(
+              eq(
+                schema.activities.status,
+                EActivityStatus.APPROVEDBYCHANCELLOR
+              ),
+              eq(schema.activities.organizationId, organizationId as string),
+              gte(schema.activities.startDate, today),
+              lt(schema.activities.endDate, today)
+            )
+          )
+          .then((res) => res.length),
+
+        this.drizzle
+          .select()
+          .from(schema.activities)
+          .where(
+            and(
+              eq(schema.activities.status, EActivityStatus.NOTREPORTED),
+              eq(schema.activities.organizationId, organizationId as string),
+              gte(schema.activities.startDate, today),
+              lt(schema.activities.endDate, today)
+            )
+          )
+          .then((res) => res.length),
+
+        this.drizzle
+          .select()
+          .from(schema.activities)
+          .where(
+            and(
+              eq(schema.activities.status, EActivityStatus.REPORTED),
+              eq(schema.activities.organizationId, organizationId as string),
+              gte(schema.activities.startDate, today),
+              lt(schema.activities.endDate, today)
+            )
+          )
+          .then((res) => res.length),
+      ]);
+
+      return {
+        type: EChartType.PIE,
+        labels: [
+          EActivityStatusTranslation.ONGOING,
+          EActivityStatusTranslation.NOTREPORTED,
+          EActivityStatusTranslation.REPORTED,
+        ],
+        values: [ongoing, notReported, reported],
+      };
+    }
+
+    return {
+      type,
+      labels: [],
+      values: [],
     };
   }
 }
