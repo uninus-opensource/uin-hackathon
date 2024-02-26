@@ -6,8 +6,9 @@ import {
 } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import * as schema from '../../../common/models';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import {
+  TOrganizationFindRequest,
   TOrganizationRequest,
   TOrganizationResponse,
   TOrganizationSingleResponse,
@@ -40,7 +41,10 @@ export class OrganizationService {
     };
   }
 
-  async findMany(): Promise<TOrganizationResponse> {
+  async findMany(
+    data: TOrganizationFindRequest
+  ): Promise<TOrganizationResponse> {
+    const { organizationType, organizationLevel } = data;
     const res = await this.drizzle
       .select({
         id: schema.organizations.id,
@@ -50,7 +54,17 @@ export class OrganizationService {
         createdAt: schema.organizations.createdAt,
         updatedAt: schema.organizations.updatedAt,
       })
-      .from(schema.organizations);
+      .from(schema.organizations)
+      .where(
+        and(
+          ...(organizationType
+            ? [eq(schema.organizations.organizationType, organizationType)]
+            : []),
+          ...(organizationLevel
+            ? [eq(schema.organizations.organizationLevel, organizationLevel)]
+            : [])
+        )
+      );
     if (!res) {
       throw new NotFoundException('Organisasi tidak tersedia');
     }
@@ -90,7 +104,7 @@ export class OrganizationService {
       .update(schema.organizations)
       .set({
         name,
-        organizationType,
+        organizationType: organizationType as string,
         organizationLevel,
         updatedAt: new Date(),
       })
@@ -122,7 +136,7 @@ export class OrganizationService {
       .insert(schema.organizations)
       .values({
         name: name as string,
-        organizationType,
+        organizationType: organizationType as string,
         organizationLevel,
       })
       .returning({

@@ -26,9 +26,27 @@ export class ActivityService {
     const res = await this.drizzle
       .select({
         id: schema.activities.id,
+        name: schema.activities.name,
+        lead: schema.activities.lead,
+        proposal: schema.activities.proposal,
+        description: schema.activities.description,
+        location: schema.activities.location,
+        startDate: schema.activities.startDate,
+        endDate: schema.activities.endDate,
+        budget: schema.activities.budget,
+        status: schema.activities.status,
+        organization: {
+          id: schema.organizations.id,
+          name: schema.organizations.name,
+        },
+        createdAt: schema.activities.createdAt,
+        updatedAt: schema.activities.updatedAt,
       })
       .from(schema.activities)
-
+      .leftJoin(
+        schema.organizations,
+        eq(schema.activities.organizationId, schema.organizations.id)
+      )
       .where(eq(schema.activities.id, id))
       .then((res) => res.at(0));
 
@@ -47,6 +65,10 @@ export class ActivityService {
       this.drizzle
         .select({
           id: schema.activities.id,
+          name: schema.activities.name,
+          status: schema.activities.status,
+          startDate: schema.activities.startDate,
+          endDate: schema.activities.endDate,
         })
         .from(schema.activities)
         .where(

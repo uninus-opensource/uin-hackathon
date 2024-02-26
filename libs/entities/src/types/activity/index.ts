@@ -12,6 +12,12 @@ export type TActivityRequest = {
   budget?: string;
   organizationId?: string;
   reviewers?: string[];
+  organization?: {
+    id?: string;
+    name?: string;
+  } | null;
+  createdAt?: Date | null;
+  updatedAt?: Date | null;
 };
 
 export type TActivityResponse = TMetaResponse<TActivityRequest[]>;

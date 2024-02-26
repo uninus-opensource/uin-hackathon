@@ -30,17 +30,6 @@ export const reviewStatusEnum = pgEnum('reviewStatus', [
   'Approved by Student Council',
 ]);
 
-export const organizationTypeEnum = pgEnum('organizationType', [
-  'Ormawa',
-  'UKM',
-]);
-
-export const organizationLevelEnum = pgEnum('organizationLevel', [
-  'Universitas',
-  'Fakultas',
-  'Prodi',
-]);
-
 export const users = pgTable('users', {
   id: uuid('id').defaultRandom().primaryKey(),
   fullname: text('fullname').notNull(),
@@ -96,8 +85,8 @@ export const activities = pgTable('activities', {
 export const organizations = pgTable('organizations', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
-  organizationType: organizationTypeEnum('organizationType').default('Ormawa'),
-  organizationLevel: organizationLevelEnum('organizationLevel'),
+  organizationType: text('organization_type').notNull(),
+  organizationLevel: text('organization_level'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });

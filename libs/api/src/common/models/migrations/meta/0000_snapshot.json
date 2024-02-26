@@ -1,5 +1,5 @@
 {
-  "id": "48c981e7-5f9e-4e20-9194-da99fd81d19f",
+  "id": "f39aa3fc-5e78-4c26-b81b-742e7d32ef6e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -328,15 +328,15 @@
           "primaryKey": false,
           "notNull": true
         },
-        "organizationType": {
-          "name": "organizationType",
-          "type": "organizationType",
+        "organization_type": {
+          "name": "organization_type",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "organizationLevel": {
-          "name": "organizationLevel",
-          "type": "organizationLevel",
+        "organization_level": {
+          "name": "organization_level",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -585,21 +585,6 @@
         "Approved by Head Department": "Approved by Head Department",
         "Approved by Student Government": "Approved by Student Government",
         "Approved by Student Council": "Approved by Student Council"
-      }
-    },
-    "organizationLevel": {
-      "name": "organizationLevel",
-      "values": {
-        "Universitas": "Universitas",
-        "Fakultas": "Fakultas",
-        "Prodi": "Prodi"
-      }
-    },
-    "organizationType": {
-      "name": "organizationType",
-      "values": {
-        "Ormawa": "Ormawa",
-        "UKM": "UKM"
       }
     },
     "reviewStatus": {

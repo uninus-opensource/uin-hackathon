@@ -6,10 +6,16 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { OrganizationService } from '../services';
-import { TOrganizationRequest } from '@psu/entities';
-import { ApiTags, ApiBody } from '@nestjs/swagger';
+import {
+  EorganizationLevel,
+  EorganizationType,
+  TOrganizationFindRequest,
+  TOrganizationRequest,
+} from '@psu/entities';
+import { ApiTags, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { OrganizationDto } from '../../../common';
 @ApiTags('Organization')
 @Controller('organization')
@@ -20,9 +26,19 @@ export class OrganizationController {
     return await this.organizationService.findOne(id);
   }
 
+  @ApiQuery({
+    name: 'organizationType',
+    enum: EorganizationType,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'organizationLevel',
+    enum: EorganizationLevel,
+    required: false,
+  })
   @Get()
-  async findMany() {
-    return await this.organizationService.findMany();
+  async findMany(@Query() request: TOrganizationFindRequest) {
+    return await this.organizationService.findMany(request);
   }
 
   @Delete('/:id')
