@@ -9,9 +9,14 @@ import {
   Query,
 } from '@nestjs/common';
 import { DepartmentService } from '../services';
-import { TDepartmentRequest, TPaginationRequest } from '@psu/entities';
+import {
+  TDepartmentRequest,
+  TPaginationRequest,
+  VSCreateDepartment,
+  VSUpdateDepartment,
+} from '@psu/entities';
 import { ApiTags, ApiBody, ApiQuery } from '@nestjs/swagger';
-import { DepartmentDto } from '../../../common';
+import { DepartmentDto, ZodValidationPipe } from '../../../common';
 @ApiTags('Department')
 @Controller('department')
 export class DepartmentController {
@@ -28,7 +33,9 @@ export class DepartmentController {
 
   @ApiBody({ type: DepartmentDto })
   @Post()
-  async create(@Body() data: TDepartmentRequest) {
+  async create(
+    @Body(new ZodValidationPipe(VSCreateDepartment)) data: TDepartmentRequest
+  ) {
     return await this.departmentService.create(data);
   }
 
@@ -39,7 +46,10 @@ export class DepartmentController {
 
   @ApiBody({ type: DepartmentDto })
   @Patch('/:id')
-  async update(@Param('id') id: string, @Body() data: TDepartmentRequest) {
+  async update(
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(VSUpdateDepartment)) data: TDepartmentRequest
+  ) {
     return await this.departmentService.update({ id, ...data });
   }
 

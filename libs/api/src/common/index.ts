@@ -3,3 +3,4 @@ export * from './strategies';
 export * from './utilities';
 export * from './models';
 export * from './dto';
+export * from './pipes';

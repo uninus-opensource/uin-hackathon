@@ -1,11 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { EPermission } from '@psu/entities';
 
 export class RoleDto {
   @ApiProperty()
   public name!: string;
 
-  @ApiProperty({ isArray: true })
-  public permissions!: string[];
+  @ApiProperty({ isArray: true, type: [EPermission] })
+  public permissions!: EPermission[];
 }
 
 export class OrganizationDto {
@@ -29,5 +30,5 @@ export class DepartmentDto {
   public name!: string;
 
   @ApiProperty()
-  public facultyI!: string;
+  public facultyId!: string;
 }
