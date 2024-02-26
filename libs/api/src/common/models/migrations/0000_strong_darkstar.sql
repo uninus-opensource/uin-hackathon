@@ -5,18 +5,6 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "organizationLevel" AS ENUM('Universitas', 'Fakultas', 'Prodi');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- CREATE TYPE "organizationType" AS ENUM('Ormawa', 'UKM');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
  CREATE TYPE "reviewStatus" AS ENUM('Rejected by Vice Dean', 'Rejected by Vice Chancellor', 'Rejected by Head Department', 'Rejected by Student Government', 'Rejected by Student Council', 'Approved by Vice Dean', 'Approved by Vice Chancellor', 'Approved by Head Department', 'Approved by Student Government', 'Approved by Student Council');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -66,8 +54,8 @@ CREATE TABLE IF NOT EXISTS "faculty" (
 CREATE TABLE IF NOT EXISTS "organizations" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
-	"organizationType" "organizationType",
-	"organizationLevel" "organizationLevel",
+	"organization_type" text NOT NULL,
+	"organization_level" text,
 	"created_at" timestamp with time zone DEFAULT now(),
 	"updated_at" timestamp with time zone DEFAULT now()
 );

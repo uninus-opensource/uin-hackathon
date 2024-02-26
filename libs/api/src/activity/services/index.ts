@@ -1,7 +1,18 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import * as schema from '../../common/models';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { and, asc, desc, eq, gte, ilike, lt, or } from 'drizzle-orm';
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  gte,
+  ilike,
+  lt,
+  or,
+  inArray,
+  arrayContained,
+} from 'drizzle-orm';
 import {
   EActivityStatus,
   EActivityStatusTranslation,
@@ -26,9 +37,27 @@ export class ActivityService {
     const res = await this.drizzle
       .select({
         id: schema.activities.id,
+        name: schema.activities.name,
+        lead: schema.activities.lead,
+        proposal: schema.activities.proposal,
+        description: schema.activities.description,
+        location: schema.activities.location,
+        startDate: schema.activities.startDate,
+        endDate: schema.activities.endDate,
+        budget: schema.activities.budget,
+        status: schema.activities.status,
+        organization: {
+          id: schema.organizations.id,
+          name: schema.organizations.name,
+        },
+        createdAt: schema.activities.createdAt,
+        updatedAt: schema.activities.updatedAt,
       })
       .from(schema.activities)
-
+      .leftJoin(
+        schema.organizations,
+        eq(schema.activities.organizationId, schema.organizations.id)
+      )
       .where(eq(schema.activities.id, id))
       .then((res) => res.at(0));
 
@@ -41,16 +70,25 @@ export class ActivityService {
     };
   }
   async findMany(data: TPaginationRequest): Promise<TActivityResponse> {
-    const { page = 1, perPage = 10, orderBy, search } = data;
+    const { page = 1, perPage = 10, orderBy, search, organizationId } = data;
     const orderByFunction = orderBy == EPaginationOrderBy.DESC ? desc : asc;
     const [res, count] = await Promise.all([
       this.drizzle
         .select({
           id: schema.activities.id,
+          name: schema.activities.name,
+          status: schema.activities.status,
+          startDate: schema.activities.startDate,
+          endDate: schema.activities.endDate,
         })
         .from(schema.activities)
         .where(
-          and(...(search ? [ilike(schema.activities.name, `%${search}%`)] : []))
+          and(
+            ...(search ? [ilike(schema.activities.name, `%${search}%`)] : []),
+            ...(organizationId
+              ? [eq(schema.activities.organizationId, organizationId)]
+              : [])
+          )
         )
         .limit(Number(perPage))
         .offset((Number(page) - 1) * Number(perPage))
@@ -61,7 +99,12 @@ export class ActivityService {
         })
         .from(schema.activities)
         .where(
-          and(...(search ? [ilike(schema.activities.name, `%${search}%`)] : []))
+          and(
+            ...(search ? [ilike(schema.activities.name, `%${search}%`)] : []),
+            ...(organizationId
+              ? [eq(schema.activities.organizationId, organizationId)]
+              : [])
+          )
         )
         .then((res) => res.length),
     ]);
@@ -82,6 +125,60 @@ export class ActivityService {
       },
     };
   }
+
+  async review(data: TPaginationRequest): Promise<TActivityResponse> {
+    const { page = 1, perPage = 10, orderBy, search, userId } = data;
+    const orderByFunction = orderBy == EPaginationOrderBy.DESC ? desc : asc;
+    const [res, count] = await Promise.all([
+      this.drizzle
+        .select({
+          id: schema.activities.id,
+          name: schema.activities.name,
+          status: schema.activities.status,
+          startDate: schema.activities.startDate,
+          endDate: schema.activities.endDate,
+        })
+        .from(schema.activities)
+        .where(
+          and(
+            ...(search ? [ilike(schema.activities.name, `%${search}%`)] : []),
+            arrayContained(schema.activities.reviewers, [`${userId}`])
+          )
+        )
+        .limit(Number(perPage))
+        .offset((Number(page) - 1) * Number(perPage))
+        .orderBy(orderByFunction(schema.activities.name)),
+      this.drizzle
+        .select({
+          id: schema.activities.id,
+        })
+        .from(schema.activities)
+        .where(
+          and(
+            ...(search ? [ilike(schema.activities.name, `%${search}%`)] : []),
+            arrayContained(schema.activities.reviewers, [`${userId}`])
+          )
+        )
+        .then((res) => res.length),
+    ]);
+
+    if (!res) {
+      throw new NotFoundException('Kegiatan tidak ditemukan');
+    }
+    const lastPage = Math.ceil(count / Number(perPage));
+    return {
+      data: res,
+      meta: {
+        total: count,
+        lastPage,
+        currentPage: Number(page),
+        perPage: Number(perPage),
+        prev: Number(page) > 1 ? Number(page) - 1 : null,
+        next: Number(page) < lastPage ? Number(page) + 1 : null,
+      },
+    };
+  }
+
   async delete(id: string): Promise<TActivitySingleResponse> {
     const res = await this.drizzle
       .delete(schema.activities)

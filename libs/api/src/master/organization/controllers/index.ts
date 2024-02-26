@@ -6,28 +6,46 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { OrganizationService } from '../services';
-import { TOrganizationRequest } from '@psu/entities';
-import { ApiTags, ApiBody } from '@nestjs/swagger';
+import {
+  EorganizationLevel,
+  EorganizationType,
+  TOrganizationFindRequest,
+  TOrganizationRequest,
+} from '@psu/entities';
+import { ApiTags, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { OrganizationDto } from '../../../common';
 @ApiTags('Organization')
 @Controller('organization')
 export class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}
+
+  @ApiQuery({
+    name: 'organizationType',
+    enum: EorganizationType,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'organizationLevel',
+    enum: EorganizationLevel,
+    required: false,
+  })
+  @Get()
+  async findMany(@Query() request: TOrganizationFindRequest) {
+    return await this.organizationService.findMany(request);
+  }
+
+  @ApiBody({ type: OrganizationDto })
+  @Post()
+  async create(@Body() data: TOrganizationRequest) {
+    return await this.organizationService.create(data);
+  }
+
   @Get('/:id')
   async findOne(@Param('id') id: string) {
     return await this.organizationService.findOne(id);
-  }
-
-  @Get()
-  async findMany() {
-    return await this.organizationService.findMany();
-  }
-
-  @Delete('/:id')
-  async delete(@Param('id') id: string) {
-    return await this.organizationService.delete(id);
   }
 
   @ApiBody({ type: OrganizationDto })
@@ -36,9 +54,8 @@ export class OrganizationController {
     return await this.organizationService.update({ id, ...data });
   }
 
-  @ApiBody({ type: OrganizationDto })
-  @Post()
-  async create(@Body() data: TOrganizationRequest) {
-    return await this.organizationService.create(data);
+  @Delete('/:id')
+  async delete(@Param('id') id: string) {
+    return await this.organizationService.delete(id);
   }
 }
