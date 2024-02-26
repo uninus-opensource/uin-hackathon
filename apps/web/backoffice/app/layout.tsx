@@ -4,8 +4,9 @@ import { Montserrat } from 'next/font/google';
 import { FC, ReactElement } from 'react';
 
 export const metadata = {
-  title: 'PSU Backoffice',
-  description: 'PSU Backoffice',
+  title: 'OS Hub - Backoffice',
+  description:
+    'Organization Support HUB is a platform for organization support',
   keywords: [
     'boilerplate',
     'NextJS14',
@@ -17,6 +18,9 @@ export const metadata = {
     'NX',
     'TailwindCSS',
   ],
+  icons: {
+    icon: '/favicon.png',
+  },
 };
 
 const montserrat = Montserrat({
