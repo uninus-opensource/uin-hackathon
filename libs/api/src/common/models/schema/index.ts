@@ -96,7 +96,7 @@ export const activities = pgTable('activities', {
 export const organizations = pgTable('organizations', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
-  organizationType: organizationTypeEnum('organizationType'),
+  organizationType: organizationTypeEnum('organizationType').default('Ormawa'),
   organizationLevel: organizationLevelEnum('organizationLevel'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
