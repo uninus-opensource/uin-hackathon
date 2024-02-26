@@ -4,5 +4,12 @@
   "sourceRoot": "libs/web/components/molecules/src",
   "projectType": "library",
   "tags": [],
-  "targets": {}
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["libs/web/components/molecules/**/*.ts"]
+      }
+    }
+  }
 }

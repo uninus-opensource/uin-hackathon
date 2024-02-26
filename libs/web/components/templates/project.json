@@ -4,5 +4,12 @@
   "sourceRoot": "libs/web/components/templates/src",
   "projectType": "library",
   "tags": [],
-  "targets": {}
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/web/components/templates/**/*.ts"]
+      }
+    }
+  }
 }
