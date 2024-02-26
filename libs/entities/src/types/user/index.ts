@@ -30,6 +30,9 @@ export type TUserRequest = {
   roleId?: string;
   avatar?: string;
   password?: string;
+  organizationId?: string;
+  facultyId?: string;
+  departmentId?: string;
 };
 export type TUserResponse = TMetaResponse<TUserRequest[]>;
 

@@ -16,17 +16,17 @@ import {
 
 @Module({
   imports: [
-    OgranizationModule,
-    RoleModule,
-    ActivityModule,
-    AuthModule,
-    UserModule,
-    DrizzleModule,
-    EmailModule,
-    FileModule,
     PassportModule.register({
       defaultStrategy: 'access',
     }),
+    AuthModule,
+    UserModule,
+    ActivityModule,
+    OgranizationModule,
+    RoleModule,
+    DrizzleModule,
+    EmailModule,
+    FileModule,
   ],
   controllers: [],
   providers: [AccessStrategy, RefreshStrategy, GoogleStrategy],

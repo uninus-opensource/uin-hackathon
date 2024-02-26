@@ -18,16 +18,26 @@ import {
 } from '@psu/entities';
 import { AccessGuard, GoogleGuard, RefreshGuard } from '../../common/guards';
 import { ZodValidationPipe } from '../../common/pipes/';
-
+import { ApiTags, ApiBody, ApiOperation } from '@nestjs/swagger';
+import {
+  ForgotPasswordDto,
+  LoginDto,
+  RefreshDto,
+  RegisterDto,
+  ResetPasswordDto,
+} from '../../common';
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiBody({ type: LoginDto })
   @Post('/login')
   async login(@Body(new ZodValidationPipe(VSLogin)) request: TLoginRequest) {
     return await this.authService.login(request);
   }
 
+  @ApiBody({ type: RegisterDto })
   @Post('/register')
   async register(
     @Body(new ZodValidationPipe(VSRegister)) request: TRegisterRequest
@@ -35,17 +45,20 @@ export class AuthController {
     return await this.authService.register(request);
   }
 
+  @ApiBody({ type: RefreshDto })
   @Post('/refresh')
   @UseGuards(RefreshGuard)
   async refresh(@Request() request: THeaderRequest) {
     return await this.authService.refresh(request.user);
   }
 
+  @ApiBody({ type: ForgotPasswordDto })
   @Post('/password/forgot')
   async forgotPassword(@Body() data: TForgotPasswordRequest) {
     return await this.authService.forgotPassword(data.email);
   }
 
+  @ApiBody({ type: ResetPasswordDto })
   @Post('/password/reset')
   @UseGuards(AccessGuard)
   async resetPassword(@Body() data: TResetPasswordRequest) {
