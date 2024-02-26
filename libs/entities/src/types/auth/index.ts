@@ -70,3 +70,12 @@ export type TResetPasswordRequest = {
 export type TResetPasswordResponse = {
   message: string;
 };
+
+export type TRefreshResponse = {
+  accessToken: string;
+  expired: number;
+};
+
+export type TRefreshRequest = {
+  refreshToken: string;
+};
