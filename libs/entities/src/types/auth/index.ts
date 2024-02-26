@@ -23,6 +23,7 @@ export type TJwtRequest = {
   facultyId?: string;
   departmentId?: string;
   role: {
+    id: string;
     name: string;
     permissions: Array<string>;
   };

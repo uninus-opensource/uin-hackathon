@@ -31,6 +31,12 @@ import {
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Get('/google')
+  @UseGuards(GoogleGuard)
+  async google(@Request() request: THeaderRequest) {
+    return await this.authService.google(request.user);
+  }
+
   @ApiBody({ type: LoginDto })
   @Post('/login')
   async login(@Body(new ZodValidationPipe(VSLogin)) request: TLoginRequest) {
@@ -63,11 +69,5 @@ export class AuthController {
   @UseGuards(AccessGuard)
   async resetPassword(@Body() data: TResetPasswordRequest) {
     return await this.authService.resetPassword(data);
-  }
-
-  @Get('/google')
-  @UseGuards(GoogleGuard)
-  async google(@Request() request: THeaderRequest) {
-    return await this.authService.google(request.user);
   }
 }

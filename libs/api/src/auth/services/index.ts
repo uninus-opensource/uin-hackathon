@@ -100,6 +100,7 @@ export class AuthService {
         facultyId: res?.faculty?.id || '',
         departmentId: res?.department?.id || '',
         role: {
+          id: res.role?.id || '',
           name: res.role?.name || '',
           permissions: res.role?.permissions || [],
         },
@@ -113,6 +114,7 @@ export class AuthService {
         facultyId: res?.faculty?.id || '',
         departmentId: res?.department?.id || '',
         role: {
+          id: res.role?.id || '',
           name: res.role?.name || '',
           permissions: res.role?.permissions || [],
         },
@@ -226,6 +228,7 @@ export class AuthService {
       facultyId: findUser?.faculty?.id || '',
       departmentId: findUser?.department?.id || '',
       role: {
+        id: findUser.role?.id || '',
         name: findUser.role?.name || '',
         permissions: findUser.role?.permissions || [],
       },
@@ -332,6 +335,7 @@ export class AuthService {
         sub: res.id,
         email: res.email,
         role: {
+          id: res.role?.id || '',
           name: res.role?.name || '',
           permissions: res.role?.permissions || [],
         },
@@ -341,6 +345,7 @@ export class AuthService {
         sub: res.id,
         email: res.email,
         role: {
+          id: res.role?.id || '',
           name: res.role?.name || '',
           permissions: res.role?.permissions || [],
         },

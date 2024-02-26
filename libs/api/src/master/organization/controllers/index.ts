@@ -21,10 +21,6 @@ import { OrganizationDto } from '../../../common';
 @Controller('organization')
 export class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}
-  @Get('/:id')
-  async findOne(@Param('id') id: string) {
-    return await this.organizationService.findOne(id);
-  }
 
   @ApiQuery({
     name: 'organizationType',
@@ -41,9 +37,15 @@ export class OrganizationController {
     return await this.organizationService.findMany(request);
   }
 
-  @Delete('/:id')
-  async delete(@Param('id') id: string) {
-    return await this.organizationService.delete(id);
+  @ApiBody({ type: OrganizationDto })
+  @Post()
+  async create(@Body() data: TOrganizationRequest) {
+    return await this.organizationService.create(data);
+  }
+
+  @Get('/:id')
+  async findOne(@Param('id') id: string) {
+    return await this.organizationService.findOne(id);
   }
 
   @ApiBody({ type: OrganizationDto })
@@ -52,9 +54,8 @@ export class OrganizationController {
     return await this.organizationService.update({ id, ...data });
   }
 
-  @ApiBody({ type: OrganizationDto })
-  @Post()
-  async create(@Body() data: TOrganizationRequest) {
-    return await this.organizationService.create(data);
+  @Delete('/:id')
+  async delete(@Param('id') id: string) {
+    return await this.organizationService.delete(id);
   }
 }

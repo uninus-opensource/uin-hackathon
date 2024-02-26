@@ -16,29 +16,27 @@ import { RoleDto } from '../../../common';
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
-  @Get('/:id')
-  async findOne(@Param('id') id: string) {
-    return await this.roleService.findOne(id);
-  }
-
   @Get()
   async findMany() {
     return await this.roleService.findMany();
   }
 
-  @Delete('/:id')
-  async delete(@Param('id') id: string) {
-    return await this.roleService.delete(id);
+  @ApiBody({ type: RoleDto })
+  @Post()
+  async create(@Body() data: TRoleRequest) {
+    return await this.roleService.create(data);
   }
-
+  @Get('/:id')
+  async findOne(@Param('id') id: string) {
+    return await this.roleService.findOne(id);
+  }
   @ApiBody({ type: RoleDto })
   @Patch('/:id')
   async update(@Param('id') id: string, @Body() data: TRoleRequest) {
     return await this.roleService.update({ id, ...data });
   }
-  @ApiBody({ type: RoleDto })
-  @Post()
-  async create(@Body() data: TRoleRequest) {
-    return await this.roleService.create(data);
+  @Delete('/:id')
+  async delete(@Param('id') id: string) {
+    return await this.roleService.delete(id);
   }
 }

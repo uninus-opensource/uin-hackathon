@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { EPaginationOrderBy } from '../../enums';
+import {
+  EActivityStatus,
+  EActivityStatusTranslation,
+  EPaginationOrderBy,
+} from '../../enums';
 import { TJwtRequest } from '../auth';
 import type {
   ButtonHTMLAttributes,
@@ -23,6 +27,10 @@ export type TPaginationRequest = {
   perPage?: string;
   orderBy?: EPaginationOrderBy;
   search?: string;
+  organizationId?: string;
+  roleId?: string;
+  userId?: string;
+  status?: EActivityStatusTranslation;
 };
 
 export type TMetaResponse<T = null | undefined> = {
