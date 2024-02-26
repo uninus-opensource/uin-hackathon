@@ -29,7 +29,8 @@ export type TJwtRequest = {
   };
 };
 
-export type TRegisterRequest = Pick<TLoginRequest, 'email'> & {
+export type TRegisterRequest = {
+  email: string;
   fullname: string;
   password: string;
   avatar?: string;

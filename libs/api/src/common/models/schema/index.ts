@@ -1,34 +1,5 @@
-import { timestamp, pgTable, text, pgEnum, uuid } from 'drizzle-orm/pg-core';
+import { timestamp, pgTable, text, uuid } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
-export const activityStatusEnum = pgEnum('activityStatus', [
-  'Requested',
-  'Completed',
-  'Reported',
-  'Not Reported',
-  'Rejected by Vice Dean',
-  'Rejected by Vice Chancellor',
-  'Rejected by Head Department',
-  'Rejected by Student Government',
-  'Rejected by Student Council',
-  'Approved by Vice Dean',
-  'Approved by Vice Chancellor',
-  'Approved by Head Department',
-  'Approved by Student Government',
-  'Approved by Student Council',
-]);
-
-export const reviewStatusEnum = pgEnum('reviewStatus', [
-  'Rejected by Vice Dean',
-  'Rejected by Vice Chancellor',
-  'Rejected by Head Department',
-  'Rejected by Student Government',
-  'Rejected by Student Council',
-  'Approved by Vice Dean',
-  'Approved by Vice Chancellor',
-  'Approved by Head Department',
-  'Approved by Student Government',
-  'Approved by Student Council',
-]);
 
 export const users = pgTable('users', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -76,7 +47,7 @@ export const activities = pgTable('activities', {
   organizationId: uuid('organization_id')
     .notNull()
     .references(() => organizations.id),
-  status: activityStatusEnum('activityStatus').default('Requested'),
+  status: text('status'),
   reviewers: text('reviewers').array(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
@@ -115,7 +86,7 @@ export const reviews = pgTable('reviews', {
     .notNull()
     .references(() => activities.id),
   note: text('note'),
-  status: reviewStatusEnum('reviewStatus'),
+  status: text('status'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });

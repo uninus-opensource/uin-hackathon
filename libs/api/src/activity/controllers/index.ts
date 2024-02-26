@@ -27,7 +27,7 @@ import { ZodValidationPipe } from '../../common/pipes/';
 import { ApiTags, ApiBody, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 @ApiTags('Activity')
 @ApiBearerAuth()
-@Controller('/activity')
+@Controller('activity')
 @UseGuards(AccessGuard)
 export class ActivityController {
   constructor(private readonly activityService: ActivityService) {}
@@ -35,23 +35,66 @@ export class ActivityController {
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'perPage', required: false })
   @ApiQuery({ name: 'orderBy', enum: EPaginationOrderBy, required: false })
+  @ApiQuery({ name: 'search', required: false })
   @ApiQuery({
     name: 'status',
     enum: [
-      EActivityStatusTranslation.REQUESTED,
-      EActivityStatusTranslation.REJECTED,
       EActivityStatusTranslation.APPROVED,
+      EActivityStatusTranslation.REJECTED,
+      EActivityStatusTranslation.REVISION,
+      EActivityStatusTranslation.ONGOING,
+      EActivityStatusTranslation.REQUESTED,
     ],
     required: false,
   })
-  @ApiQuery({ name: 'search', required: false })
-  @Get()
-  async findMany(
+  @Get('submission')
+  async submission(
     @Request() request: THeaderRequest,
     @Query() query: TPaginationRequest
   ) {
-    return await this.activityService.findMany({
-      organizationId: request.user.organizationId,
+    return;
+  }
+
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'perPage', required: false })
+  @ApiQuery({ name: 'orderBy', enum: EPaginationOrderBy, required: false })
+  @ApiQuery({ name: 'search', required: false })
+  @ApiQuery({
+    name: 'status',
+    enum: [
+      EActivityStatusTranslation.NOTREPORTED,
+      EActivityStatusTranslation.REPORTED,
+    ],
+    required: false,
+  })
+  @Get('report')
+  async report(
+    @Request() request: THeaderRequest,
+    @Query() query: TPaginationRequest
+  ) {
+    return;
+  }
+
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'perPage', required: false })
+  @ApiQuery({ name: 'orderBy', enum: EPaginationOrderBy, required: false })
+  @ApiQuery({ name: 'search', required: false })
+  @ApiQuery({
+    name: 'status',
+    enum: [
+      EActivityStatusTranslation.REJECTED,
+      EActivityStatusTranslation.APPROVED,
+      EActivityStatusTranslation.REVISION,
+    ],
+    required: false,
+  })
+  @Get('approval')
+  async approval(
+    @Request() request: THeaderRequest,
+    @Query() query: TPaginationRequest
+  ) {
+    return this.activityService.approval({
+      userId: request?.user?.sub,
       ...query,
     });
   }
@@ -62,30 +105,6 @@ export class ActivityController {
     @Body(new ZodValidationPipe(VSCreateActivity)) data: TActivityRequest
   ) {
     return await this.activityService.create(data);
-  }
-
-  @ApiQuery({ name: 'page', required: false })
-  @ApiQuery({ name: 'perPage', required: false })
-  @ApiQuery({ name: 'orderBy', enum: EPaginationOrderBy, required: false })
-  @ApiQuery({ name: 'search', required: false })
-  @ApiQuery({
-    name: 'status',
-    enum: [
-      EActivityStatusTranslation.REQUESTED,
-      EActivityStatusTranslation.REJECTED,
-      EActivityStatusTranslation.APPROVED,
-    ],
-    required: false,
-  })
-  @Get('/review')
-  async review(
-    @Request() request: THeaderRequest,
-    @Query() query: TPaginationRequest
-  ) {
-    return await this.activityService.review({
-      userId: request.user.sub,
-      ...query,
-    });
   }
 
   @ApiQuery({ name: 'type', enum: EChartType, required: false })

@@ -18,11 +18,14 @@ export const VSRegister = z.object({
   email: z.string({ required_error: 'Email harus diisi' }).email({
     message: 'Email harus valid',
   }),
-  organizationId: z
+  organizationId: z.string({
+    required_error: 'Organisasi harus diisi',
+  }),
+  nim: z
     .string({
-      required_error: 'Organisasi harus bertipe string',
+      required_error: 'NIM harus diisi',
     })
-    .optional(),
+    .min(9, { message: 'NIM minimal 8 karakter' }),
   fullname: z
     .string({ required_error: 'Nama Lengkap harus diisi' })
     .min(2, { message: 'Nama Lengkap harus diisi' }),
