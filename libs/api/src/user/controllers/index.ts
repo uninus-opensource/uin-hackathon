@@ -22,6 +22,9 @@ import {
 } from '@psu/entities';
 import { ZodValidationPipe } from '../../common/pipes/';
 
+import { ApiTags, ApiBody, ApiOperation } from '@nestjs/swagger';
+import { ProfileDto, UserDto, UserFindByEmailDto } from '../../common/dto';
+@ApiTags('User')
 @Controller('user')
 @UseGuards(AccessGuard)
 export class UserController {
@@ -34,7 +37,7 @@ export class UserController {
     } = request;
     return await this.userService.findOne(id);
   }
-
+  @ApiBody({ type: ProfileDto })
   @Patch('/me')
   async updateProfile(
     @Request() request: THeaderRequest,
@@ -61,6 +64,7 @@ export class UserController {
     return await this.userService.delete(id);
   }
 
+  @ApiBody({ type: UserDto })
   @Patch('/:id')
   async update(
     @Param('id') id: string,
@@ -69,12 +73,14 @@ export class UserController {
     return await this.userService.update({ id, ...data });
   }
 
+  @ApiBody({ type: UserDto })
   @Post()
   async create(@Body(new ZodValidationPipe(VSCreateUser)) data: TUserRequest) {
     return await this.userService.create(data);
   }
 
-  @Post()
+  @ApiBody({ type: UserFindByEmailDto })
+  @Post('find')
   async findUserByEmail(@Body('email') email: string) {
     return await this.userService.findUserByEmail(email);
   }
