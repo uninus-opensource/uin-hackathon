@@ -151,7 +151,6 @@ export class ActivityService {
     const { type = EChartType.PIE, status, month, organizationId } = data;
     const now = new Date();
     const currentYear = now.getFullYear();
-
     const monthIndex =
       month &&
       monthNames.findIndex(
