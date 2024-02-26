@@ -31,6 +31,7 @@ export type TPaginationRequest = {
   roleId?: string;
   userId?: string;
   status?: EActivityStatusTranslation;
+  facultyId?: string;
 };
 
 export type TMetaResponse<T = null | undefined> = {

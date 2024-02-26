@@ -97,7 +97,7 @@ export class RoleService {
       })
       .then((res) => res.at(0));
     if (!res) {
-      throw new BadRequestException('Gagal menambahkan role');
+      throw new BadRequestException('Gagal update role');
     }
 
     return {

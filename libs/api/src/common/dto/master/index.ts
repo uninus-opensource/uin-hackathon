@@ -18,3 +18,16 @@ export class OrganizationDto {
   @ApiProperty()
   public organizationLevel!: string;
 }
+
+export class FacultyDto {
+  @ApiProperty()
+  public name!: string;
+}
+
+export class DepartmentDto {
+  @ApiProperty()
+  public name!: string;
+
+  @ApiProperty()
+  public facultyI!: string;
+}

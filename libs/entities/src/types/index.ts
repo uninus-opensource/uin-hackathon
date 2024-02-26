@@ -6,3 +6,5 @@ export * from './chart';
 export * from './file';
 export * from './role';
 export * from './organization';
+export * from './faculty';
+export * from './department';

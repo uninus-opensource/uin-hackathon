@@ -119,7 +119,7 @@ export class OrganizationService {
       })
       .then((res) => res.at(0));
     if (!res) {
-      throw new BadRequestException('Gagal menambahkan Organisasi');
+      throw new BadRequestException('Gagal update Organisasi');
     }
 
     return {
