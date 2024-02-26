@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { TrpcRouter } from '..';
+import { TrpcRouter } from '../routers';
 
 @Module({
   imports: [],

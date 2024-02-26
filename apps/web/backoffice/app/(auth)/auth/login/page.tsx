@@ -1,27 +1,20 @@
 import type { NextPage } from 'next';
 import type { ReactElement } from 'react';
-import { Button } from '@psu/web-component-atoms';
+import { AuthLoginModule } from './_modules';
 
 const AuthLoginPage: NextPage = (): ReactElement => {
   return (
-    <section className="flex flex-col items-center justify-center w-full h-screen">
-      <div className="flex gap-x-4">
-        <Button
-          data-testid="button-google"
-          variant={'primary'}
-          variantType={'solid'}
-          size={'sm'}
-        >
-          Login with Google
-        </Button>
-        <Button
-          data-testid="button-github"
-          variant={'secondary'}
-          variantType={'solid'}
-          size={'sm'}
-        >
-          Login with Github
-        </Button>
+    <section className="flex overflow-y-hidden lg:flex-row flex-col gap-y-5 lg:justify-between justify-center items-center w-full h-full min-h-screen">
+      <div className=" hidden w-1/2 lg:flex flex-col justify-center item-center lg:items-start gap-y-4">
+        <h1 className="text-3xl md:text-5xl font-bold text-black md:text-left text-center">
+          Organization Support HUB
+        </h1>
+        <h2 className="text-1xl md:text-2xl font-medium text-black text-center md:text-left">
+          Thats All ORMAWA NEEDS
+        </h2>
+      </div>
+      <div className="md:w-1/2 w-full h-full px-6 md:px-0">
+        <AuthLoginModule />
       </div>
     </section>
   );

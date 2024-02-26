@@ -4,5 +4,12 @@
   "sourceRoot": "libs/web/components/organisms/src",
   "projectType": "library",
   "tags": [],
-  "targets": {}
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/web/components/organisms/**/*.ts"]
+      }
+    }
+  }
 }
