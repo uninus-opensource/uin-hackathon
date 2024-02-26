@@ -23,13 +23,7 @@ import {
 } from '@psu/entities';
 import { ZodValidationPipe } from '../../common/pipes/';
 
-import {
-  ApiTags,
-  ApiBody,
-  ApiOperation,
-  ApiBearerAuth,
-  ApiQuery,
-} from '@nestjs/swagger';
+import { ApiTags, ApiBody, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { ProfileDto, UserDto, UserFindByEmailDto } from '../../common/dto';
 @ApiTags('User')
 @ApiBearerAuth()

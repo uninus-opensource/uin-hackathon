@@ -18,7 +18,7 @@ import {
 } from '@psu/entities';
 import { AccessGuard, GoogleGuard, RefreshGuard } from '../../common/guards';
 import { ZodValidationPipe } from '../../common/pipes/';
-import { ApiTags, ApiBody, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiBody } from '@nestjs/swagger';
 import {
   ForgotPasswordDto,
   LoginDto,
