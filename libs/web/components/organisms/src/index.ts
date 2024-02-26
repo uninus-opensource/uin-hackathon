@@ -1,2 +1,3 @@
 export * from './inputs';
-export * from './data-table';
+export * from './datatable';
+export * from './modal';

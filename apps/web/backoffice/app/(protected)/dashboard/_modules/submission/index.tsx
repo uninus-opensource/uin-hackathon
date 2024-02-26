@@ -1,6 +1,6 @@
 'use client';
-import { FC, ReactElement } from 'react';
-import { DataTable } from '@psu/web-component-organisms';
+import { FC, ReactElement, useState } from 'react';
+import { DataTable, Modal } from '@psu/web-component-organisms';
 import { ColumnDef } from '@tanstack/react-table';
 import {
   parseAsInteger,
@@ -8,9 +8,10 @@ import {
   useQueryState,
 } from 'next-usequerystate';
 import { IoDocumentText,IoEyeSharp } from "react-icons/io5";
-import { Button } from '@psu/web-component-atoms';
+import { Button, InputSelect } from '@psu/web-component-atoms';
 import { FaRegEdit } from "react-icons/fa";
 export const SubmissionModule: FC = (): ReactElement => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [page] = useQueryState('page', parseAsInteger.withDefault(1));
   const [search, setSearch] = useQueryState(
     'search',
@@ -93,7 +94,7 @@ export const SubmissionModule: FC = (): ReactElement => {
       <div className="flex flex-col h-full gap-y-6 mt-8">
         <DataTable
           createAction={() => {
-            console.log('a');
+            setIsModalOpen(!isModalOpen);
           }}
           createIcon={<IoDocumentText />}
           createLabel={'Buat Pengajuan'}
@@ -113,6 +114,13 @@ export const SubmissionModule: FC = (): ReactElement => {
           }}
         />
       </div>
+      <Modal isOpen={isModalOpen} width='300px' height='300px' header={true} title='Randa Slayer' onClose={()=> setIsModalOpen(false)}>
+        <InputSelect/>
+        <InputSelect/>
+        <InputSelect/>
+
+      </Modal>
     </section>
+  
   );
 };
