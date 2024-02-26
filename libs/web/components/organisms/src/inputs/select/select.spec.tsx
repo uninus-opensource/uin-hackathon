@@ -1,14 +1,14 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { ControlledFieldTextArea } from './text-area';
+import { ControlledFieldSelect } from './select';
 import { useForm } from 'react-hook-form';
 
 const ComponentTestWithControll = () => {
   const { control } = useForm();
-  return <ControlledFieldTextArea size="sm" name="test" control={control} />;
+  return <ControlledFieldSelect name="test" control={control} />;
 };
 
-describe('Controlled Field Text Area Component', () => {
+describe('Controlled Field Checkbox Component', () => {
   it('Should render successfully', () => {
     const { baseElement } = render(<ComponentTestWithControll />);
     expect(baseElement).toBeTruthy();
