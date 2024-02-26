@@ -18,6 +18,9 @@ export class FileController {
   async uploadFile(
     @UploadedFile(
       new ParseFilePipeBuilder()
+        .addMaxSizeValidator({
+          maxSize: 4000000,
+        })
         .addFileTypeValidator({
           fileType: /(pdf)/g,
         })
