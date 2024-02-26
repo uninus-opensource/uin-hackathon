@@ -39,11 +39,19 @@ export type TMetaResponse<T = null | undefined> = {
   message?: string;
   data?: T;
   meta?: {
+<<<<<<< HEAD
     total?: number;
     totalPage?: number;
     lastPage?: number;
     currentPage?: number;
     perPage?: number;
+=======
+    total: number;
+    totalPage?: number;
+    lastPage: number;
+    currentPage: number;
+    perPage: number;
+>>>>>>> e728908 (feat : add page submission and activity report)
     prev?: null | number;
     next?: null | number;
   };

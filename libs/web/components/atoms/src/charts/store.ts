@@ -1,6 +1,6 @@
 export const optionsMonth = [
-  { label: 'January', value: 'january' },
-  { label: 'Februari', value: 'february' },
+  { label: 'Januari', value: 'januari' },
+  { label: 'Februari', value: 'februari' },
   { label: 'Maret', value: 'maret' },
   { label: 'April', value: 'april' },
   { label: 'Mei', value: 'mei' },
