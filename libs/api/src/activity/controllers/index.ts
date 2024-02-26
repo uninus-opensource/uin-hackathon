@@ -52,7 +52,10 @@ export class ActivityController {
     @Request() request: THeaderRequest,
     @Query() query: TPaginationRequest
   ) {
-    return;
+    return this.activityService.report({
+      organizationId: request?.user?.organizationId,
+      ...query,
+    });
   }
 
   @ApiQuery({ name: 'page', required: false })
@@ -72,7 +75,10 @@ export class ActivityController {
     @Request() request: THeaderRequest,
     @Query() query: TPaginationRequest
   ) {
-    return;
+    return this.activityService.report({
+      organizationId: request?.user?.organizationId,
+      ...query,
+    });
   }
 
   @ApiQuery({ name: 'page', required: false })
