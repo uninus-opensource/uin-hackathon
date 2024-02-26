@@ -474,6 +474,7 @@ export class ActivityService {
       ]);
       return {
         type: EChartType.LINE,
+        month: monthIndex,
         labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
         datasets: [
           {

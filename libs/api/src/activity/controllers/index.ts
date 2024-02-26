@@ -29,6 +29,25 @@ import { ZodValidationPipe } from '../../common/pipes/';
 export class ActivityController {
   constructor(private readonly activityService: ActivityService) {}
 
+  @Get('chart')
+  async chart(
+    @Request() request: THeaderRequest,
+    @Query('type') type: EChartType,
+    @Query('status')
+    status:
+      | EActivityStatusTranslation.REQUESTED
+      | EActivityStatusTranslation.REJECTED
+      | EActivityStatusTranslation.APPROVED,
+    @Query('month') month: EMonthNames
+  ) {
+    return await this.activityService.chart({
+      type,
+      status,
+      month,
+      organizationId: request.user.organizationId,
+    });
+  }
+
   @Get('/:id')
   async findOne(@Param('id') id: string) {
     return await this.activityService.findOne(id);
@@ -57,27 +76,5 @@ export class ActivityController {
     @Body(new ZodValidationPipe(VSCreateActivity)) data: TActivityRequest
   ) {
     return await this.activityService.create(data);
-  }
-
-  @Get('/chart')
-  async chart(
-    @Request() request: THeaderRequest,
-    @Query('type') type: EChartType,
-    @Query('status')
-    status:
-      | EActivityStatusTranslation.REQUESTED
-      | EActivityStatusTranslation.REJECTED
-      | EActivityStatusTranslation.APPROVED,
-    @Query('month') month: EMonthNames
-  ) {
-    const {
-      user: { organizationId },
-    } = request;
-    return await this.activityService.chart({
-      type,
-      status,
-      month,
-      organizationId,
-    });
   }
 }

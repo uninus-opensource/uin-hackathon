@@ -13,6 +13,23 @@ export class AccessStrategy extends PassportStrategy(Strategy, 'access') {
   }
 
   async validate(payload: TJwtRequest) {
-    return { sub: payload.sub, email: payload.email };
+    const {
+      sub,
+      email,
+      fullname,
+      organizationId,
+      facultyId,
+      departmentId,
+      role,
+    } = payload;
+    return {
+      sub,
+      email,
+      fullname,
+      organizationId,
+      facultyId,
+      departmentId,
+      role,
+    };
   }
 }

@@ -7,6 +7,7 @@ import {
 export type TChartResponse = {
   message?: string;
   type?: EChartType;
+  month?: number;
   labels?: EActivityStatusTranslation[] | string[];
   datasets?: {
     label?: string;

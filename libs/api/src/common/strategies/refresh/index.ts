@@ -19,6 +19,23 @@ export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
 
     if (!refreshToken) throw new ForbiddenException('Refresh token malformed');
 
-    return { sub: payload.sub, email: payload.email };
+    const {
+      sub,
+      email,
+      fullname,
+      organizationId,
+      facultyId,
+      departmentId,
+      role,
+    } = payload;
+    return {
+      sub,
+      email,
+      fullname,
+      organizationId,
+      facultyId,
+      departmentId,
+      role,
+    };
   }
 }
