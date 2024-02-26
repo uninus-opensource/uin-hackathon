@@ -25,7 +25,6 @@ import {
   comparePassword,
   encryptPassword,
   generateAccessToken,
-  generateOtp,
   generateRefreshToken,
 } from '../../common';
 import { EmailService } from '../../email';
@@ -46,6 +45,18 @@ export class AuthService {
         fullname: schema.users.fullname,
         email: schema.users.email,
         password: schema.users.password,
+        organization: {
+          id: schema.organizations.id,
+          name: schema.organizations.name,
+        },
+        faculty: {
+          id: schema.faculty.id,
+          name: schema.faculty.name,
+        },
+        department: {
+          id: schema.department.id,
+          name: schema.department.name,
+        },
         role: {
           id: schema.roles.id,
           name: schema.roles.name,
@@ -54,6 +65,22 @@ export class AuthService {
       })
       .from(schema.users)
       .leftJoin(schema.roles, eq(schema.roles.id, schema.users.roleId))
+      .leftJoin(
+        schema.additional,
+        eq(schema.additional.userId, schema.users.id)
+      )
+      .leftJoin(
+        schema.organizations,
+        eq(schema.additional.organizationId, schema.organizations.id)
+      )
+      .leftJoin(
+        schema.faculty,
+        eq(schema.additional.facultyId, schema.faculty.id)
+      )
+      .leftJoin(
+        schema.department,
+        eq(schema.additional.departmentId, schema.department.id)
+      )
       .where(eq(schema.users.email, email))
       .then((res) => res.at(0));
 
@@ -68,6 +95,10 @@ export class AuthService {
       generateAccessToken({
         sub: res.id,
         email: res.email,
+        fullname: res.fullname,
+        organizationId: res?.organization?.id || '',
+        facultyId: res?.faculty?.id || '',
+        departmentId: res?.department?.id || '',
         role: {
           name: res.role?.name || '',
           permissions: res.role?.permissions || [],
@@ -77,6 +108,10 @@ export class AuthService {
       generateRefreshToken({
         sub: res.id,
         email: res.email,
+        fullname: res.fullname,
+        organizationId: res?.organization?.id || '',
+        facultyId: res?.faculty?.id || '',
+        departmentId: res?.department?.id || '',
         role: {
           name: res.role?.name || '',
           permissions: res.role?.permissions || [],
@@ -100,6 +135,18 @@ export class AuthService {
         id: res.id,
         fullname: res.fullname as string,
         email: res.email,
+        organization: {
+          id: res?.organization?.id,
+          name: res?.organization?.name,
+        },
+        faculty: {
+          id: res?.faculty?.id,
+          name: res?.faculty?.name,
+        },
+        department: {
+          id: res?.department?.id,
+          name: res?.department?.name,
+        },
         role: {
           id: res.role?.id as string,
           name: res.role?.name || '',
@@ -109,7 +156,7 @@ export class AuthService {
     };
   }
   async register(payload: TRegisterRequest): Promise<TRegisterResponse> {
-    const { email, password, fullname, avatar } = payload;
+    const { email, password, fullname, organizationId, nim } = payload;
     const [isEmailExist, findRole] = await Promise.all([
       this.drizzle
         .select({
@@ -130,24 +177,28 @@ export class AuthService {
     if (isEmailExist) {
       throw new ConflictException('Email telah digunakan');
     }
+
     const createUser = await this.drizzle
       .insert(schema.users)
       .values({
         fullname: fullname as string,
         email: email as string,
         roleId: findRole?.id as string,
-        avatar: avatar,
+        nim,
         password: await encryptPassword(password as string),
       })
       .returning({
         id: schema.users.id,
-        fullname: schema.users.fullname,
-        email: schema.users.email,
       })
       .then((res) => res.at(0));
+
     if (!createUser) {
       throw new BadRequestException('Gagal membuat akun');
     }
+    await this.drizzle.insert(schema.additional).values({
+      userId: createUser.id,
+      organizationId,
+    });
     return {
       message: 'Akun berhasil dibuat, silahkan login!',
     };
@@ -170,7 +221,10 @@ export class AuthService {
     const accessToken = await generateAccessToken({
       sub: findUser.id,
       email: findUser.email,
-      organizationId: findUser.organizationId,
+      fullname: findUser.fullname,
+      organizationId: findUser?.organization?.id || '',
+      facultyId: findUser?.faculty?.id || '',
+      departmentId: findUser?.department?.id || '',
       role: {
         name: findUser.role?.name || '',
         permissions: findUser.role?.permissions || [],
@@ -200,8 +254,6 @@ export class AuthService {
       .where(eq(schema.users.id, id as string))
       .returning({
         id: schema.users.id,
-        fullname: schema.users.fullname,
-        email: schema.users.email,
       })
       .then((res) => res.at(0));
 

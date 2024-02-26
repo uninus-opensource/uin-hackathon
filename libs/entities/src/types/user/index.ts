@@ -4,6 +4,18 @@ export type TUser = {
   fullname: string;
   image?: string;
   email: string;
+  organization?: {
+    id?: string;
+    name?: string;
+  };
+  faculty?: {
+    id?: string;
+    name?: string;
+  };
+  department?: {
+    id?: string;
+    name?: string;
+  };
   role: {
     id: string;
     name: string;

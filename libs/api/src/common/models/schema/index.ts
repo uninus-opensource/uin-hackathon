@@ -1,15 +1,9 @@
-import {
-  timestamp,
-  pgTable,
-  text,
-  primaryKey,
-  pgEnum,
-  uuid,
-} from 'drizzle-orm/pg-core';
+import { timestamp, pgTable, text, pgEnum, uuid } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 export const activityStatusEnum = pgEnum('activityStatus', [
   'Requested',
   'Completed',
+  'Reported',
   'Not Reported',
   'Rejected by Vice Dean',
   'Rejected by Vice Chancellor',
@@ -41,11 +35,18 @@ export const organizationTypeEnum = pgEnum('organizationType', [
   'UKM',
 ]);
 
+export const organizationLevelEnum = pgEnum('organizationLevel', [
+  'Universitas',
+  'Fakultas',
+  'Prodi',
+]);
+
 export const users = pgTable('users', {
   id: uuid('id').defaultRandom().primaryKey(),
   fullname: text('fullname').notNull(),
   email: text('email').notNull(),
   avatar: text('avatar'),
+  nim: text('nim'),
   password: text('password'),
   roleId: uuid('role_id')
     .notNull()
@@ -62,34 +63,16 @@ export const roles = pgTable('roles', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
 
-export const additional = pgTable(
-  'user_affiliations',
-  {
-    userId: uuid('userId')
-      .notNull()
-      .references(() => users.id, { onDelete: 'cascade' }),
-    organizationId: uuid('organization_id').references(() => organizations.id),
-    facultyId: uuid('faculty_id').references(() => faculty.id),
-    departmentId: uuid('department_id').references(() => department.id),
-    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
-  },
-  (table) => {
-    return {
-      organization: primaryKey({
-        columns: [table.userId, table.organizationId],
-      }),
-      faculty: primaryKey({
-        name: 'faculty',
-        columns: [table.userId, table.facultyId],
-      }),
-      department: primaryKey({
-        name: 'department',
-        columns: [table.userId, table.departmentId],
-      }),
-    };
-  }
-);
+export const additional = pgTable('additional', {
+  userId: uuid('userId')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  organizationId: uuid('organization_id').references(() => organizations.id),
+  facultyId: uuid('faculty_id').references(() => faculty.id),
+  departmentId: uuid('department_id').references(() => department.id),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+});
 
 export const activities = pgTable('activities', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -101,9 +84,9 @@ export const activities = pgTable('activities', {
   startDate: timestamp('start_date', { withTimezone: true }).notNull(),
   endDate: timestamp('end_date', { withTimezone: true }).notNull(),
   budget: text('budget').notNull(),
-  applicantId: uuid('applicant_id')
+  organizationId: uuid('organization_id')
     .notNull()
-    .references(() => users.id),
+    .references(() => organizations.id),
   status: activityStatusEnum('activityStatus').default('Requested'),
   reviewers: text('reviewers').array(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
@@ -114,6 +97,7 @@ export const organizations = pgTable('organizations', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
   organizationType: organizationTypeEnum('organizationType'),
+  organizationLevel: organizationLevelEnum('organizationLevel'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
@@ -159,6 +143,9 @@ export const rolesRelations = relations(roles, ({ many }) => ({
   users: many(users),
 }));
 
+export const organizationsRelations = relations(organizations, ({ many }) => ({
+  activities: many(activities),
+}));
 //Informasi tambahan user, untuk role Wakil Dekan, Ketua Prodi dan ormawa
 export const additionalRelations = relations(additional, ({ one }) => ({
   faculty: one(faculty, {
@@ -177,9 +164,9 @@ export const additionalRelations = relations(additional, ({ one }) => ({
 
 //Table kegiatan berelasi dengan user(pemohon) serta proposal (one to many)
 export const activitiesRelations = relations(activities, ({ one }) => ({
-  users: one(users, {
-    fields: [activities.applicantId],
-    references: [users.id],
+  organizations: one(organizations, {
+    fields: [activities.organizationId],
+    references: [organizations.id],
   }),
 }));
 

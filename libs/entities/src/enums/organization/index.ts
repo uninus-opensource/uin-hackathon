@@ -1,4 +1,10 @@
 export enum EorganizationType {
-  ORMAWA = 'ormawa',
-  UKM = 'ukm',
+  ORMAWA = 'Ormawa',
+  UKM = 'UKM',
+}
+
+export enum EorganizationLevel {
+  UNIVERSITAS = 'Universitas',
+  FAKULTAS = 'Fakultas',
+  PRODI = 'Prodi',
 }
