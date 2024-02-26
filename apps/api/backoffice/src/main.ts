@@ -10,7 +10,14 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const globalPrefix = 'api';
+  const url = process.env.CORS_ORIGIN;
+  const origin = url.includes(',') ? url.split(',') : url;
   app.setGlobalPrefix(globalPrefix);
+  app.enableCors({
+    origin,
+    methods: ['GET', 'POST', 'DELETE', 'PATCH'],
+    credentials: true,
+  });
   const config = new DocumentBuilder()
     .setTitle('OS HUB API')
     .setDescription('OS HUB API documentation')
