@@ -10,10 +10,14 @@ import {
   AuthModule,
   EmailModule,
   FileModule,
+  OgranizationModule,
+  RoleModule,
 } from '@psu/api';
 
 @Module({
   imports: [
+    OgranizationModule,
+    RoleModule,
     ActivityModule,
     AuthModule,
     UserModule,
