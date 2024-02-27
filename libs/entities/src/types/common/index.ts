@@ -15,6 +15,7 @@ import type {
   TextareaHTMLAttributes,
 } from 'react';
 import type { FieldValues, UseControllerProps } from 'react-hook-form';
+import { AxiosError } from 'axios';
 
 export type THeaderRequest = {
   user: TJwtRequest & {
@@ -47,6 +48,10 @@ export type TMetaResponse<T = null | undefined> = {
     next?: null | number;
   };
 };
+
+export type TMetaErrorResponse = AxiosError<
+  Omit<TMetaResponse<null>, 'meta'> & { errors?: Array<{ message: string }> }
+>;
 
 export type TSize = 'sm' | 'md' | 'lg';
 
