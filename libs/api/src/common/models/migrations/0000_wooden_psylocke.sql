@@ -1,15 +1,3 @@
-DO $$ BEGIN
- CREATE TYPE "activityStatus" AS ENUM('Requested', 'Completed', 'Reported', 'Not Reported', 'Rejected by Vice Dean', 'Rejected by Vice Chancellor', 'Rejected by Head Department', 'Rejected by Student Government', 'Rejected by Student Council', 'Approved by Vice Dean', 'Approved by Vice Chancellor', 'Approved by Head Department', 'Approved by Student Government', 'Approved by Student Council');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- CREATE TYPE "reviewStatus" AS ENUM('Rejected by Vice Dean', 'Rejected by Vice Chancellor', 'Rejected by Head Department', 'Rejected by Student Government', 'Rejected by Student Council', 'Approved by Vice Dean', 'Approved by Vice Chancellor', 'Approved by Head Department', 'Approved by Student Government', 'Approved by Student Council');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "activities" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
@@ -21,7 +9,7 @@ CREATE TABLE IF NOT EXISTS "activities" (
 	"end_date" timestamp with time zone NOT NULL,
 	"budget" text NOT NULL,
 	"organization_id" uuid NOT NULL,
-	"activityStatus" "activityStatus" DEFAULT 'Requested',
+	"status" text,
 	"reviewers" text[],
 	"created_at" timestamp with time zone DEFAULT now(),
 	"updated_at" timestamp with time zone DEFAULT now()
@@ -65,7 +53,7 @@ CREATE TABLE IF NOT EXISTS "reviews" (
 	"reviewer_id" uuid NOT NULL,
 	"activity_id" uuid NOT NULL,
 	"note" text,
-	"reviewStatus" "reviewStatus",
+	"status" text,
 	"created_at" timestamp with time zone DEFAULT now(),
 	"updated_at" timestamp with time zone DEFAULT now()
 );
@@ -82,6 +70,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"fullname" text NOT NULL,
 	"email" text NOT NULL,
+	"is_verified" boolean DEFAULT false,
 	"avatar" text,
 	"nim" text,
 	"password" text,
