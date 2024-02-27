@@ -1,5 +1,6 @@
 import 'tailwindcss/tailwind.css';
 import { WebAuthProvider } from '@psu/web-auth';
+import { ReactQueryProvider } from '@psu/web-services';
 import { Montserrat } from 'next/font/google';
 import { FC, ReactElement } from 'react';
 
@@ -36,7 +37,9 @@ const RootLayout: FC<TChildrenProps> = ({ children }): ReactElement => {
   return (
     <html lang="en">
       <body className={montserrat.className}>
-        <WebAuthProvider>{children}</WebAuthProvider>
+        <WebAuthProvider>
+          <ReactQueryProvider>{children}</ReactQueryProvider>
+        </WebAuthProvider>
       </body>
     </html>
   );

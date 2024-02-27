@@ -7,6 +7,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@psu/web-component-templates';
+import { useRegister } from '@psu/web-auth';
+import { useRouter } from 'next/navigation';
 
 const schemaPersonal = z.object({
   fullname: z.string().min(1, { message: 'Nama Lengkap wajib diisi' }),
@@ -35,6 +37,8 @@ export type TRegisterOrganization = z.infer<typeof schemaOrganization>;
 
 export const AuthRegisterModule: FC = (): ReactElement => {
   const [step] = useQueryState('step', parseAsString.withDefault('personal'));
+  const { push } = useRouter();
+  const { mutate } = useRegister();
 
   const methods = useForm<TRegisterPersonal & TRegisterOrganization>({
     resolver: zodResolver(
@@ -64,7 +68,21 @@ export const AuthRegisterModule: FC = (): ReactElement => {
   });
 
   const onSubmit = methods.handleSubmit((data) => {
-    console.log(data);
+    mutate(
+      {
+        organizationId: data.organization,
+        email: data.email,
+        nim: data.nim,
+        fullname: data.fullname,
+        password: data.password,
+      },
+      {
+        onSuccess: () => {
+          methods.reset();
+          push('/auth/login');
+        },
+      }
+    );
   });
 
   return (

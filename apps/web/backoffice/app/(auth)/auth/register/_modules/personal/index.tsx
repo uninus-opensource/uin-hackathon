@@ -51,7 +51,7 @@ export const AuthRegisterPersonalModule: FC = (): ReactElement => {
             control={control}
             name="fullname"
             label="Nama Lengkap"
-            size="sm"
+            size="md"
             type="text"
             placeholder="Masukkan Nama Lengkap"
             status={errors.fullname ? 'error' : 'default'}
@@ -61,7 +61,7 @@ export const AuthRegisterPersonalModule: FC = (): ReactElement => {
             control={control}
             name="password"
             label="Kata Sandi"
-            size="sm"
+            size="md"
             type="password"
             placeholder="Masukkan Kata Sandi"
             status={errors.password ? 'error' : 'default'}
@@ -74,7 +74,7 @@ export const AuthRegisterPersonalModule: FC = (): ReactElement => {
             control={control}
             name="nim"
             label="NIM"
-            size="sm"
+            size="md"
             type="number"
             placeholder="Contoh: 41037000***"
             status={errors.nim ? 'error' : 'default'}
@@ -84,7 +84,7 @@ export const AuthRegisterPersonalModule: FC = (): ReactElement => {
             control={control}
             name="confirmPassword"
             label="Konfirmasi Kata Sandi"
-            size="sm"
+            size="md"
             type="password"
             placeholder="Masukkan Konfirmasi Kata Sandi"
             status={errors.confirmPassword ? 'error' : 'default'}
@@ -98,7 +98,7 @@ export const AuthRegisterPersonalModule: FC = (): ReactElement => {
             name="email"
             label="Email"
             type="email"
-            size="sm"
+            size="md"
             placeholder="Contoh: email@example.com"
             status={errors.email ? 'error' : 'default'}
             message={errors.email?.message}
