@@ -6,20 +6,31 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { RoleService } from '../services';
-import { TRoleRequest, VSCreateRole, VSUpdateRole } from '@psu/entities';
-import { ApiTags, ApiBody } from '@nestjs/swagger';
+import {
+  EPaginationOrderBy,
+  TPaginationRequest,
+  TRoleRequest,
+  VSCreateRole,
+  VSUpdateRole,
+} from '@psu/entities';
+import { ApiTags, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { RoleDto } from '../../../common';
 import { ZodValidationPipe } from '../../../common';
-@ApiTags('Role')
+@ApiTags('Master:Role')
 @Controller('role')
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'perPage', required: false })
+  @ApiQuery({ name: 'orderBy', enum: EPaginationOrderBy, required: false })
+  @ApiQuery({ name: 'search', required: false })
   @Get()
-  async findMany() {
-    return await this.roleService.findMany();
+  async findMany(@Query() query: TPaginationRequest) {
+    return await this.roleService.findMany(query);
   }
 
   @ApiBody({ type: RoleDto })

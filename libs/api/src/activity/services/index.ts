@@ -94,6 +94,7 @@ export class ActivityService {
       data: res,
       meta: {
         total: count,
+        totalPage: Math.ceil(count / Number(perPage)),
         lastPage,
         currentPage: Number(page),
         perPage: Number(perPage),
@@ -178,6 +179,7 @@ export class ActivityService {
       data: res,
       meta: {
         total: count,
+        totalPage: Math.ceil(count / Number(perPage)),
         lastPage,
         currentPage: Number(page),
         perPage: Number(perPage),
@@ -231,6 +233,7 @@ export class ActivityService {
       data: res,
       meta: {
         total: count,
+        totalPage: Math.ceil(count / Number(perPage)),
         lastPage,
         currentPage: Number(page),
         perPage: Number(perPage),

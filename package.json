@@ -40,6 +40,7 @@
     "api:cms:e2e": "nx e2e api-cms-e2e",
     "api:db:generate": "drizzle-kit generate:pg",
     "api:db:push": "dotenv -e ./apps/api/backoffice/.env npx drizzle-kit push:pg",
+    "api:db:studio": "dotenv -e ./apps/api/backoffice/.env npx drizzle-kit studio",
     "api:db:seed": "dotenv -e ./apps/api/backoffice/.env ts-node  ./libs/api/src/common/models/seed.ts",
     "prepare": "npx husky install"
   },

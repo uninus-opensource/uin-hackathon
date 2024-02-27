@@ -1,5 +1,5 @@
 import { EorganizationLevel, EorganizationType } from '../../enums';
-import { TMetaResponse } from '../common';
+import { TMetaResponse, TPaginationRequest } from '../common';
 
 export type TOrganizationRequest = {
   id?: string;
@@ -16,7 +16,8 @@ export type TOrganizationSingleResponse = TMetaResponse<TOrganizationRequest>;
 export type TOrganizationFindRequest = Pick<
   TOrganizationRequest,
   'organizationType' | 'organizationLevel'
->;
+> &
+  TPaginationRequest;
 
 export type TRoleRequest = {
   id?: string;

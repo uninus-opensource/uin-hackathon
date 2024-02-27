@@ -6,8 +6,9 @@ import {
 } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import * as schema from '../../../common/models';
-import { and, eq } from 'drizzle-orm';
+import { and, asc, desc, eq, ilike } from 'drizzle-orm';
 import {
+  EPaginationOrderBy,
   TOrganizationFindRequest,
   TOrganizationRequest,
   TOrganizationResponse,
@@ -44,33 +45,77 @@ export class OrganizationService {
   async findMany(
     data: TOrganizationFindRequest
   ): Promise<TOrganizationResponse> {
-    const { organizationType, organizationLevel } = data;
-    const res = await this.drizzle
-      .select({
-        id: schema.organizations.id,
-        name: schema.organizations.name,
-        organizationType: schema.organizations.organizationType,
-        organizationLevel: schema.organizations.organizationLevel,
-        createdAt: schema.organizations.createdAt,
-        updatedAt: schema.organizations.updatedAt,
-      })
-      .from(schema.organizations)
-      .where(
-        and(
-          ...(organizationType
-            ? [eq(schema.organizations.organizationType, organizationType)]
-            : []),
-          ...(organizationLevel
-            ? [eq(schema.organizations.organizationLevel, organizationLevel)]
-            : [])
+    const {
+      page = 1,
+      perPage = 10,
+      orderBy,
+      search,
+      organizationType,
+      organizationLevel,
+    } = data;
+    const orderByFunction = orderBy == EPaginationOrderBy.DESC ? desc : asc;
+
+    const [res, count] = await Promise.all([
+      this.drizzle
+        .select({
+          id: schema.organizations.id,
+          name: schema.organizations.name,
+          organizationType: schema.organizations.organizationType,
+          organizationLevel: schema.organizations.organizationLevel,
+          createdAt: schema.organizations.createdAt,
+          updatedAt: schema.organizations.updatedAt,
+        })
+        .from(schema.organizations)
+        .where(
+          and(
+            ...(organizationType
+              ? [eq(schema.organizations.organizationType, organizationType)]
+              : []),
+            ...(organizationLevel
+              ? [eq(schema.organizations.organizationLevel, organizationLevel)]
+              : []),
+            ...(search ? [ilike(schema.organizations.name, `%${search}%`)] : [])
+          )
         )
-      );
+        .limit(Number(perPage))
+        .offset((Number(page) - 1) * Number(perPage))
+        .orderBy(orderByFunction(schema.organizations.name)),
+
+      this.drizzle
+        .select({
+          id: schema.organizations.id,
+        })
+        .from(schema.organizations)
+        .where(
+          and(
+            ...(organizationType
+              ? [eq(schema.organizations.organizationType, organizationType)]
+              : []),
+            ...(organizationLevel
+              ? [eq(schema.organizations.organizationLevel, organizationLevel)]
+              : []),
+            ...(search ? [ilike(schema.organizations.name, `%${search}%`)] : [])
+          )
+        )
+        .then((res) => res.length),
+    ]);
+
     if (!res) {
       throw new NotFoundException('Organisasi tidak tersedia');
     }
+    const lastPage = Math.ceil(count / Number(perPage));
     return {
       message: 'Berhasil mendapatkan data',
       data: res,
+      meta: {
+        total: count,
+        totalPage: Math.ceil(count / Number(perPage)),
+        lastPage,
+        currentPage: Number(page),
+        perPage: Number(perPage),
+        prev: Number(page) > 1 ? Number(page) - 1 : null,
+        next: Number(page) < lastPage ? Number(page) + 1 : null,
+      },
     };
   }
 

@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import * as schema from '../../common/models';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { eq, ilike } from 'drizzle-orm';
+import { eq, ilike, or } from 'drizzle-orm';
 import {
   TLoginRequest,
   TLoginResponse,
@@ -104,10 +104,15 @@ export class AuthService {
       .then((res) => res.at(0));
 
     const isPasswordValid =
-      res && comparePassword(password as string, res.password as string);
+      res &&
+      (await comparePassword(password as string, res.password as string));
 
-    if (!res || !isPasswordValid || !res.isVerified) {
+    if (!res || !isPasswordValid) {
       throw new UnauthorizedException('Email atau password tidak valid');
+    }
+
+    if (!res.isVerified) {
+      throw new UnauthorizedException('Email belum terverifikasi');
     }
 
     const [accessToken, refreshToken, expired] = await Promise.all([
@@ -178,13 +183,15 @@ export class AuthService {
   }
   async register(payload: TRegisterRequest): Promise<TRegisterResponse> {
     const { email, password, fullname, organizationId, nim } = payload;
-    const [isEmailExist, findRole] = await Promise.all([
+    const [isUserExist, findRole] = await Promise.all([
       this.drizzle
         .select({
           id: schema.users.id,
         })
         .from(schema.users)
-        .where(eq(schema.users.email, email))
+        .where(
+          or(eq(schema.users.email, email), eq(schema.users.nim, String(nim)))
+        )
         .then((res) => res.at(0)),
       this.drizzle
         .select({
@@ -195,8 +202,8 @@ export class AuthService {
         .then((res) => res.at(0)),
     ]);
 
-    if (isEmailExist) {
-      throw new ConflictException('Email telah digunakan');
+    if (isUserExist) {
+      throw new ConflictException('Email atau nim telah digunakan');
     }
 
     const createUser = await this.drizzle

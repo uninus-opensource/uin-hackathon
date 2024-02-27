@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { DepartmentService } from '../services';
 import {
+  EPaginationOrderBy,
   TDepartmentRequest,
   TPaginationRequest,
   VSCreateDepartment,
@@ -17,11 +18,15 @@ import {
 } from '@psu/entities';
 import { ApiTags, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { DepartmentDto, ZodValidationPipe } from '../../../common';
-@ApiTags('Department')
+@ApiTags('Master:Department')
 @Controller('department')
 export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
 
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'perPage', required: false })
+  @ApiQuery({ name: 'orderBy', enum: EPaginationOrderBy, required: false })
+  @ApiQuery({ name: 'search', required: false })
   @ApiQuery({
     name: 'facultyId',
     required: false,

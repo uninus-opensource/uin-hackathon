@@ -6,23 +6,30 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { FacultyService } from '../services';
 import {
+  EPaginationOrderBy,
   TFacultyRequest,
+  TPaginationRequest,
   VSCreateFaculty,
   VSUpdateFaculty,
 } from '@psu/entities';
-import { ApiTags, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { FacultyDto, ZodValidationPipe } from '../../../common';
-@ApiTags('Faculty')
+@ApiTags('Master:Faculty')
 @Controller('faculty')
 export class FacultyController {
   constructor(private readonly facultyService: FacultyService) {}
 
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'perPage', required: false })
+  @ApiQuery({ name: 'orderBy', enum: EPaginationOrderBy, required: false })
+  @ApiQuery({ name: 'search', required: false })
   @Get()
-  async findMany() {
-    return await this.facultyService.findMany();
+  async findMany(@Query() query: TPaginationRequest) {
+    return await this.facultyService.findMany(query);
   }
 
   @ApiBody({ type: FacultyDto })

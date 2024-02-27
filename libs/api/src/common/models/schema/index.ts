@@ -4,10 +4,10 @@ import { relations } from 'drizzle-orm';
 export const users = pgTable('users', {
   id: uuid('id').defaultRandom().primaryKey(),
   fullname: text('fullname').notNull(),
-  email: text('email').notNull(),
+  email: text('email').unique().notNull(),
   isVerified: boolean('is_verified').default(false),
   avatar: text('avatar'),
-  nim: text('nim'),
+  nim: text('nim').unique(),
   password: text('password'),
   roleId: uuid('role_id')
     .notNull()
