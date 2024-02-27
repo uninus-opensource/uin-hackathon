@@ -34,10 +34,12 @@ export const AuthLoginModule: FC = (): ReactElement => {
   });
 
   const [error, setError] = useState<string | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const router = useRouter();
 
   const onSubmit = handleSubmit(async (data) => {
+    setIsLoading(true);
     try {
       const res = await signIn('credentials', {
         email: data.email,
@@ -56,6 +58,7 @@ export const AuthLoginModule: FC = (): ReactElement => {
     } catch (err) {
       console.log(err);
     }
+    setIsLoading(false);
   });
 
   useEffect(() => {
@@ -99,7 +102,7 @@ export const AuthLoginModule: FC = (): ReactElement => {
           Lupa Kata Sandi
         </Link>
       </div>
-      <Button disabled={!isValid} type="submit" size="lg">
+      <Button disabled={!isValid || isLoading} type="submit" size="lg">
         Masuk
       </Button>
       <div className="w-full flex justify-between">
