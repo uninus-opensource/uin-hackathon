@@ -20,6 +20,7 @@ import {
   TForgotPasswordResponse,
   TResetPasswordRequest,
   TResetPasswordResponse,
+  TRefreshResponse,
 } from '@psu/entities';
 import {
   comparePassword,
@@ -206,7 +207,7 @@ export class AuthService {
     };
   }
 
-  async refresh(payload: TJwtRequest) {
+  async refresh(payload: TJwtRequest): Promise<TRefreshResponse> {
     const expiresIn = 15 * 60 * 1000;
     const accessToken = await generateAccessToken(payload);
     const now = Date.now();
@@ -214,7 +215,7 @@ export class AuthService {
 
     return {
       accessToken,
-      exp: expirationTime,
+      expired: expirationTime,
     };
   }
 
