@@ -196,4 +196,6 @@ export type TLineChart = {
   };
 };
 
+export type TOption = { value: string; label: string };
+
 export * from './style';

@@ -4,12 +4,13 @@ import { Form } from '@psu/web-component-templates';
 import { ControlledFieldText } from '@psu/web-component-organisms';
 import { useForm } from 'react-hook-form';
 import { TLoginRequest } from '@psu/entities';
-import { FC, ReactElement } from 'react';
+import { FC, ReactElement, useEffect, useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 
 const schema = z.object({
   email: z.string().email({ message: 'Email tidak valid' }),
@@ -32,18 +33,47 @@ export const AuthLoginModule: FC = (): ReactElement => {
     },
   });
 
+  const [error, setError] = useState<string | undefined>(undefined);
+
   const router = useRouter();
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
-    router.push('/dashboard');
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      const res = await signIn('credentials', {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
+
+      if (res?.ok) {
+        router.push('/dashboard');
+      }
+
+      if (res?.error) {
+        setError(res?.error);
+        console.log(res?.error);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   });
+
+  useEffect(() => {
+    setTimeout(() => {
+      setError(undefined);
+    }, 5000);
+  }, [error]);
 
   return (
     <Form onSubmit={onSubmit}>
       <h1 className="text-2xl md:text-3xl font-bold text-black text-center">
         OS HUB
       </h1>
+      {error && (
+        <span className="text-error bg-error-50 border-error border rounded-lg p-3">
+          {error}
+        </span>
+      )}
       <section className="flex flex-col gap-y-3 mt-[18px]">
         <ControlledFieldText
           control={control}

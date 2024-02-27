@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 import { DefaultSession } from 'next-auth';
+import { TLoginResponse } from '@psu/entities';
 
 type TUser = {
   id: string;
@@ -18,24 +19,16 @@ type TProfile = {
 };
 
 declare module 'next-auth' {
-  interface Session extends DefaultSession {
-    user: TUser;
-  }
-
+  interface Session extends DefaultSession, TLoginResponse {}
   interface Profile extends TProfile {}
-  interface AdapterUser extends TUser {}
+  interface AdapterUser extends TLoginResponse {}
 }
 
 declare module 'next-auth/jwt' {
-  interface JWT extends TUser {}
+  interface JWT extends TLoginResponse {}
 }
 
 declare module 'next-auth/core/types' {
-  interface User extends Partial<TUser> {
-    user?: TUser;
-  }
-
-  interface AdapterUser extends Partial<TUser> {
-    user?: TUser;
-  }
+  interface User extends Partial<TLoginResponse> {}
+  interface AdapterUser extends Partial<TLoginResponse> {}
 }
