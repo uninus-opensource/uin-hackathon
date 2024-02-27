@@ -1,6 +1,10 @@
 import type { AuthOptions } from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
+import CreadentialProvider from 'next-auth/providers/credentials';
+import { PostLogin } from './web-auth.api';
+import { TMetaErrorResponse, VSLogin } from '@psu/entities';
+import { AxiosError } from 'axios';
 
 export const authOptions = {
   pages: {
@@ -19,6 +23,44 @@ export const authOptions = {
       name: 'google',
       clientId: process.env.GOOGLE_ID as string,
       clientSecret: process.env.GOOGLE_SECRET as string,
+    }),
+    CreadentialProvider({
+      id: 'credentials',
+      name: 'credentials',
+      credentials: {
+        email: { label: 'Email', type: 'text' },
+        password: { label: 'Password', type: 'password' },
+      },
+
+      async authorize(credentials) {
+        try {
+          if (!credentials?.email || !credentials.password) {
+            throw new Error('Email dan Password wajib diisi');
+          }
+
+          const validatedFields = VSLogin.safeParse(credentials);
+
+          if (validatedFields.success) {
+            const { email, password } = validatedFields.data;
+            const user = await PostLogin({ email, password });
+            return user;
+          }
+
+          return null;
+        } catch (err) {
+          const error = err as TMetaErrorResponse;
+
+          if (error?.response?.status === 422) {
+            throw new Error(error?.response?.data?.errors?.[0]?.message[0]);
+          }
+
+          throw new Error(
+            typeof error?.response?.data === 'string'
+              ? error?.response?.data
+              : error?.response?.data?.message
+          );
+        }
+      },
     }),
   ],
 

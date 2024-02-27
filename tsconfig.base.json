@@ -29,7 +29,8 @@
       ],
       "@psu/web-component-templates": [
         "libs/web/components/templates/src/index.ts"
-      ]
+      ],
+      "@psu/web-services": ["libs/web/service/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
