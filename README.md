@@ -1,6 +1,6 @@
 # Himatif Uninus UIN-Hackathon
 
-## Didalam Repo ini terdapat 4 Aplikasi:
+## Didalam Repo ini terdapat 2 Aplikasi:
 
 - Backoffice
 - Backoffice-API
