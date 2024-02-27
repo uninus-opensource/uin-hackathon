@@ -14,6 +14,7 @@ import {
   RoleModule,
   DepartmentModule,
   FacultyModule,
+  QueryStrategy,
 } from '@psu/api';
 
 @Module({
@@ -33,6 +34,6 @@ import {
     FileModule,
   ],
   controllers: [],
-  providers: [AccessStrategy, RefreshStrategy, GoogleStrategy],
+  providers: [AccessStrategy, RefreshStrategy, GoogleStrategy, QueryStrategy],
 })
 export class AppModule {}

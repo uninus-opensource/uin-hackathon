@@ -18,9 +18,11 @@ export const VSRegister = z.object({
   email: z.string({ required_error: 'Email harus diisi' }).email({
     message: 'Email harus valid',
   }),
-  organizationId: z.string({
-    required_error: 'Organisasi harus diisi',
-  }),
+  organizationId: z
+    .string({
+      required_error: 'Organisasi harus diisi',
+    })
+    .optional(),
   nim: z
     .string({
       required_error: 'NIM harus diisi',

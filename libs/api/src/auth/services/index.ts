@@ -30,7 +30,6 @@ import {
 } from '../../common';
 import { EmailService } from '../../email';
 import { UserService } from '../../user';
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -38,6 +37,24 @@ export class AuthService {
     private readonly emailService: EmailService,
     private readonly userService: UserService
   ) {}
+
+  async callback(id: string) {
+    const updateUser = await this.drizzle
+      .update(schema.users)
+      .set({
+        isVerified: true,
+      })
+      .where(eq(schema.users.id, id))
+      .returning({
+        id: schema.users.id,
+      })
+      .then((res) => res.at(0));
+    if (!updateUser) {
+      throw new BadRequestException('Token tidak valid');
+    }
+    return updateUser;
+  }
+
   async login(payload: TLoginRequest): Promise<TLoginResponse> {
     const { email, password } = payload;
     const res = await this.drizzle
@@ -46,6 +63,7 @@ export class AuthService {
         fullname: schema.users.fullname,
         email: schema.users.email,
         password: schema.users.password,
+        isVerified: schema.users.isVerified,
         organization: {
           id: schema.organizations.id,
           name: schema.organizations.name,
@@ -88,7 +106,7 @@ export class AuthService {
     const isPasswordValid =
       res && comparePassword(password as string, res.password as string);
 
-    if (!res || !isPasswordValid) {
+    if (!res || !isPasswordValid || !res.isVerified) {
       throw new UnauthorizedException('Email atau password tidak valid');
     }
 
@@ -192,18 +210,47 @@ export class AuthService {
       })
       .returning({
         id: schema.users.id,
+        fullname: schema.users.fullname,
+        email: schema.users.email,
       })
       .then((res) => res.at(0));
 
     if (!createUser) {
       throw new BadRequestException('Gagal membuat akun');
     }
-    await this.drizzle.insert(schema.additional).values({
-      userId: createUser.id,
-      organizationId,
+    const additional = await this.drizzle
+      .insert(schema.additional)
+      .values({
+        userId: createUser.id,
+        organizationId,
+      })
+      .returning({
+        organizationId: schema.additional.organizationId,
+      })
+      .then((res) => res.at(0));
+
+    const accessToken = await generateAccessToken({
+      sub: createUser.id,
+      email: createUser.email,
+      fullname: createUser.fullname,
+      organizationId: additional?.organizationId || '',
+      facultyId: '',
+      departmentId: '',
+      role: {
+        id: '',
+        name: '',
+        permissions: [],
+      },
     });
+    const template = emailTemplate(
+      createUser.fullname,
+      'Registrasi akun',
+      `${process.env['REDIRECT_BE_URL']}?accessToken=${accessToken}`
+    );
+    await this.emailService.sendEmail(email, template);
+
     return {
-      message: 'Akun berhasil dibuat, silahkan login!',
+      message: 'Akun berhasil dibuat, silahkan check email!',
     };
   }
 
@@ -236,6 +283,7 @@ export class AuthService {
     });
     const template = emailTemplate(
       findUser.fullname,
+      'Verikasi Email',
       `${process.env['REDIRECT_FE_URL']}?accessToken=${accessToken}`
     );
     await this.emailService.sendEmail(email, template);

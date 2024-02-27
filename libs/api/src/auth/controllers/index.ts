@@ -3,6 +3,8 @@ import {
   Controller,
   Get,
   Post,
+  Query,
+  Redirect,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -16,7 +18,12 @@ import {
   TForgotPasswordRequest,
   TResetPasswordRequest,
 } from '@psu/entities';
-import { AccessGuard, GoogleGuard, RefreshGuard } from '../../common/guards';
+import {
+  AccessGuard,
+  GoogleGuard,
+  QueryGuard,
+  RefreshGuard,
+} from '../../common/guards';
 import { ZodValidationPipe } from '../../common/pipes/';
 import { ApiTags, ApiBody } from '@nestjs/swagger';
 import {
@@ -30,6 +37,13 @@ import {
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Get('callback')
+  @UseGuards(QueryGuard)
+  @Redirect(process.env['REDIRECT_FE_URL'], 302)
+  async callback(@Request() request: THeaderRequest) {
+    return await this.authService.callback(request.user.sub);
+  }
 
   @Get('/google')
   @UseGuards(GoogleGuard)

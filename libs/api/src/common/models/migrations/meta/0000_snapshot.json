@@ -1,5 +1,5 @@
 {
-  "id": "f39aa3fc-5e78-4c26-b81b-742e7d32ef6e",
+  "id": "838c45cb-8b18-47a4-94bf-1aade16edd8e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -69,12 +69,11 @@
           "primaryKey": false,
           "notNull": true
         },
-        "activityStatus": {
-          "name": "activityStatus",
-          "type": "activityStatus",
+        "status": {
+          "name": "status",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false,
-          "default": "'Requested'"
+          "notNull": false
         },
         "reviewers": {
           "name": "reviewers",
@@ -389,9 +388,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "reviewStatus": {
-          "name": "reviewStatus",
-          "type": "reviewStatus",
+        "status": {
+          "name": "status",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -508,6 +507,13 @@
           "primaryKey": false,
           "notNull": true
         },
+        "is_verified": {
+          "name": "is_verified",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
         "avatar": {
           "name": "avatar",
           "type": "text",
@@ -567,42 +573,7 @@
       "uniqueConstraints": {}
     }
   },
-  "enums": {
-    "activityStatus": {
-      "name": "activityStatus",
-      "values": {
-        "Requested": "Requested",
-        "Completed": "Completed",
-        "Reported": "Reported",
-        "Not Reported": "Not Reported",
-        "Rejected by Vice Dean": "Rejected by Vice Dean",
-        "Rejected by Vice Chancellor": "Rejected by Vice Chancellor",
-        "Rejected by Head Department": "Rejected by Head Department",
-        "Rejected by Student Government": "Rejected by Student Government",
-        "Rejected by Student Council": "Rejected by Student Council",
-        "Approved by Vice Dean": "Approved by Vice Dean",
-        "Approved by Vice Chancellor": "Approved by Vice Chancellor",
-        "Approved by Head Department": "Approved by Head Department",
-        "Approved by Student Government": "Approved by Student Government",
-        "Approved by Student Council": "Approved by Student Council"
-      }
-    },
-    "reviewStatus": {
-      "name": "reviewStatus",
-      "values": {
-        "Rejected by Vice Dean": "Rejected by Vice Dean",
-        "Rejected by Vice Chancellor": "Rejected by Vice Chancellor",
-        "Rejected by Head Department": "Rejected by Head Department",
-        "Rejected by Student Government": "Rejected by Student Government",
-        "Rejected by Student Council": "Rejected by Student Council",
-        "Approved by Vice Dean": "Approved by Vice Dean",
-        "Approved by Vice Chancellor": "Approved by Vice Chancellor",
-        "Approved by Head Department": "Approved by Head Department",
-        "Approved by Student Government": "Approved by Student Government",
-        "Approved by Student Council": "Approved by Student Council"
-      }
-    }
-  },
+  "enums": {},
   "schemas": {},
   "_meta": {
     "columns": {},
