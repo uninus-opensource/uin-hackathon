@@ -4,7 +4,6 @@ import GoogleProvider from 'next-auth/providers/google';
 import CreadentialProvider from 'next-auth/providers/credentials';
 import { PostLogin } from './web-auth.api';
 import { TMetaErrorResponse, VSLogin } from '@psu/entities';
-import { AxiosError } from 'axios';
 
 export const authOptions = {
   pages: {
