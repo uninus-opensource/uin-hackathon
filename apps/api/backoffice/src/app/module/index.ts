@@ -12,6 +12,8 @@ import {
   FileModule,
   OgranizationModule,
   RoleModule,
+  DepartmentModule,
+  FacultyModule,
 } from '@psu/api';
 
 @Module({
@@ -23,9 +25,11 @@ import {
     UserModule,
     ActivityModule,
     OgranizationModule,
-    RoleModule,
     DrizzleModule,
     EmailModule,
+    RoleModule,
+    DepartmentModule,
+    FacultyModule,
     FileModule,
   ],
   controllers: [],

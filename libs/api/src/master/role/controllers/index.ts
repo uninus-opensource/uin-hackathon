@@ -8,9 +8,10 @@ import {
   Post,
 } from '@nestjs/common';
 import { RoleService } from '../services';
-import { TRoleRequest } from '@psu/entities';
+import { TRoleRequest, VSCreateRole, VSUpdateRole } from '@psu/entities';
 import { ApiTags, ApiBody } from '@nestjs/swagger';
 import { RoleDto } from '../../../common';
+import { ZodValidationPipe } from '../../../common';
 @ApiTags('Role')
 @Controller('role')
 export class RoleController {
@@ -23,7 +24,7 @@ export class RoleController {
 
   @ApiBody({ type: RoleDto })
   @Post()
-  async create(@Body() data: TRoleRequest) {
+  async create(@Body(new ZodValidationPipe(VSCreateRole)) data: TRoleRequest) {
     return await this.roleService.create(data);
   }
   @Get('/:id')
@@ -32,7 +33,10 @@ export class RoleController {
   }
   @ApiBody({ type: RoleDto })
   @Patch('/:id')
-  async update(@Param('id') id: string, @Body() data: TRoleRequest) {
+  async update(
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(VSUpdateRole)) data: TRoleRequest
+  ) {
     return await this.roleService.update({ id, ...data });
   }
   @Delete('/:id')

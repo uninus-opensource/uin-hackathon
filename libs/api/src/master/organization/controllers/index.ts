@@ -14,9 +14,11 @@ import {
   EorganizationType,
   TOrganizationFindRequest,
   TOrganizationRequest,
+  VSCreateOrganization,
+  VSUpdateOrganization,
 } from '@psu/entities';
 import { ApiTags, ApiBody, ApiQuery } from '@nestjs/swagger';
-import { OrganizationDto } from '../../../common';
+import { OrganizationDto, ZodValidationPipe } from '../../../common';
 @ApiTags('Organization')
 @Controller('organization')
 export class OrganizationController {
@@ -39,7 +41,10 @@ export class OrganizationController {
 
   @ApiBody({ type: OrganizationDto })
   @Post()
-  async create(@Body() data: TOrganizationRequest) {
+  async create(
+    @Body(new ZodValidationPipe(VSCreateOrganization))
+    data: TOrganizationRequest
+  ) {
     return await this.organizationService.create(data);
   }
 
@@ -50,7 +55,11 @@ export class OrganizationController {
 
   @ApiBody({ type: OrganizationDto })
   @Patch('/:id')
-  async update(@Param('id') id: string, @Body() data: TOrganizationRequest) {
+  async update(
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(VSUpdateOrganization))
+    data: TOrganizationRequest
+  ) {
     return await this.organizationService.update({ id, ...data });
   }
 
