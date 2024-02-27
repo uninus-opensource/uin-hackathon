@@ -16,7 +16,7 @@ export const Message: FC<TMessage> = (props): ReactElement => {
     .otherwise(() => null);
 
   const className = clsx(
-    'text-xs flex items-center gap-x-1 mt-[-7px]',
+    'text-xs flex items-start pt-1 gap-x-1 mt-[-7px]',
     {
       'text-error': status === 'error',
       'text-success': status === 'success',

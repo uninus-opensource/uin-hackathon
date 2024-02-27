@@ -5,14 +5,22 @@ export type TLoginRequest = {
   password?: string;
 };
 
+export type TToken = {
+  expired: number;
+  accessToken: string;
+  refreshToken: string;
+};
+
+export type TRole = {
+  id: string;
+  name: string;
+  permissions: Array<string>;
+};
+
 export type TLoginResponse = {
   id: string;
   user: TUser;
-  token: {
-    expired: number;
-    accessToken: string;
-    refreshToken: string;
-  };
+  token: TToken;
 };
 
 export type TJwtRequest = {
@@ -22,11 +30,7 @@ export type TJwtRequest = {
   organizationId?: string;
   facultyId?: string;
   departmentId?: string;
-  role: {
-    id: string;
-    name: string;
-    permissions: Array<string>;
-  };
+  role: TRole;
 };
 
 export type TRegisterRequest = {

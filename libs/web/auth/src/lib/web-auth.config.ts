@@ -3,7 +3,7 @@ import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
 import CreadentialProvider from 'next-auth/providers/credentials';
 import { PostLogin } from './web-auth.api';
-import { TMetaErrorResponse, VSLogin } from '@psu/entities';
+import { TMetaErrorResponse, TToken, TUser, VSLogin } from '@psu/entities';
 
 export const authOptions = {
   pages: {
@@ -64,7 +64,7 @@ export const authOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, profile, account }) {
+    async jwt({ token, profile, account, user }) {
       if (account?.provider === 'google' && profile) {
         token.fullname = profile?.name as string;
         token.image = profile?.picture;
@@ -86,14 +86,20 @@ export const authOptions = {
           permissions: [],
         };
       }
+
+      if (account?.provider === 'credentials' && user) {
+        token = {
+          ...user,
+          token: user?.token as TToken,
+          user: user.user as TUser,
+        };
+      }
+
       return token;
     },
 
     async session({ session, token }) {
-      session.user = {
-        ...token,
-        email: token.email as string,
-      };
+      session = { ...token, expires: token?.token?.expired?.toString() };
       return session;
     },
   },

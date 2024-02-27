@@ -1,40 +1,64 @@
 'use client';
 import { Button } from '@psu/web-component-atoms';
 import { ControlledFieldSelect } from '@psu/web-component-organisms';
-import { FC, Fragment, ReactElement } from 'react';
+import {
+  FC,
+  Fragment,
+  ReactElement,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import Link from 'next/link';
 import { useFormContext } from 'react-hook-form';
 import { TRegisterOrganization } from '../register';
+import { useGetOrganization } from '@psu/web-modules';
+import {
+  EorganizationLevel,
+  EorganizationType,
+  TMetaErrorResponse,
+  TOption,
+} from '@psu/entities';
 
-export const AuthRegisterOrganizationModule: FC = (): ReactElement => {
+export const AuthRegisterOrganizationModule: FC<{
+  errorData: TMetaErrorResponse;
+}> = (props): ReactElement => {
   const {
     control,
+    watch,
     formState: { errors, isValid },
   } = useFormContext<TRegisterOrganization>();
 
-  const dummyOrganizations = [
-    { label: 'Organisasi 1', value: 'Organisasi 1' },
-    { label: 'Organisasi 2', value: 'Organisasi 2' },
-    { label: 'Organisasi 3', value: 'Organisasi 3' },
-    { label: 'Organisasi 4', value: 'Organisasi 4' },
-    { label: 'Organisasi 5', value: 'Organisasi 5' },
-  ];
+  const [error, setError] = useState<string | undefined>(undefined);
 
-  const dummyLevels = [
-    { label: 'Level 1', value: 'Level 1' },
-    { label: 'Level 2', value: 'Level 2' },
-    { label: 'Level 3', value: 'Level 3' },
-    { label: 'Level 4', value: 'Level 4' },
-    { label: 'Level 5', value: 'Level 5' },
-  ];
+  const { data, isLoading } = useGetOrganization({
+    organizationType: watch('organizationType') || '',
+    organizationLevel: watch('organizationLevel') || '',
+  });
 
-  const dummyTypes = [
-    { label: 'Tipe 1', value: 'Tipe 1' },
-    { label: 'Tipe 2', value: 'Tipe 2' },
-    { label: 'Tipe 3', value: 'Tipe 3' },
-    { label: 'Tipe 4', value: 'Tipe 4' },
-    { label: 'Tipe 5', value: 'Tipe 5' },
-  ];
+  const organizationOption = useMemo(() => {
+    return data?.data?.map((data) => ({ label: data.name, value: data.id }));
+  }, [data]) as Array<TOption>;
+
+  const organizationLevelOptions = Object.values(EorganizationLevel).map(
+    (data) => ({
+      label: data,
+      value: data,
+    })
+  );
+
+  const organizationTypeOptions = Object.values(EorganizationType).map(
+    (data) => ({
+      label: data,
+      value: data,
+    })
+  );
+
+  useEffect(() => {
+    setTimeout(() => {
+      setError(props?.errorData?.response?.data?.message);
+    }, 5000);
+  }, [props.errorData, setError, error]);
 
   return (
     <Fragment>
@@ -45,13 +69,18 @@ export const AuthRegisterOrganizationModule: FC = (): ReactElement => {
       >
         Informasi Organisasi
       </h1>
+      {error && (
+        <span className="text-error bg-error-50 border-error border rounded-lg p-3">
+          {error}
+        </span>
+      )}
       <section className="flex flex-col gap-y-6 mt-[18px]">
         <ControlledFieldSelect
           control={control}
           name="organizationType"
           label="Jenis Organisasi"
           size="sm"
-          options={dummyTypes}
+          options={organizationTypeOptions}
           placeholder="Pilih Jenis Organisasi"
           status={errors.organizationType ? 'error' : 'default'}
           message={errors.organizationType?.message}
@@ -61,7 +90,7 @@ export const AuthRegisterOrganizationModule: FC = (): ReactElement => {
           name="organizationLevel"
           label="Level Organisasi"
           size="sm"
-          options={dummyLevels}
+          options={organizationLevelOptions}
           placeholder="Pilih Level Organisasi"
           status={errors.organizationLevel ? 'error' : 'default'}
           message={errors.organizationLevel?.message}
@@ -71,13 +100,14 @@ export const AuthRegisterOrganizationModule: FC = (): ReactElement => {
           name="organization"
           label="Organisasi Anda"
           size="sm"
-          options={dummyOrganizations}
+          isSearchable
+          options={organizationOption}
           placeholder="Pilih Organisasi Anda"
           status={errors.organization ? 'error' : 'default'}
           message={errors.organization?.message}
         />
       </section>
-      <Button disabled={!isValid} type="submit" size="lg">
+      <Button disabled={!isValid || isLoading} type="submit" size="lg">
         Daftar Sekarang
       </Button>
       <div className="w-full flex justify-between">

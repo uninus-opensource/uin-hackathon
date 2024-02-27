@@ -2,6 +2,13 @@ import { PropsWithChildren } from 'react';
 import { AuthRegisterOrganizationModule } from '.';
 import { render } from '@testing-library/react';
 
+jest.mock('@tanstack/react-query', () => {
+  return {
+    useQuery: jest.fn(),
+    useMutation: jest.fn(),
+  };
+});
+
 jest.mock('react-hook-form', () => ({
   ...jest.requireActual('react-hook-form'),
   Controller: () => <></>,

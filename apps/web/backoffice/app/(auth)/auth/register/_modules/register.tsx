@@ -9,10 +9,19 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@psu/web-component-templates';
 import { useRegister } from '@psu/web-auth';
 import { useRouter } from 'next/navigation';
+import { TMetaErrorResponse } from '@psu/entities';
 
 const schemaPersonal = z.object({
   fullname: z.string().min(1, { message: 'Nama Lengkap wajib diisi' }),
-  password: z.string().min(1, { message: 'Kata sandi wajib diisi' }),
+  password: z
+    .string({ required_error: 'Password harus diisi' })
+    .min(8, { message: 'Password minimal 8 karakter' })
+    .refine((data) => data.match(/[A-Z]/g), {
+      message: 'Password harus ada huruf besar',
+    })
+    .refine((data) => data.match(/[0-9]/g), {
+      message: 'Password harus ada angka',
+    }),
   email: z.string().email({ message: 'Email tidak valid' }),
   nim: z.string().min(1, { message: 'NIM wajib diisi' }),
   confirmPassword: z
@@ -38,7 +47,7 @@ export type TRegisterOrganization = z.infer<typeof schemaOrganization>;
 export const AuthRegisterModule: FC = (): ReactElement => {
   const [step] = useQueryState('step', parseAsString.withDefault('personal'));
   const { push } = useRouter();
-  const { mutate } = useRegister();
+  const { mutate, error } = useRegister();
 
   const methods = useForm<TRegisterPersonal & TRegisterOrganization>({
     resolver: zodResolver(
@@ -91,7 +100,11 @@ export const AuthRegisterModule: FC = (): ReactElement => {
         <FormProvider {...methods}>
           <Form onSubmit={onSubmit}>
             {step === 'personal' && <AuthRegisterPersonalModule />}
-            {step === 'organization' && <AuthRegisterOrganizationModule />}
+            {step === 'organization' && (
+              <AuthRegisterOrganizationModule
+                errorData={error as TMetaErrorResponse}
+              />
+            )}
           </Form>
         </FormProvider>
       </div>
