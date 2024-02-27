@@ -6,8 +6,9 @@ import {
 } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import * as schema from '../../../common/models';
-import { and, eq } from 'drizzle-orm';
+import { and, asc, desc, eq, ilike } from 'drizzle-orm';
 import {
+  EPaginationOrderBy,
   TDepartmentRequest,
   TDepartmentResponse,
   TDepartmentSingleResponse,
@@ -40,24 +41,60 @@ export class DepartmentService {
   }
 
   async findMany(data: TPaginationRequest): Promise<TDepartmentResponse> {
-    const { facultyId } = data;
-    const res = await this.drizzle
-      .select({
-        id: schema.department.id,
-        name: schema.department.name,
-        createdAt: schema.department.createdAt,
-        updatedAt: schema.department.updatedAt,
-      })
-      .from(schema.department)
-      .where(
-        and(...(facultyId ? [eq(schema.department.facultyId, facultyId)] : []))
-      );
+    const { facultyId, page = 1, perPage = 10, orderBy, search } = data;
+    const orderByFunction = orderBy == EPaginationOrderBy.DESC ? desc : asc;
+    const [res, count] = await Promise.all([
+      this.drizzle
+        .select({
+          id: schema.department.id,
+          name: schema.department.name,
+          createdAt: schema.department.createdAt,
+          updatedAt: schema.department.updatedAt,
+        })
+        .from(schema.department)
+        .where(
+          and(
+            ...(facultyId ? [eq(schema.department.facultyId, facultyId)] : []),
+            ...(search ? [ilike(schema.department.name, `%${search}%`)] : [])
+          )
+        )
+        .limit(Number(perPage))
+        .offset((Number(page) - 1) * Number(perPage))
+        .orderBy(orderByFunction(schema.department.name)),
+
+      this.drizzle
+        .select({
+          id: schema.department.id,
+          name: schema.department.name,
+          createdAt: schema.department.createdAt,
+          updatedAt: schema.department.updatedAt,
+        })
+        .from(schema.department)
+        .where(
+          and(
+            ...(facultyId ? [eq(schema.department.facultyId, facultyId)] : []),
+            ...(search ? [ilike(schema.department.name, `%${search}%`)] : [])
+          )
+        )
+        .then((res) => res.length),
+    ]);
+
     if (!res) {
       throw new NotFoundException('Prodi tidak tersedia');
     }
+    const lastPage = Math.ceil(count / Number(perPage));
     return {
       message: 'Berhasil mendapatkan data',
       data: res,
+      meta: {
+        total: count,
+        totalPage: Math.ceil(count / Number(perPage)),
+        lastPage,
+        currentPage: Number(page),
+        perPage: Number(perPage),
+        prev: Number(page) > 1 ? Number(page) - 1 : null,
+        next: Number(page) < lastPage ? Number(page) + 1 : null,
+      },
     };
   }
 

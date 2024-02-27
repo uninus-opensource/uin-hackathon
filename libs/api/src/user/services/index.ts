@@ -144,6 +144,7 @@ export class UserService {
       data: res,
       meta: {
         total: count,
+        totalPage: Math.ceil(count / Number(perPage)),
         lastPage,
         currentPage: Number(page),
         perPage: Number(perPage),

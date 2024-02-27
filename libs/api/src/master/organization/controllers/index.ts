@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { OrganizationService } from '../services';
 import {
+  EPaginationOrderBy,
   EorganizationLevel,
   EorganizationType,
   TOrganizationFindRequest,
@@ -19,11 +20,15 @@ import {
 } from '@psu/entities';
 import { ApiTags, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { OrganizationDto, ZodValidationPipe } from '../../../common';
-@ApiTags('Organization')
+@ApiTags('Master:Organization')
 @Controller('organization')
 export class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}
 
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'perPage', required: false })
+  @ApiQuery({ name: 'orderBy', enum: EPaginationOrderBy, required: false })
+  @ApiQuery({ name: 'search', required: false })
   @ApiQuery({
     name: 'organizationType',
     enum: EorganizationType,

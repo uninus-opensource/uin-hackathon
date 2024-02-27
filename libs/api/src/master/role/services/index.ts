@@ -6,8 +6,10 @@ import {
 } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import * as schema from '../../../common/models';
-import { eq } from 'drizzle-orm';
+import { and, asc, desc, eq, ilike } from 'drizzle-orm';
 import {
+  EPaginationOrderBy,
+  TPaginationRequest,
   TRoleRequest,
   TRoleResponse,
   TRoleSingleResponse,
@@ -38,22 +40,52 @@ export class RoleService {
     };
   }
 
-  async findMany(): Promise<TRoleResponse> {
-    const res = await this.drizzle
-      .select({
-        id: schema.roles.id,
-        name: schema.roles.name,
-        permissions: schema.roles.permissions,
-        createdAt: schema.roles.createdAt,
-        updatedAt: schema.roles.updatedAt,
-      })
-      .from(schema.roles);
+  async findMany(data: TPaginationRequest): Promise<TRoleResponse> {
+    const { page = 1, perPage = 10, orderBy, search } = data;
+    const orderByFunction = orderBy == EPaginationOrderBy.DESC ? desc : asc;
+    const [res, count] = await Promise.all([
+      this.drizzle
+        .select({
+          id: schema.roles.id,
+          name: schema.roles.name,
+          permissions: schema.roles.permissions,
+          createdAt: schema.roles.createdAt,
+          updatedAt: schema.roles.updatedAt,
+        })
+        .from(schema.roles)
+        .where(
+          and(...(search ? [ilike(schema.roles.name, `%${search}%`)] : []))
+        )
+        .limit(Number(perPage))
+        .offset((Number(page) - 1) * Number(perPage))
+        .orderBy(orderByFunction(schema.roles.name)),
+      this.drizzle
+        .select({
+          id: schema.roles.id,
+        })
+        .from(schema.roles)
+        .where(
+          and(...(search ? [ilike(schema.roles.name, `%${search}%`)] : []))
+        )
+        .then((res) => res.length),
+    ]);
+
     if (!res) {
       throw new NotFoundException('Role tidak tersedia');
     }
+    const lastPage = Math.ceil(count / Number(perPage));
     return {
       message: 'Berhasil mendapatkan data',
       data: res,
+      meta: {
+        total: count,
+        totalPage: Math.ceil(count / Number(perPage)),
+        lastPage,
+        currentPage: Number(page),
+        perPage: Number(perPage),
+        prev: Number(page) > 1 ? Number(page) - 1 : null,
+        next: Number(page) < lastPage ? Number(page) + 1 : null,
+      },
     };
   }
 
