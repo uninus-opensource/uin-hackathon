@@ -1,5 +1,7 @@
 import { api } from '@psu/web-services';
 import {
+  TForgotPasswordRequest,
+  TForgotPasswordResponse,
   TLoginRequest,
   TLoginResponse,
   TRegisterRequest,
@@ -22,6 +24,17 @@ export const PostRegister = async (
 ): Promise<TRegisterResponse> => {
   const { data } = await api<TRegisterResponse>({
     url: '/auth/register',
+    method: 'POST',
+    data: props,
+  });
+  return data;
+};
+
+export const PostForgot = async (
+  props: TForgotPasswordRequest
+): Promise<TForgotPasswordResponse> => {
+  const { data } = await api<TForgotPasswordResponse>({
+    url: '/auth/password/forgot',
     method: 'POST',
     data: props,
   });
