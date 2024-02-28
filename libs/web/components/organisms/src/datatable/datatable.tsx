@@ -135,7 +135,8 @@ export const DataTable = <T extends Record<string, unknown>>(
     onSortingChange: setSorting,
   });
   return (
-    <section className="shadow-md bg-grey-50 h-fit overflow-y-hidden  p-4 rounded-lg w-full gap-y-4 flex flex-col overflow-x-auto">
+    <section className="shadow-md bg-white h-fit overflow-y-hidden  p-4 rounded-lg w-full gap-y-4 flex flex-col overflow-x-auto">
+      <h1 className='text-lg font-semibold'>{props.title}</h1>
       <div className="flex md:flex-row flex-col md:gap-x-3 gap-y-4 md:items-center sticky z-10 w-full md:justify-between">
         <div className="flex md:flex-row flex-col md:gap-x-3 gap-y-4 md:items-center">
           <div className="w-fit">
@@ -147,7 +148,7 @@ export const DataTable = <T extends Record<string, unknown>>(
           </div>
           {props.createLink && (
             <div>
-              <Button href={props.createLink} variant="primary" size="sm">
+              <Button href={props.createLink} variant="primary" size="md">
                 {props.createLabel}
               </Button>
             </div>
@@ -155,7 +156,7 @@ export const DataTable = <T extends Record<string, unknown>>(
 
           {props.createAction && (
             <div>
-              <Button onClick={props.createAction} variant="primary" size="sm">
+              <Button onClick={props.createAction} variant="primary" size="md">
                 <span className="flex items-center gap-x-1">
                   {props.createIcon}
                   {props.createLabel}
