@@ -249,12 +249,14 @@ export class AuthService {
         permissions: [],
       },
     });
+    const subjectEmail = 'Registrasi akun';
+
     const template = emailTemplate(
       createUser.fullname,
-      'Registrasi akun',
+      subjectEmail,
       `${process.env['REDIRECT_BE_URL']}?accessToken=${accessToken}`
     );
-    await this.emailService.sendEmail(email, template);
+    await this.emailService.sendEmail(email, subjectEmail, template);
 
     return {
       message: 'Akun berhasil dibuat, silahkan check email!',
@@ -288,12 +290,13 @@ export class AuthService {
         permissions: findUser.role?.permissions || [],
       },
     });
+    const subjectEmail = 'Reset Password';
     const template = emailTemplate(
       findUser.fullname,
-      'Verikasi Email',
-      `${process.env['REDIRECT_FE_URL']}?accessToken=${accessToken}`
+      subjectEmail,
+      `${process.env['REDIRECT_FE_URL']}/auth/reset?accessToken=${accessToken}`
     );
-    await this.emailService.sendEmail(email, template);
+    await this.emailService.sendEmail(email, subjectEmail, template);
     return {
       message: 'Silahkan check email anda',
     };

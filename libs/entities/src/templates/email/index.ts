@@ -131,7 +131,7 @@ export function emailTemplate(
             <tr>
               <td style="text-align: left; padding: 0px 50px" valign="top">
                 <p style="color: #1f1f1f">
-                Selamat ${message} berhasil, klik tombol di bawah ini untuk melanjutkan.
+                ${message} berhasil, klik tombol di bawah ini untuk melanjutkan.
                 </p>
                 <div style="width: 100%; display: flex; justify-content: center">
                 <button class="btn" role="button">
@@ -150,7 +150,7 @@ export function emailTemplate(
               <td style="text-align: left; padding: 30px 50px 50px 50px" valign="top">
                 <p>
                   Jika Kamu mempunyai pertanyaan atau mengalami kendala, hubungi
-                  adminpmb@uninus.ac.id
+                  admin@uninus.ac.id
                 </p>
               </td>
             </tr>

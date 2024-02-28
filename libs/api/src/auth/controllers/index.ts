@@ -40,7 +40,7 @@ export class AuthController {
 
   @Get('callback')
   @UseGuards(QueryGuard)
-  @Redirect(process.env['REDIRECT_FE_URL'], 302)
+  @Redirect(`${process.env['REDIRECT_FE_URL']}/auth/login`, 302)
   async callback(@Request() request: THeaderRequest) {
     return await this.authService.callback(request.user.sub);
   }
