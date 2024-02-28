@@ -31,9 +31,7 @@ const schemaPersonal = z.object({
 
 const schemaOrganization = z.object({
   organization: z.string().min(1, { message: 'Organisasi wajib diisi' }),
-  organizationType: z
-    .string()
-    .min(1, { message: 'Jenis Organisasi wajib diisi' }),
+  organizationType: z.string(),
   organizationLevel: z
     .string()
     .min(1, { message: 'Level Organisasi wajib diisi' }),
