@@ -165,7 +165,19 @@ export type TSelect = TInputExtend & {
   value?: string | string[] | null | number | number[] | null;
   name?: string;
 };
-
+export type TPieChart = {
+  title: string;
+  type: string;
+  data:{
+    labels: string[];
+    datasets: Array<{
+      label: string;
+      data: [];
+      backgroundColor: string[];
+    }>;
+  }
+  hoverOffset: number;
+};
 export type TLineChart = {
   chartType:
     | 'januari'

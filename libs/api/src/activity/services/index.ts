@@ -720,6 +720,7 @@ export class ActivityService {
       return {
         type: EChartType.LINE,
         month: monthIndex,
+      data:{
         labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
         datasets: [
           {
@@ -755,6 +756,7 @@ export class ActivityService {
             tention: 0.2,
           },
         ],
+      }
       };
     }
 
@@ -834,6 +836,7 @@ export class ActivityService {
 
       return {
         type: EChartType.PIE,
+       data:{
         labels: [
           EActivityStatusTranslation.ONGOING,
           EActivityStatusTranslation.NOTREPORTED,
@@ -847,11 +850,16 @@ export class ActivityService {
             hoverOffset: 4,
           },
         ],
+       }
       };
     }
 
     return {
       message: 'Data tidak tersedia',
+      data:{
+        labels: [],
+        datasets: [],
+      }
     };
   }
 }
