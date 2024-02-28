@@ -2,6 +2,8 @@ import { PropsWithChildren } from 'react';
 import { AuthRegisterPersonalModule } from '.';
 import { render } from '@testing-library/react';
 
+jest.mock('react-avatar');
+
 jest.mock('react-hook-form', () => ({
   ...jest.requireActual('react-hook-form'),
   Controller: () => <></>,

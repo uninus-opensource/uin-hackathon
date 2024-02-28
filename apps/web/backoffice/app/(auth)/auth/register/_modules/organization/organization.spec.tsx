@@ -2,6 +2,8 @@ import { PropsWithChildren } from 'react';
 import { AuthRegisterOrganizationModule } from '.';
 import { render } from '@testing-library/react';
 
+jest.mock('react-avatar');
+
 jest.mock('@tanstack/react-query', () => {
   return {
     useQuery: jest.fn(),

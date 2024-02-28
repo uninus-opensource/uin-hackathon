@@ -1,3 +1,4 @@
+'use client';
 import { FC, ReactElement, useEffect, useState } from 'react';
 import { TSnackBarProps } from './type';
 import clsx from 'clsx';
