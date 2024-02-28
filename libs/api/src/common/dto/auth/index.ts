@@ -12,6 +12,11 @@ export class LoginDto {
   public password!: string;
 }
 
+export class GoogleDto {
+  @ApiProperty()
+  public accessToken!: string;
+}
+
 export class RegisterDto {
   @ApiProperty({
     example: 'test@gmail.com',

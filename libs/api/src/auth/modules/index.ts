@@ -4,9 +4,11 @@ import { AuthService } from '../services';
 import { AuthController } from '../controllers';
 import { EmailModule, EmailService } from '../../email';
 import { UserModule, UserService } from '../../user';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
+    HttpModule,
     EmailModule,
     UserModule,
     JwtModule.register({

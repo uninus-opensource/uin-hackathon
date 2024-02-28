@@ -14,6 +14,14 @@ export const VSLogin = z.object({
   }),
 });
 
+export const VSGoogle = z.object({
+  accessToken: z
+    .string({ required_error: 'Access Token harus bertipe string' })
+    .min(2, {
+      message: 'Access Token tidak boleh kosong',
+    }),
+});
+
 export const VSRegister = z.object({
   email: z.string({ required_error: 'Email harus diisi' }).email({
     message: 'Email harus valid',
@@ -40,6 +48,7 @@ export const VSRegister = z.object({
     }),
 });
 
+export type TVSGoogle = z.infer<typeof VSGoogle>;
 export type TVSRegister = z.infer<typeof VSRegister>;
 
 export type TVSLogin = z.infer<typeof VSLogin>;

@@ -17,17 +17,15 @@ import {
   VSRegister,
   TForgotPasswordRequest,
   TResetPasswordRequest,
+  TGoogleRequest,
+  VSGoogle,
 } from '@psu/entities';
-import {
-  AccessGuard,
-  GoogleGuard,
-  QueryGuard,
-  RefreshGuard,
-} from '../../common/guards';
+import { AccessGuard, QueryGuard, RefreshGuard } from '../../common/guards';
 import { ZodValidationPipe } from '../../common/pipes/';
 import { ApiTags, ApiBody } from '@nestjs/swagger';
 import {
   ForgotPasswordDto,
+  GoogleDto,
   LoginDto,
   RefreshDto,
   RegisterDto,
@@ -45,10 +43,10 @@ export class AuthController {
     return await this.authService.callback(request.user.sub);
   }
 
-  @Get('/google')
-  @UseGuards(GoogleGuard)
-  async google(@Request() request: THeaderRequest) {
-    return await this.authService.google(request.user);
+  @ApiBody({ type: GoogleDto })
+  @Post('/google')
+  async google(@Body(new ZodValidationPipe(VSGoogle)) data: TGoogleRequest) {
+    return await this.authService.google(data.accessToken);
   }
 
   @ApiBody({ type: LoginDto })

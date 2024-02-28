@@ -14,13 +14,13 @@ import {
   TLoginResponse,
   TRegisterRequest,
   TRegisterResponse,
-  TGoogleRequest,
   TJwtRequest,
   emailTemplate,
   TForgotPasswordResponse,
   TResetPasswordRequest,
   TResetPasswordResponse,
   TRefreshResponse,
+  TGoogleResponse,
 } from '@psu/entities';
 import {
   comparePassword,
@@ -30,12 +30,16 @@ import {
 } from '../../common';
 import { EmailService } from '../../email';
 import { UserService } from '../../user';
+import { HttpService } from '@nestjs/axios';
+import { catchError, lastValueFrom, map } from 'rxjs';
+
 @Injectable()
 export class AuthService {
   constructor(
     @Inject('drizzle') private drizzle: NodePgDatabase<typeof schema>,
     private readonly emailService: EmailService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private http: HttpService
   ) {}
 
   async callback(id: string) {
@@ -327,8 +331,24 @@ export class AuthService {
     };
   }
 
-  async google(payload: TGoogleRequest) {
-    const { email, avatar, fullname } = payload;
+  async google(token: string) {
+    const getGoogle = await lastValueFrom(
+      this.http
+        .get(
+          `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${token}`
+        )
+        .pipe(map((res) => res.data))
+        .pipe(
+          catchError(() => {
+            throw new BadRequestException('Token tidak valid');
+          })
+        )
+    );
+    const {
+      email,
+      picture: avatar,
+      name: fullname,
+    } = getGoogle as TGoogleResponse;
 
     // eslint-disable-next-line prefer-const
     let [res, findRole] = await Promise.all([
