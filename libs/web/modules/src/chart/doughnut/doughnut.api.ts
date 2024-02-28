@@ -1,4 +1,4 @@
-import { TChartRequest, TChartResponse } from '@psu/entities';
+import { TChartResponse } from '@psu/entities';
 import { api } from '@psu/web-services';
 
 export const GetPieChartData = async (): Promise<TChartResponse> => {
