@@ -1,83 +1,18 @@
 'use client';
 import { Button } from '@psu/web-component-atoms';
 import { Form } from '@psu/web-component-templates';
-import { ControlledFieldText } from '@psu/web-component-organisms';
-import { useForm } from 'react-hook-form';
-import { TResetPasswordRequest } from '@psu/entities';
-import { FC, ReactElement, useEffect, useState } from 'react';
-import z from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useReset } from '@psu/web-auth';
+import { useRouter } from 'next/navigation';
+import { FC, ReactElement, useEffect } from 'react';
 
-const schema = z.object({
-  password: z
-    .string({ required_error: 'Password harus diisi' })
-    .min(8, { message: 'Password minimal 8 karakter' })
-    .refine((data) => data.match(/[A-Z]/g), {
-      message: 'Password harus ada huruf besar',
-    })
-    .refine((data) => data.match(/[0-9]/g), {
-      message: 'Password harus ada angka',
-    }),
-  confirmPassword: z
-    .string()
-    .min(1, { message: 'Konfirmasi kata sandi wajib diisi' }),
-});
-
-export const AuthResetModule: FC = (): ReactElement => {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors, isValid },
-  } = useForm<TResetPasswordRequest & { confirmPassword: string }>({
-    resolver: zodResolver(schema),
-    mode: 'all',
-    defaultValues: {
-      password: '',
-      confirmPassword: '',
-    },
-  });
-
-  const { mutate } = useReset();
-
-  const [error, setError] = useState<string | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const params = useSearchParams();
-  const router = useRouter();
-
-  const accessToken = params.get('accessToken') as string;
-
-  const onSubmit = handleSubmit(async (data) => {
-    setIsLoading(true);
-    try {
-      mutate(
-        { password: data.password, accessToken },
-        {
-          onError: (err) => {
-            setError(err?.response?.data?.message);
-          },
-
-          onSuccess: () => {
-            router.push('/auth/reset/success');
-          },
-        }
-      );
-    } catch (err) {
-      console.log(err);
-    }
-    setIsLoading(false);
-  });
-
+export const AuthResetSuccessModule: FC = (): ReactElement => {
+  const { push } = useRouter();
   useEffect(() => {
     setTimeout(() => {
-      setError(undefined);
+      push('/auth/login');
     }, 5000);
-  }, [error]);
-
+  }, [push]);
   return (
-    <Form onSubmit={onSubmit}>
+    <Form onClick={() => push('/auth/login')}>
       <div className="w-full flex items-center justify-center mb-6">
         <svg
           width="222"
@@ -211,38 +146,12 @@ export const AuthResetModule: FC = (): ReactElement => {
         </svg>
       </div>
 
-      <h1 className="text-2xl md:text-3xl font-bold text-black text-left">
-        Atur Ulang Kata Sandi
+      <h1 className="text-2xl md:text-3xl font-bold text-black text-center">
+        Kata Sandi Berhasil Diatur Ulang
       </h1>
-      {error && (
-        <span className="text-error bg-error-50 border-error border rounded-lg p-3">
-          {error}
-        </span>
-      )}
-      <section className="flex flex-col gap-y-3 mt-[18px]">
-        <ControlledFieldText
-          control={control}
-          name="password"
-          label="Kata Sandi"
-          type="password"
-          size="md"
-          placeholder="Masukkan Kata Sandi"
-          status={errors.password ? 'error' : 'default'}
-          message={errors.password?.message}
-        />
-        <ControlledFieldText
-          control={control}
-          name="confirmPassword"
-          label="Konfirmasi Kata Sandi"
-          type="password"
-          size="md"
-          placeholder="Masukkan Konfirmasi Kata Sandi"
-          status={errors.confirmPassword ? 'error' : 'default'}
-          message={errors.confirmPassword?.message}
-        />
-      </section>
-      <Button disabled={!isValid || isLoading} type="submit" size="lg">
-        Atur Ulang Sekarang
+      <p className="text-center">Silahkan login kembali untuk melanjutkan</p>
+      <Button className="w-full" size="md" onClick={() => push('/auth/login')}>
+        Masuk Kembali
       </Button>
     </Form>
   );
