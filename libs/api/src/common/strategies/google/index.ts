@@ -20,6 +20,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: TGoogleProfile,
     done: VerifyCallback
   ) {
+    console.log(accessToken);
     done(null, {
       email: profile.emails[0].value,
       fullname: profile.displayName,

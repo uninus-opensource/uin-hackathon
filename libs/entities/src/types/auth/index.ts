@@ -55,9 +55,15 @@ export type TGoogleProfile = {
 export type TGoogleRequest = {
   fullname?: string;
   avatar?: string;
-  email: string;
+  email?: string;
+  accessToken: string;
 };
-
+export type TGoogleResponse = {
+  sub?: string;
+  name?: string;
+  picture?: string;
+  email?: string;
+};
 export type TForgotPasswordRequest = {
   email: string;
 };

@@ -21,7 +21,8 @@
     "@nestjs/platform-express": "^10.0.2",
     "@aws-sdk/client-s3": "^3.521.0",
     "@aws-sdk/lib-storage": "^3.521.0",
-    "@nestjs/swagger": "^7.3.0"
+    "@nestjs/swagger": "^7.3.0",
+    "@nestjs/axios": "^3.0.2"
   },
   "type": "commonjs",
   "main": "./src/index.js",
