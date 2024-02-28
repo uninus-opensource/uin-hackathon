@@ -10,20 +10,30 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useReset } from '@psu/web-auth';
 
-const schema = z.object({
-  password: z
-    .string({ required_error: 'Password harus diisi' })
-    .min(8, { message: 'Password minimal 8 karakter' })
-    .refine((data) => data.match(/[A-Z]/g), {
-      message: 'Password harus ada huruf besar',
-    })
-    .refine((data) => data.match(/[0-9]/g), {
-      message: 'Password harus ada angka',
-    }),
-  confirmPassword: z
-    .string()
-    .min(1, { message: 'Konfirmasi kata sandi wajib diisi' }),
-});
+const schema = z
+  .object({
+    password: z
+      .string({ required_error: 'Password harus diisi' })
+      .min(8, { message: 'Password minimal 8 karakter' })
+      .refine((data) => data.match(/[A-Z]/g), {
+        message: 'Password harus ada huruf besar',
+      })
+      .refine((data) => data.match(/[0-9]/g), {
+        message: 'Password harus ada angka',
+      }),
+    confirmPassword: z
+      .string()
+      .min(1, { message: 'Konfirmasi kata sandi wajib diisi' }),
+  })
+  .superRefine(({ confirmPassword, password }, ctx) => {
+    if (confirmPassword !== password) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['confirmPassword'],
+        message: 'Konfirmasi Kata sandi harus sama dengan Kata sandi',
+      });
+    }
+  });
 
 export const AuthResetModule: FC = (): ReactElement => {
   const {
