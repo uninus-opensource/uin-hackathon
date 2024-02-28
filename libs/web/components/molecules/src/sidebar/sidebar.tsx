@@ -37,7 +37,11 @@ export const Sidebar: FC = (): ReactElement => {
     });
 
   return (
-    <aside className={'h-screen bg-white shadow-md w-1/6 flex flex-col p-4'}>
+    <aside
+      className={
+        'min-h-screen h-full bg-white shadow-md w-1/6 flex flex-col p-4'
+      }
+    >
       <figure className="flex w-full">
         <figcaption className="w-full text-1xl font-semibold">
           OS Hub
