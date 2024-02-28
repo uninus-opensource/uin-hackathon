@@ -81,7 +81,13 @@ export class AuthController {
   @ApiBody({ type: ResetPasswordDto })
   @Post('/password/reset')
   @UseGuards(AccessGuard)
-  async resetPassword(@Body() data: TResetPasswordRequest) {
-    return await this.authService.resetPassword(data);
+  async resetPassword(
+    @Request() request: THeaderRequest,
+    @Body() data: TResetPasswordRequest
+  ) {
+    return await this.authService.resetPassword({
+      id: request.user.sub,
+      ...data,
+    });
   }
 }
