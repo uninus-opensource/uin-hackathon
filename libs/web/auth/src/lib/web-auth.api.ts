@@ -2,6 +2,7 @@ import { api } from '@psu/web-services';
 import {
   TForgotPasswordRequest,
   TForgotPasswordResponse,
+  TGoogleRequest,
   TLoginRequest,
   TLoginResponse,
   TRegisterRequest,
@@ -15,6 +16,17 @@ export const PostLogin = async (
 ): Promise<TLoginResponse> => {
   const { data } = await api<TLoginResponse>({
     url: '/auth/login',
+    method: 'POST',
+    data: props,
+  });
+  return data;
+};
+
+export const PostLoginByGoogle = async (
+  props: TGoogleRequest
+): Promise<TLoginResponse> => {
+  const { data } = await api<TLoginResponse>({
+    url: '/auth/google',
     method: 'POST',
     data: props,
   });

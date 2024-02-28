@@ -124,7 +124,12 @@ export const AuthLoginModule: FC = (): ReactElement => {
         <hr className="border border-grey-300 my-4" />
       </div>
 
-      <Button type="button" variantType="outline" size="lg">
+      <Button
+        onClick={() => signIn('google')}
+        type="button"
+        variantType="outline"
+        size="lg"
+      >
         <div className="flex items-center gap-x-3 justify-center">
           <FcGoogle size={27} />
           <span data-testid="btn-google" className="text-grey-400">

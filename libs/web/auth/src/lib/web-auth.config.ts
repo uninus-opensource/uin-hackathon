@@ -1,8 +1,7 @@
 import type { AuthOptions } from 'next-auth';
-import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
 import CreadentialProvider from 'next-auth/providers/credentials';
-import { PostLogin } from './web-auth.api';
+import { PostLogin, PostLoginByGoogle } from './web-auth.api';
 import { TMetaErrorResponse, TToken, TUser, VSLogin } from '@psu/entities';
 
 export const authOptions = {
@@ -11,18 +10,13 @@ export const authOptions = {
   },
   session: { strategy: 'jwt' },
   providers: [
-    GithubProvider({
-      id: 'github',
-      name: 'github',
-      clientId: process.env.GITHUB_ID as string,
-      clientSecret: process.env.GITHUB_SECRET as string,
-    }),
     GoogleProvider({
       id: 'google',
       name: 'google',
       clientId: process.env.GOOGLE_ID as string,
       clientSecret: process.env.GOOGLE_SECRET as string,
     }),
+
     CreadentialProvider({
       id: 'credentials',
       name: 'credentials',
@@ -66,24 +60,14 @@ export const authOptions = {
   callbacks: {
     async jwt({ token, profile, account, user }) {
       if (account?.provider === 'google' && profile) {
-        token.fullname = profile?.name as string;
-        token.image = profile?.picture;
-        token.email = profile?.email;
-        token.role = {
-          id: '1',
-          name: 'Google User',
-          permissions: [],
-        };
-      }
+        const response = await PostLoginByGoogle({
+          accessToken: account?.access_token as string,
+        });
 
-      if (account?.provider === 'github' && profile) {
-        token.fullname = profile?.name as string;
-        token.image = profile?.picture;
-        token.email = profile?.email;
-        token.role = {
-          id: '1',
-          name: 'Github User',
-          permissions: [],
+        token = {
+          ...response,
+          token: response?.token as TToken,
+          user: response?.user as TUser,
         };
       }
 
