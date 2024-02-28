@@ -52,7 +52,7 @@ export class ActivityController {
     @Request() request: THeaderRequest,
     @Query() query: TPaginationRequest
   ) {
-    return this.activityService.report({
+    return this.activityService.submission({
       organizationId: request?.user?.organizationId,
       ...query,
     });
@@ -114,6 +114,7 @@ export class ActivityController {
   }
 
   @ApiQuery({ name: 'type', enum: EChartType, required: false })
+  @ApiQuery({ name: 'month', enum: EMonthNames, required: false })
   @ApiQuery({
     name: 'status',
     enum: [
@@ -139,6 +140,7 @@ export class ActivityController {
       status,
       month,
       organizationId: request.user.organizationId,
+      role: request.user.role.name,
     });
   }
 

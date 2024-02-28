@@ -25,7 +25,7 @@ export enum EActivityStatusTranslation {
   REJECTED = 'Kegiatan Ditolak',
   REVISION = 'Revisi',
   ONGOING = 'Kegiatan Berjalan',
-  REQUESTED = 'Sedang diajukan',
+  REQUESTED = 'Sedang Diajukan',
   COMPLETED = 'Selesai',
   REPORTED = 'Sudah melaporkan',
   NOTREPORTED = 'Belum melaporkan',

@@ -31,4 +31,5 @@ export type TChartRequest = {
     | EActivityStatusTranslation.APPROVED;
   month?: EMonthNames;
   organizationId?: string;
+  role?: string;
 };

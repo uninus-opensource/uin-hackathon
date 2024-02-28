@@ -344,7 +344,7 @@ export class ActivityService {
     };
   }
   async chart(data: TChartRequest): Promise<TChartResponse> {
-    const { type = EChartType.PIE, status, month, organizationId } = data;
+    const { type = EChartType.PIE, status, month, organizationId, role } = data;
     const now = new Date();
     const currentYear = now.getFullYear();
     const monthIndex =
@@ -354,7 +354,7 @@ export class ActivityService {
       );
     const currentMonth = (month ? monthIndex : now.getMonth()) as number;
 
-    if (type === EChartType.LINE && organizationId) {
+    if (type === EChartType.LINE) {
       const dayOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
       const dayOfLastWeeks = dayOfMonth - 21;
       const firstWeek = {
@@ -384,10 +384,15 @@ export class ActivityService {
               .where(
                 and(
                   eq(schema.activities.status, EActivityStatus.REQUESTED),
-                  eq(
-                    schema.activities.organizationId,
-                    organizationId as string
-                  ),
+                  ...(role?.toLocaleLowerCase() === 'admin'
+                    ? []
+                    : [
+                        eq(
+                          schema.activities.organizationId,
+                          organizationId as string
+                        ),
+                      ]),
+
                   gte(schema.activities.updatedAt, firstWeek.start),
                   lt(schema.activities.updatedAt, firstWeek.end)
                 )
@@ -401,10 +406,14 @@ export class ActivityService {
               .where(
                 and(
                   eq(schema.activities.status, EActivityStatus.REQUESTED),
-                  eq(
-                    schema.activities.organizationId,
-                    organizationId as string
-                  ),
+                  ...(role?.toLocaleLowerCase() === 'admin'
+                    ? []
+                    : [
+                        eq(
+                          schema.activities.organizationId,
+                          organizationId as string
+                        ),
+                      ]),
                   gte(schema.activities.updatedAt, secondWeek.start),
                   lt(schema.activities.updatedAt, secondWeek.end)
                 )
@@ -418,10 +427,14 @@ export class ActivityService {
               .where(
                 and(
                   eq(schema.activities.status, EActivityStatus.REQUESTED),
-                  eq(
-                    schema.activities.organizationId,
-                    organizationId as string
-                  ),
+                  ...(role?.toLocaleLowerCase() === 'admin'
+                    ? []
+                    : [
+                        eq(
+                          schema.activities.organizationId,
+                          organizationId as string
+                        ),
+                      ]),
                   gte(schema.activities.updatedAt, thirdWeek.start),
                   lt(schema.activities.updatedAt, thirdWeek.end)
                 )
@@ -435,10 +448,14 @@ export class ActivityService {
               .where(
                 and(
                   eq(schema.activities.status, EActivityStatus.REQUESTED),
-                  eq(
-                    schema.activities.organizationId,
-                    organizationId as string
-                  ),
+                  ...(role?.toLocaleLowerCase() === 'admin'
+                    ? []
+                    : [
+                        eq(
+                          schema.activities.organizationId,
+                          organizationId as string
+                        ),
+                      ]),
                   gte(schema.activities.updatedAt, fourthWeek.start),
                   lt(schema.activities.updatedAt, fourthWeek.end)
                 )
@@ -458,10 +475,14 @@ export class ActivityService {
                     schema.activities.status,
                     EActivityStatus.APPROVEDBYCHANCELLOR
                   ),
-                  eq(
-                    schema.activities.organizationId,
-                    organizationId as string
-                  ),
+                  ...(role?.toLocaleLowerCase() === 'admin'
+                    ? []
+                    : [
+                        eq(
+                          schema.activities.organizationId,
+                          organizationId as string
+                        ),
+                      ]),
                   gte(schema.activities.updatedAt, firstWeek.start),
                   lt(schema.activities.updatedAt, firstWeek.end)
                 )
@@ -478,10 +499,14 @@ export class ActivityService {
                     schema.activities.status,
                     EActivityStatus.APPROVEDBYCHANCELLOR
                   ),
-                  eq(
-                    schema.activities.organizationId,
-                    organizationId as string
-                  ),
+                  ...(role?.toLocaleLowerCase() === 'admin'
+                    ? []
+                    : [
+                        eq(
+                          schema.activities.organizationId,
+                          organizationId as string
+                        ),
+                      ]),
                   gte(schema.activities.updatedAt, secondWeek.start),
                   lt(schema.activities.updatedAt, secondWeek.end)
                 )
@@ -498,10 +523,14 @@ export class ActivityService {
                     schema.activities.status,
                     EActivityStatus.APPROVEDBYCHANCELLOR
                   ),
-                  eq(
-                    schema.activities.organizationId,
-                    organizationId as string
-                  ),
+                  ...(role?.toLocaleLowerCase() === 'admin'
+                    ? []
+                    : [
+                        eq(
+                          schema.activities.organizationId,
+                          organizationId as string
+                        ),
+                      ]),
                   gte(schema.activities.updatedAt, thirdWeek.start),
                   lt(schema.activities.updatedAt, thirdWeek.end)
                 )
@@ -518,10 +547,14 @@ export class ActivityService {
                     schema.activities.status,
                     EActivityStatus.APPROVEDBYCHANCELLOR
                   ),
-                  eq(
-                    schema.activities.organizationId,
-                    organizationId as string
-                  ),
+                  ...(role?.toLocaleLowerCase() === 'admin'
+                    ? []
+                    : [
+                        eq(
+                          schema.activities.organizationId,
+                          organizationId as string
+                        ),
+                      ]),
                   gte(schema.activities.updatedAt, fourthWeek.start),
                   lt(schema.activities.updatedAt, fourthWeek.end)
                 )
@@ -555,10 +588,14 @@ export class ActivityService {
                       EActivityStatus.REJECTEDBYSTUDENTCOUNCIL
                     )
                   ),
-                  eq(
-                    schema.activities.organizationId,
-                    organizationId as string
-                  ),
+                  ...(role?.toLocaleLowerCase() === 'admin'
+                    ? []
+                    : [
+                        eq(
+                          schema.activities.organizationId,
+                          organizationId as string
+                        ),
+                      ]),
                   gte(schema.activities.updatedAt, firstWeek.start),
                   lt(schema.activities.updatedAt, firstWeek.end)
                 )
@@ -589,10 +626,14 @@ export class ActivityService {
                       EActivityStatus.REJECTEDBYSTUDENTCOUNCIL
                     )
                   ),
-                  eq(
-                    schema.activities.organizationId,
-                    organizationId as string
-                  ),
+                  ...(role?.toLocaleLowerCase() === 'admin'
+                    ? []
+                    : [
+                        eq(
+                          schema.activities.organizationId,
+                          organizationId as string
+                        ),
+                      ]),
                   gte(schema.activities.updatedAt, secondWeek.start),
                   lt(schema.activities.updatedAt, secondWeek.end)
                 )
@@ -623,10 +664,14 @@ export class ActivityService {
                       EActivityStatus.REJECTEDBYSTUDENTCOUNCIL
                     )
                   ),
-                  eq(
-                    schema.activities.organizationId,
-                    organizationId as string
-                  ),
+                  ...(role?.toLocaleLowerCase() === 'admin'
+                    ? []
+                    : [
+                        eq(
+                          schema.activities.organizationId,
+                          organizationId as string
+                        ),
+                      ]),
                   gte(schema.activities.updatedAt, thirdWeek.start),
                   lt(schema.activities.updatedAt, thirdWeek.end)
                 )
@@ -657,10 +702,14 @@ export class ActivityService {
                       EActivityStatus.REJECTEDBYSTUDENTCOUNCIL
                     )
                   ),
-                  eq(
-                    schema.activities.organizationId,
-                    organizationId as string
-                  ),
+                  ...(role?.toLocaleLowerCase() === 'admin'
+                    ? []
+                    : [
+                        eq(
+                          schema.activities.organizationId,
+                          organizationId as string
+                        ),
+                      ]),
                   gte(schema.activities.updatedAt, fourthWeek.start),
                   lt(schema.activities.updatedAt, fourthWeek.end)
                 )
@@ -724,7 +773,14 @@ export class ActivityService {
                 schema.activities.status,
                 EActivityStatus.APPROVEDBYCHANCELLOR
               ),
-              eq(schema.activities.organizationId, organizationId as string),
+              ...(role?.toLocaleLowerCase() === 'admin'
+                ? []
+                : [
+                    eq(
+                      schema.activities.organizationId,
+                      organizationId as string
+                    ),
+                  ]),
               gte(schema.activities.updatedAt, startMonth),
               lt(schema.activities.updatedAt, nextMonth)
             )
@@ -739,7 +795,14 @@ export class ActivityService {
           .where(
             and(
               eq(schema.activities.status, EActivityStatus.NOTREPORTED),
-              eq(schema.activities.organizationId, organizationId as string),
+              ...(role?.toLocaleLowerCase() === 'admin'
+                ? []
+                : [
+                    eq(
+                      schema.activities.organizationId,
+                      organizationId as string
+                    ),
+                  ]),
               gte(schema.activities.updatedAt, startMonth),
               lt(schema.activities.updatedAt, nextMonth)
             )
@@ -754,7 +817,14 @@ export class ActivityService {
           .where(
             and(
               eq(schema.activities.status, EActivityStatus.REPORTED),
-              eq(schema.activities.organizationId, organizationId as string),
+              ...(role?.toLocaleLowerCase() === 'admin'
+                ? []
+                : [
+                    eq(
+                      schema.activities.organizationId,
+                      organizationId as string
+                    ),
+                  ]),
               gte(schema.activities.updatedAt, startMonth),
               lt(schema.activities.updatedAt, nextMonth)
             )

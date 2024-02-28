@@ -23,6 +23,9 @@ export class RegisterDto {
   })
   public fullname!: string;
 
+  @ApiProperty()
+  public nim!: string;
+
   @ApiProperty({
     example: 'Test1234',
     description: 'Password minimal 8 karakter, terdapat huruf besar dan angka',
