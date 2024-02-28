@@ -20,17 +20,10 @@ export const AdminMasterModule: FC = (): ReactElement => {
   );
   const data = [
     {
-      role: 'Webinar : Digital skill',
-      accessRight: '20/02/2024 13.00 - 20/02/2024 14.00',
+      role: 'Admin',
+      accessRight: 'Riwayat pengajuan',
     },
-    {
-      role: 'Webinar : Memberdayakan Randa',
-      accessRight: '25/04/2024 08.00 - 25/04/2024 11.00',
-    },
-    {
-      role: 'Webinar : Pentingnya Jerapah',
-      accessRight: '21/02/2024 12.00 - 21/02/2024 14.00',
-    },
+    
   ];
   const columns: ColumnDef<any>[] = [
     {
@@ -108,12 +101,10 @@ export const AdminMasterModule: FC = (): ReactElement => {
         width="300px"
         height="300px"
         header={true}
-        title="Randa Slayer"
+        title="Details"
         onClose={() => setIsDetailModalOpen(false)}
       >
-        <InputSelect />
-        <InputSelect />
-        <InputSelect />
+        <h1>Detail</h1>
       </Modal>
       {/* end detail modal */}
 

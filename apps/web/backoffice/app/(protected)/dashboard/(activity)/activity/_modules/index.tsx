@@ -21,16 +21,6 @@ export const ActivityModule: FC = (): ReactElement => {
       periode: '20/02/2024 13.00 - 20/02/2024 14.00',
       status: 'sudah dilaporkan',
     },
-    {
-      name: 'Webinar : Memberdayakan Randa',
-      periode: '25/04/2024 08.00 - 25/04/2024 11.00',
-      status: 'belum dilaporkan',
-    },
-    {
-      name: 'Webinar : Pentingnya Jerapah',
-      periode: '21/02/2024 12.00 - 21/02/2024 14.00',
-      status: 'belum dilaporkan',
-    },
   ];
   const columns: ColumnDef<any>[] = [
     {
