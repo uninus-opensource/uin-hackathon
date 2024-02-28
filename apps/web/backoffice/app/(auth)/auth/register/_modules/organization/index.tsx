@@ -33,7 +33,10 @@ export const AuthRegisterOrganizationModule: FC<{
 
   const { data, isLoading } = useGetOrganization({
     organizationType: watch('organizationType') || '',
-    organizationLevel: watch('organizationLevel') || '',
+    organizationLevel:
+      watch('organizationType') === EorganizationType.UKM
+        ? null
+        : watch('organizationLevel') || '',
   });
 
   const organizationOption = useMemo(() => {
@@ -85,16 +88,19 @@ export const AuthRegisterOrganizationModule: FC<{
           status={errors.organizationType ? 'error' : 'default'}
           message={errors.organizationType?.message}
         />
-        <ControlledFieldSelect
-          control={control}
-          name="organizationLevel"
-          label="Level Organisasi"
-          size="sm"
-          options={organizationLevelOptions}
-          placeholder="Pilih Level Organisasi"
-          status={errors.organizationLevel ? 'error' : 'default'}
-          message={errors.organizationLevel?.message}
-        />
+        {watch('organizationType') !== EorganizationType.UKM && (
+          <ControlledFieldSelect
+            control={control}
+            name="organizationLevel"
+            label="Level Organisasi"
+            size="sm"
+            options={organizationLevelOptions}
+            placeholder="Pilih Level Organisasi"
+            status={errors.organizationLevel ? 'error' : 'default'}
+            message={errors.organizationLevel?.message}
+          />
+        )}
+
         <ControlledFieldSelect
           control={control}
           name="organization"
