@@ -6,6 +6,8 @@ import {
   TLoginResponse,
   TRegisterRequest,
   TRegisterResponse,
+  TResetPasswordRequest,
+  TResetPasswordResponse,
 } from '@psu/entities';
 
 export const PostLogin = async (
@@ -35,6 +37,20 @@ export const PostForgot = async (
 ): Promise<TForgotPasswordResponse> => {
   const { data } = await api<TForgotPasswordResponse>({
     url: '/auth/password/forgot',
+    method: 'POST',
+    data: props,
+  });
+  return data;
+};
+
+export const PostReset = async (
+  props: TResetPasswordRequest
+): Promise<TResetPasswordResponse> => {
+  const { data } = await api<TResetPasswordResponse>({
+    url: '/auth/password/reset',
+    headers: {
+      Authorization: `Bearer ${props.accessToken}`,
+    },
     method: 'POST',
     data: props,
   });

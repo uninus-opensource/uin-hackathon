@@ -1,11 +1,13 @@
 import { UseMutationResult, useMutation } from '@tanstack/react-query';
-import { PostForgot, PostRegister } from './web-auth.api';
+import { PostForgot, PostRegister, PostReset } from './web-auth.api';
 import {
   TForgotPasswordRequest,
   TForgotPasswordResponse,
   TMetaErrorResponse,
   TRegisterRequest,
   TRegisterResponse,
+  TResetPasswordRequest,
+  TResetPasswordResponse,
 } from '@psu/entities';
 
 export const useRegister = (): UseMutationResult<
@@ -28,4 +30,15 @@ export const useForgot = (): UseMutationResult<
   useMutation({
     mutationKey: ['auth-forgot'],
     mutationFn: async (props) => await PostForgot(props),
+  });
+
+export const useReset = (): UseMutationResult<
+  TResetPasswordResponse,
+  TMetaErrorResponse,
+  TResetPasswordRequest,
+  unknown
+> =>
+  useMutation({
+    mutationKey: ['auth-reset'],
+    mutationFn: async (props) => await PostReset(props),
   });
