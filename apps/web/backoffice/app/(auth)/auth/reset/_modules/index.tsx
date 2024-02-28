@@ -7,7 +7,7 @@ import { TResetPasswordRequest } from '@psu/entities';
 import { FC, ReactElement, useEffect, useState } from 'react';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useReset } from '@psu/web-auth';
 
 const schema = z.object({
@@ -45,6 +45,7 @@ export const AuthResetModule: FC = (): ReactElement => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const params = useSearchParams();
+  const router = useRouter();
 
   const accessToken = params.get('accessToken') as string;
 
@@ -56,6 +57,10 @@ export const AuthResetModule: FC = (): ReactElement => {
         {
           onError: (err) => {
             setError(err?.response?.data?.message);
+          },
+
+          onSuccess: () => {
+            router.push('/auth/reset/success');
           },
         }
       );
