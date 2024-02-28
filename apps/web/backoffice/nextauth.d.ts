@@ -2,18 +2,6 @@
 import { DefaultSession } from 'next-auth';
 import { TLoginResponse } from '@psu/entities';
 
-type TUser = {
-  id: string;
-  fullname: string;
-  image?: string;
-  email: string;
-  role: {
-    id: string;
-    name: string;
-    permissions: Array<string>;
-  };
-};
-
 type TProfile = {
   picture?: string;
 };

@@ -1,8 +1,8 @@
 'use client';
 import { Navbar, Sidebar } from '@psu/web-component-molecules';
 import { FC, PropsWithChildren, ReactElement } from 'react';
-import { TUser } from '../../nextauth';
 import { useSession } from 'next-auth/react';
+import { TUser } from '@psu/entities';
 
 const ProtectedTemplate: FC<Readonly<PropsWithChildren>> = ({
   children,
