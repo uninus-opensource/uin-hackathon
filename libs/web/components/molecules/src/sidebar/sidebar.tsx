@@ -1,6 +1,9 @@
+'use client';
 import Link from 'next/link';
 import { FC, ReactElement } from 'react';
 import { FaDesktop } from 'react-icons/fa';
+import { usePathname } from 'next/navigation';
+import clsx from 'clsx';
 
 const sidebarMenu = [
   {
@@ -26,6 +29,13 @@ const sidebarMenu = [
 ];
 
 export const Sidebar: FC = (): ReactElement => {
+  const pathname = usePathname();
+
+  const className = (url: string) =>
+    clsx('text-primary flex gap-x-4 hover:bg-primary-50 p-2 items-center', {
+      'bg-primary-50': pathname === url,
+    });
+
   return (
     <aside className={'h-screen bg-white shadow-md w-1/6 flex flex-col p-4'}>
       <figure className="flex w-full">
@@ -36,7 +46,7 @@ export const Sidebar: FC = (): ReactElement => {
 
       <ul className="mt-6 flex flex-col gap-y-1 cursor-pointer w-full">
         {sidebarMenu.map((menu) => (
-          <li className="text-primary flex gap-x-4 hover:bg-primary-50 p-2 items-center">
+          <li className={className(menu.path)}>
             {menu.icon}
             <Link className="font-medium text-[13px]" href={menu.path}>
               {menu.name}

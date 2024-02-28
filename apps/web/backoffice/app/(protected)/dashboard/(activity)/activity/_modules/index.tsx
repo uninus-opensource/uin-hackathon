@@ -8,7 +8,7 @@ import {
   useQueryState,
 } from 'next-usequerystate';
 import { Button } from '@psu/web-component-atoms';
-import { FaRegEdit } from "react-icons/fa";
+import { FaRegEdit } from 'react-icons/fa';
 export const ActivityModule: FC = (): ReactElement => {
   const [page] = useQueryState('page', parseAsInteger.withDefault(1));
   const [search, setSearch] = useQueryState(
@@ -49,10 +49,18 @@ export const ActivityModule: FC = (): ReactElement => {
     {
       header: 'Status',
       accessorKey: 'status',
-      cell : ({getValue}) => {
+      cell: ({ getValue }) => {
         const value = String(getValue<string>());
-        return value === 'sudah dilaporkan' ? <div className="bg-primary-200 text-primary-600 text-center w-full px-2 py-1 rounded-lg text-sm font-medium">Sudah Dilaporkan</div> : <div className="bg-error-200 text-error-600 text-center w-full px-2 py-1 rounded-lg text-sm font-medium">Belum Dilaporkan</div>  
-      }
+        return value === 'sudah dilaporkan' ? (
+          <div className="bg-primary-200 text-primary-600 text-center w-full px-2 py-1 rounded-lg text-sm font-medium">
+            Sudah Dilaporkan
+          </div>
+        ) : (
+          <div className="bg-error-200 text-error-600 text-center w-full px-2 py-1 rounded-lg text-sm font-medium">
+            Belum Dilaporkan
+          </div>
+        );
+      },
     },
     {
       header: 'Aksi',
@@ -60,7 +68,7 @@ export const ActivityModule: FC = (): ReactElement => {
         return (
           <section>
             <Button variant={'warning'} size={'sm'}>
-              <span className='flex items-center gap-x-1 text-grey-900'>
+              <span className="flex items-center gap-x-1 text-grey-900">
                 <FaRegEdit />
                 Unggah Laporan
               </span>
@@ -72,25 +80,21 @@ export const ActivityModule: FC = (): ReactElement => {
   ];
 
   return (
-    <section>
-      <div className="flex flex-col h-full gap-y-6 mt-8">
-        <DataTable
-          data={data || []}
-          columns={columns}
-          handleSearch={(e) => setSearch(e.target.value)}
-          meta={{
-            meta: {
-              totalPage:10,
-              total:10,
-              lastPage:10,
-              currentPage:1,
-              perPage:1
-            }
-           
-            
-          }}
-        />
-      </div>
-    </section>
+    <div className="flex flex-col h-full gap-y-6 mt-8 w-full">
+      <DataTable
+        data={data || []}
+        columns={columns}
+        handleSearch={(e) => setSearch(e.target.value)}
+        meta={{
+          meta: {
+            totalPage: 10,
+            total: 10,
+            lastPage: 10,
+            currentPage: 1,
+            perPage: 1,
+          },
+        }}
+      />
+    </div>
   );
 };

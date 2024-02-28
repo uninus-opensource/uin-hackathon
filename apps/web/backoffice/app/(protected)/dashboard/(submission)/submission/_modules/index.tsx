@@ -1,5 +1,5 @@
 'use client';
-import { FC, ReactElement, useState } from 'react';
+import { FC, Fragment, ReactElement, useState } from 'react';
 import { DataTable, Modal } from '@psu/web-component-organisms';
 import { ColumnDef } from '@tanstack/react-table';
 import {
@@ -7,9 +7,9 @@ import {
   parseAsString,
   useQueryState,
 } from 'next-usequerystate';
-import { IoDocumentText,IoEyeSharp } from "react-icons/io5";
+import { IoDocumentText, IoEyeSharp } from 'react-icons/io5';
 import { Button, InputSelect } from '@psu/web-component-atoms';
-import { FaRegEdit } from "react-icons/fa";
+import { FaRegEdit } from 'react-icons/fa';
 export const SubmissionModule: FC = (): ReactElement => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page] = useQueryState('page', parseAsInteger.withDefault(1));
@@ -51,20 +51,40 @@ export const SubmissionModule: FC = (): ReactElement => {
     {
       header: 'Status',
       accessorKey: 'status',
-      cell : ({getValue}) => {
+      cell: ({ getValue }) => {
         const value = String(getValue<string>());
-        if(value === 'berlangsung'){
-          return <div className="bg-primary-200 text-primary-600 text-center w-full px-2 py-1 rounded-lg text-sm font-medium">Berlangsung</div>
-        }else if(value === 'disetujui kemahasiswaan'){
-          return <div className="bg-secondary-200 text-secondary-600 text-center w-full px-3 py-1 rounded-lg text-sm font-medium">Disetujui Kemahasiswaan</div>
-        }else if(value === 'revisi'){
-          return <div className="bg-secondary-300 text-secondary-700 text-center w-full px-2 py-1 rounded-lg text-sm font-medium">Revisi</div>
-        }else if(value === 'ditolak'){
-          return <div className="bg-error-200 text-error-600 text-center w-full px-2 py-1 rounded-lg text-sm font-medium">Ditolak</div>
-        }else {
-          return <div className="bg-info-200 text-info-600 text-center w-full px-2 py-1 rounded-lg text-sm font-medium">Disetujui</div>
+        if (value === 'berlangsung') {
+          return (
+            <div className="bg-primary-200 text-primary-600 text-center w-full px-2 py-1 rounded-lg text-sm font-medium">
+              Berlangsung
+            </div>
+          );
+        } else if (value === 'disetujui kemahasiswaan') {
+          return (
+            <div className="bg-secondary-200 text-secondary-600 text-center w-full px-3 py-1 rounded-lg text-sm font-medium">
+              Disetujui Kemahasiswaan
+            </div>
+          );
+        } else if (value === 'revisi') {
+          return (
+            <div className="bg-secondary-300 text-secondary-700 text-center w-full px-2 py-1 rounded-lg text-sm font-medium">
+              Revisi
+            </div>
+          );
+        } else if (value === 'ditolak') {
+          return (
+            <div className="bg-error-200 text-error-600 text-center w-full px-2 py-1 rounded-lg text-sm font-medium">
+              Ditolak
+            </div>
+          );
+        } else {
+          return (
+            <div className="bg-info-200 text-info-600 text-center w-full px-2 py-1 rounded-lg text-sm font-medium">
+              Disetujui
+            </div>
+          );
         }
-      }
+      },
     },
     {
       header: 'Aksi',
@@ -72,13 +92,13 @@ export const SubmissionModule: FC = (): ReactElement => {
         return (
           <section className="flex gap-x-2">
             <Button variant={'primary'} size={'sm'}>
-              <span className='flex items-center gap-x-1'>
+              <span className="flex items-center gap-x-1">
                 <IoEyeSharp />
                 Lihat Detail
               </span>
             </Button>
             <Button variant={'warning'} size={'sm'}>
-              <span className='flex items-center gap-x-1 text-grey-900'>
+              <span className="flex items-center gap-x-1 text-grey-900">
                 <FaRegEdit />
                 Revisi
               </span>
@@ -90,8 +110,8 @@ export const SubmissionModule: FC = (): ReactElement => {
   ];
 
   return (
-    <section>
-      <div className="flex flex-col h-full gap-y-6 mt-8">
+    <Fragment>
+      <div className="flex flex-col h-full w-full gap-y-6 mt-8">
         <DataTable
           createAction={() => {
             setIsModalOpen(!isModalOpen);
@@ -103,24 +123,27 @@ export const SubmissionModule: FC = (): ReactElement => {
           handleSearch={(e) => setSearch(e.target.value)}
           meta={{
             meta: {
-              totalPage:10,
-              total:10,
-              lastPage:10,
-              currentPage:1,
-              perPage:1
-            }
-           
-            
+              totalPage: 10,
+              total: 10,
+              lastPage: 10,
+              currentPage: 1,
+              perPage: 1,
+            },
           }}
         />
       </div>
-      <Modal isOpen={isModalOpen} width='300px' height='300px' header={true} title='Randa Slayer' onClose={()=> setIsModalOpen(false)}>
-        <InputSelect/>
-        <InputSelect/>
-        <InputSelect/>
-
+      <Modal
+        isOpen={isModalOpen}
+        width="300px"
+        height="300px"
+        header={true}
+        title="Randa Slayer"
+        onClose={() => setIsModalOpen(false)}
+      >
+        <InputSelect />
+        <InputSelect />
+        <InputSelect />
       </Modal>
-    </section>
-  
+    </Fragment>
   );
 };

@@ -33,7 +33,7 @@ export const Navbar: FC<{ user: TUser }> = (props): ReactElement => {
         />
 
         {open && (
-          <div className="absolute flex flex-col gap-y-1 bg-white shadow-md p-4 min-w-[300px] w-auto h-auto top-16 rounded-lg right-2">
+          <div className="absolute z-20 flex flex-col gap-y-1 bg-white shadow-md p-4 min-w-[300px] w-auto h-auto top-16 rounded-lg right-2">
             <div className="flex gap-x-2 items-center hover:bg-primary-50 py-2 px-1 rounded-lg">
               <FaUser />
               <span>Profile</span>
