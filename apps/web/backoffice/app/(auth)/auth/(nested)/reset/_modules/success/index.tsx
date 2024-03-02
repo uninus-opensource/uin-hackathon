@@ -2,15 +2,10 @@
 import { Button } from '@psu/web-component-atoms';
 import { Form } from '@psu/web-component-templates';
 import { useRouter } from 'next/navigation';
-import { FC, ReactElement, useEffect } from 'react';
+import { FC, ReactElement } from 'react';
 
 export const AuthResetSuccessModule: FC = (): ReactElement => {
   const { push } = useRouter();
-  useEffect(() => {
-    setTimeout(() => {
-      push('/auth/login');
-    }, 5000);
-  }, [push]);
   return (
     <Form onClick={() => push('/auth/login')}>
       <div className="w-full flex items-center justify-center mb-6">
