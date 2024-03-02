@@ -10,13 +10,7 @@ const AuthResetPage: NextPage = ({ searchParams }: any): ReactElement => {
     redirect('/auth/login');
   }
 
-  return (
-    <section className="flex overflow-y-hidden lg:flex-row flex-col justify-center items-center w-full h-full min-h-screen">
-      <div className="md:w-1/2 w-full h-full px-6 md:px-0">
-        <AuthResetModule />
-      </div>
-    </section>
-  );
+  return <AuthResetModule />;
 };
 
 export default AuthResetPage;
