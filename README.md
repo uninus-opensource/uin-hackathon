@@ -1,4 +1,4 @@
-# Himatif Uninus UIN-Hackathon
+# Uninus Organization Support HUB
 
 ## Didalam Repo ini terdapat 2 Aplikasi:
 
@@ -7,8 +7,8 @@
 
 ## Demo Aplikasi
 
-- https://himatif-uin-hackathon.uninus.ac.id
-- https://api.himatif-uin-hackathon.uninus.ac.id
+- https://oshub.uninus.ac.id
+- https://api.oshub.uninus.ac.id
 
 # WAJIB Setup Husky
 
@@ -69,11 +69,11 @@ Visual Studio Code
 
 - Clone Projek Dengan SSH ( Direkomendasikan menggunakan SSH )
 
-  > `git clone git@github.com:uninus-opensource/uin-hackathon.git`
+  > `git clone git@github.com:uninus-opensource/uninus-organization-support-hub.git`
 
 - Clone Projek Dengan HTTPS
 
-  > `git clone https://github.com/uninus-opensource/uin-hackathon.git`
+  > `git clone https://github.com/uninus-opensource/uninus-organization-support-hub.git`
 
 ## Memasang _Dependency_
 
